@@ -26,6 +26,7 @@ import ir.hanzodev1375.ghostide.settings.CodeRunnerSetting;
 import ir.hanzodev1375.ghostide.settings.EditorSettingSection;
 import ir.hanzodev1375.ghostide.settings.IconPackSettingSection;
 import ir.hanzodev1375.ghostide.settings.LspSettingSection;
+import ir.hanzodev1375.ghostide.settings.PluginSettingSection;
 import ir.hanzodev1375.ghostide.settings.SettingSection;
 import ir.theme.M3Theme;
 import ir.theme.ThemeUtils;
@@ -45,8 +46,10 @@ public class SettingActivity extends BaseCompat {
   private LspSettingSection lspSection;
   private CodeRunnerSetting runnerSection;
   private IconPackSettingSection iconPackSection;
-  private ExpandableLayout expandEditor, expandApp, LspView, expandAi, expandRunner, expandIconPack;
-  private RecyclerView rvEditor, rvApp, rvLsp, rvAi, rvRunner, rvIconPack;
+  private PluginSettingSection pluginSection;
+  private ExpandableLayout expandEditor, expandApp, LspView, expandAi, expandRunner, expandIconPack,
+      expandPlugins;
+  private RecyclerView rvEditor, rvApp, rvLsp, rvAi, rvRunner, rvIconPack, rvPlugins;
   private SearchLayout ser;
   private boolean isSearchActive = false;
   private Runnable filterRunnable;
@@ -78,6 +81,7 @@ public class SettingActivity extends BaseCompat {
     LspView = findViewById(R.id.lspsetting);
     expandRunner = findViewById(R.id.expandRunner);
     expandIconPack = findViewById(R.id.expandIconPack);
+    expandPlugins = findViewById(R.id.expandPlugins);
 
     expandEditor.setTitle(getString(R.string.section_editor));
     expandApp.setTitle(getString(R.string.section_app));
@@ -85,6 +89,7 @@ public class SettingActivity extends BaseCompat {
     LspView.setTitle(getString(R.string.lsptitles));
     expandRunner.setTitle(getString(R.string.runner_section_title));
     expandIconPack.setTitle(getString(R.string.icon_pack_title));
+    expandPlugins.setTitle(getString(R.string.plugin_settings_title));
 
     rvEditor = expandEditor.getRecyclerView();
     rvApp = expandApp.getRecyclerView();
@@ -92,12 +97,14 @@ public class SettingActivity extends BaseCompat {
     rvLsp = LspView.getRecyclerView();
     rvRunner = expandRunner.getRecyclerView();
     rvIconPack = expandIconPack.getRecyclerView();
+    rvPlugins = expandPlugins.getRecyclerView();
     rvEditor.setLayoutManager(new LinearLayoutManager(this));
     rvApp.setLayoutManager(new LinearLayoutManager(this));
     rvAi.setLayoutManager(new LinearLayoutManager(this));
     rvLsp.setLayoutManager(new LinearLayoutManager(this));
     rvRunner.setLayoutManager(new LinearLayoutManager(this));
     rvIconPack.setLayoutManager(new LinearLayoutManager(this));
+    rvPlugins.setLayoutManager(new LinearLayoutManager(this));
 
     editorSection = new EditorSettingSection(this, prefs);
     appSection = new AppSettingSection(this, prefs);
@@ -105,6 +112,7 @@ public class SettingActivity extends BaseCompat {
     lspSection = new LspSettingSection(this, prefs);
     runnerSection = new CodeRunnerSetting(this, prefs);
     iconPackSection = new IconPackSettingSection(this, prefs);
+    pluginSection = new PluginSettingSection(this);
 
     rvEditor.setAdapter(editorSection.createAdapter());
     rvApp.setAdapter(appSection.createAdapter());
@@ -112,6 +120,14 @@ public class SettingActivity extends BaseCompat {
     rvLsp.setAdapter(lspSection.createAdapter());
     rvRunner.setAdapter(runnerSection.createAdapter());
     rvIconPack.setAdapter(iconPackSection.createAdapter());
+    rvPlugins.setAdapter(pluginSection.createAdapter());
+    hideSectionIfEmpty(expandEditor, editorSection);
+    hideSectionIfEmpty(expandApp, appSection);
+    hideSectionIfEmpty(expandAi, aiSection);
+    hideSectionIfEmpty(LspView, lspSection);
+    hideSectionIfEmpty(expandRunner, runnerSection);
+    hideSectionIfEmpty(expandIconPack, iconPackSection);
+    hideSectionIfEmpty(expandPlugins, pluginSection);
 
     ser.show();
     ser.setIconClose(R.drawable.ic_close);
@@ -141,6 +157,7 @@ public class SettingActivity extends BaseCompat {
     rvLsp.setItemAnimator(null);
     rvRunner.setItemAnimator(null);
     rvIconPack.setItemAnimator(null);
+    rvPlugins.setItemAnimator(null);
 
     ser.setOnTextChangedListener(
         (item) -> {
@@ -157,6 +174,10 @@ public class SettingActivity extends BaseCompat {
                   if (!LspView.isExpanded()) LspView.expand();
                   if (!expandRunner.isExpanded()) expandRunner.expand();
                   if (!expandIconPack.isExpanded()) expandIconPack.expand();
+                  if (expandPlugins.getVisibility() == View.VISIBLE
+                      && !expandPlugins.isExpanded()) {
+                    expandPlugins.expand();
+                  }
                 };
             ser.postDelayed(expandRunnable, 50);
           }
@@ -174,6 +195,7 @@ public class SettingActivity extends BaseCompat {
                   if (LspView.isExpanded()) LspView.collapse();
                   if (expandRunner.isExpanded()) expandRunner.collapse();
                   if (expandIconPack.isExpanded()) expandIconPack.collapse();
+                  if (expandPlugins.isExpanded()) expandPlugins.collapse();
                   isSearchActive = false;
                   ser.removeCallbacks(expandRunnable);
                 }
@@ -200,14 +222,28 @@ public class SettingActivity extends BaseCompat {
     aiSection.filter(query);
     runnerSection.filter(query);
     iconPackSection.filter(query);
+    pluginSection.filter(query);
   }
 
   private void resetAll() {
     for (SettingSection section :
         new SettingSection[] {
-          editorSection, appSection, lspSection, aiSection, runnerSection, iconPackSection
+          editorSection,
+          appSection,
+          lspSection,
+          aiSection,
+          runnerSection,
+          iconPackSection,
+          pluginSection
         }) {
       section.resetToFull();
+    }
+  }
+
+  /** Hides a section entirely when it has no rows, so empty sections never show up. */
+  private void hideSectionIfEmpty(ExpandableLayout layout, SettingSection section) {
+    if (section.getAdapter().getItemCount() == 0) {
+      layout.setVisibility(View.GONE);
     }
   }
 

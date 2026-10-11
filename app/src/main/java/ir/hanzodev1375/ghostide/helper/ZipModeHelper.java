@@ -129,7 +129,7 @@ public class ZipModeHelper {
     zipAdapter.setupSelectionTracker(bind.rvfiles);
     zipAdapter.loadZip(zipFilePath, "");
     activity.setFabVisible(false);
-    bind.gitActionButton.setVisibility(View.GONE);
+    activity.updateGitActionVisibility(null);
   }
 
   public void exitZipMode() {

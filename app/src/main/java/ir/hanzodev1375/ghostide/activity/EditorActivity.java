@@ -76,6 +76,9 @@ import ir.hanzodev1375.ghostide.ide.ui.api.CodeRunnerHost;
 import ir.hanzodev1375.ghostide.ide.ui.api.FileEvent;
 import ir.hanzodev1375.ghostide.ide.ui.api.IdeEvents;
 import ir.hanzodev1375.ghostide.ide.ui.api.IdeHostServices;
+import ir.hanzodev1375.ghostide.ide.ui.api.PluginIconState;
+import ir.hanzodev1375.ghostide.ide.ui.api.PluginToolbarIcon;
+import ir.hanzodev1375.ghostide.ide.ui.api.PluginUiExtensionPoints;
 import ir.hanzodev1375.ghostide.plugin.PluginManager;
 import ir.hanzodev1375.ghostide.plugin.PluginPanelHost;
 import ir.hanzodev1375.ghostide.plugin.PluginPopupController;
@@ -191,6 +194,8 @@ public class EditorActivity extends BaseCompat
     codeRunnerHostRegistration =
         GlobalRegistry.services()
             .register(IdeHostServices.CODE_RUNNER_HOST, new CodeRunnerHostAdapter(this));
+    GlobalRegistry.services()
+        .register(IdeHostServices.PANEL_HOST, panel -> pluginPanelHost.showPanel(panel));
     applyThemeInternal(false);
 
     handleIncomingIntent(getIntent());
@@ -633,6 +638,16 @@ public class EditorActivity extends BaseCompat
   void stepToolbar() {
     toolbarModel.clear();
     toolbarModel.add(new ToolbarModel(R.drawable.ic_git, "git", gitStatus.isGit()));
+    int priorityInsertIndex = toolbarModel.size();
+    for (var registration :
+        GlobalRegistry.extensions().registrations(PluginUiExtensionPoints.TOOLBAR_ICON)) {
+      PluginToolbarIcon icon = registration.extension();
+      if (icon.getState() == PluginIconState.Editor) {
+        toolbarModel.add(
+            priorityInsertIndex++,
+            new ToolbarModel(icon.getIcon(), "plugin:" + icon.getId()));
+      }
+    }
     toolbarModel.add(new ToolbarModel(R.drawable.outline_undo, "undo"));
     toolbarModel.add(new ToolbarModel(R.drawable.outline_redo, "redo"));
     toolbarModel.add(new ToolbarModel(R.drawable.more_vert, "more"));
@@ -644,16 +659,31 @@ public class EditorActivity extends BaseCompat
           new ToolbarListAdapter(
               toolbarModel,
               (view, m, pos) -> {
-                switch (pos) {
-                  case 0 -> showGitBottomSheet();
-                  case 1 -> {
+                String tag = m.getTag();
+                if (tag != null && tag.startsWith("plugin:")) {
+                  for (var registration :
+                      GlobalRegistry.extensions().registrations(PluginUiExtensionPoints.TOOLBAR_ICON)) {
+                    PluginToolbarIcon icon = registration.extension();
+                    if (("plugin:" + icon.getId()).equals(tag)) {
+                      icon.onClick(view);
+                      return;
+                    }
+                  }
+                  return;
+                }
+                if (tag == null) {
+                  return;
+                }
+                switch (tag) {
+                  case "git" -> showGitBottomSheet();
+                  case "undo" -> {
                     if (getEditor().canUndo()) getEditor().undo();
                   }
-                  case 2 -> {
+                  case "redo" -> {
                     if (getEditor().canRedo()) getEditor().redo();
                   }
-                  case 3 -> setupMenuCalltoAction(view);
-                  case 4 -> pluginPopupController.show(view);
+                  case "more" -> setupMenuCalltoAction(view);
+                  case "plugins" -> pluginPopupController.show(view);
                 }
               },
               EditorActivity.this);

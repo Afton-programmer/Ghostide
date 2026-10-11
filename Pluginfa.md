@@ -259,6 +259,45 @@ context.registerDisposable(
 
 شناسه‌ها باید یکتا و به سبک reverse-domain باشن.
 
+## اضافه کردن تنظیمات به خود اپ
+
+به‌جای این که صفحه‌ی تنظیمات اختصاصی خودت رو بکشی، می‌تونی گزینه‌هات رو مستقیم تو صفحه‌ی تنظیمات
+خود IDE بذاری. اینترفیس `PluginSettingsContributor` رو (تو `plugin-api`) پیاده کن و زیر
+`CoreExtensionPoints.PLUGIN_SETTINGS` ثبتش کن؛ هاست هر `PluginSetting` که برگردونی رو لیست می‌کنه و
+هر ردیف رو با `getDisplayName()` تو برچسب می‌زنه. دو نوع ردیف داریم:
+
+- `PluginSetting.toggle(...)` — یه سوییچ. مقدار فعلی و یه کال‌بک که ذخیره‌ش می‌کنه رو بده.
+- `PluginSetting.action(...)` — یه ردیف کلیکی ساده که کال‌بکت رو روی ترد اصلی اجرا می‌کنه.
+
+چون ردیف‌ها هر بار که صفحه باز می‌شه از نو ساخته می‌شن، مقدار فعلی رو داخل `getSettings()` از
+`CoreServices.PLUGIN_STORAGE` بخون و تو کال‌بک ذخیره کن:
+
+```java
+public final class MySettings implements PluginSettingsContributor {
+  private final PluginStorage storage;
+
+  MySettings(PluginStorage storage) { this.storage = storage; }
+
+  @Override public String getId() { return "com.example.myplugin.settings"; }
+  @Override public String getDisplayName() { return "My Plugin"; }
+
+  @Override public List<PluginSetting> getSettings() {
+    return List.of(
+        PluginSetting.toggle("wrap", "Word wrap", "شکستن خطوط بلند",
+            storage.getBoolean("wrap", true), value -> storage.putBoolean("wrap", value)),
+        PluginSetting.action("reset", "پاک کردن کش", () -> clearCache()));
+  }
+}
+
+// داخل activate():
+PluginStorage storage = context.getServices().require(CoreServices.PLUGIN_STORAGE);
+context.registerDisposable(context.getExtensions().register(
+    CoreExtensionPoints.PLUGIN_SETTINGS, new MySettings(storage)));
+```
+
+یه چیزی بیش‌تر از سوییچ لازم داری (انتخاب، اسلایدر و...)؟ از یه ردیف action استفاده کن و دیالوگ
+خودت رو تو کال‌بک نشون بده. این بخش فقط وقتی نشون داده می‌شه که حداقل یه پلاگین ردیفی بفرسته.
+
 ## هندل کردن اکشن‌های LSP خودتون (دسترسی اختیاری به ادیتور)
 
 دستورهایی که `ghostide.*` نیستن همچنان از طریق `workspace/executeCommand` به سرور شما فرستاده
@@ -344,6 +383,45 @@ public void activate(PluginContext context) {
 non-null برای هر مسیر برنده است، پس پک جدید روی کلیدهایی که تعریف می کنه پک های قدیمی تر رو
 override می کنه و بقیه جاها به اونا و در نهایت به مجموعه داخلی fallback می کنه. با unload شدن
 پلاگین، contribution هاش خودکار حذف می شن.
+
+## تصاحب کلیک روی فایل
+
+یه `FileClickHandler` (از `ide-ui-api`) پیاده کنید و در
+`PluginUiExtensionPoints.FILE_CLICK_HANDLER` ثبتش کنید تا یه تک‌ضربه روی فایلی که IDE خودش با
+viewerهای داخلی باز می کنه رو به دست بگیرید. برای هر ضربه هاست به ترتیب نزولی اولویت از هر
+هندلر `supports(path, name, isDirectory)` می پرسه؛ اولین `true` برنده است، یه `FileClickContext`
+می گیره، و باز شدن داخلی (ادیتور، نمایش تصویر/صدا، نصب apk، ...) برای اون ضربه skip می شه:
+
+```java
+public final class SvgToPngHandler implements FileClickHandler {
+  private final UiFeedbackHost ui;
+
+  SvgToPngHandler(PluginContext context) {
+    ui = context.getServices().require(IdeHostServices.UI_FEEDBACK);
+  }
+
+  @Override public boolean supports(String path, String name, boolean isDirectory) {
+    return !isDirectory && name.toLowerCase().endsWith(".svg");
+  }
+
+  @Override public void onFileClick(FileClickContext context) {
+    ui.confirm("تبدیل به PNG؟", context.path(), ok -> {
+      if (ok) convert(context.file(), context.path());
+    });
+  }
+}
+
+// داخل activate():
+context.registerDisposable(context.getExtensions().register(
+    PluginUiExtensionPoints.FILE_CLICK_HANDLER, new SvgToPngHandler(context)));
+```
+
+`FileClickContext` شامل `context()` (هاست، برای نشون دادن دیالوگ / شروع Activity)، `path()`
+مطلق، `name()` نمایشی، `file()`، `isDirectory()` و ویوی `anchor()` ردیف زده‌شده (برای shared
+element یا لنگر پاپ‌آپ) است. برای مسیرهایی که هندل نمی کنید از `supports` مقدار `false` برگردونید
+تا هندلر بعدی — یا جریان داخلی — کار رو بگیره. `supports` رو سریع نگه دارید: برای هر ضربه اجرا
+می شه و نباید روی ترد اصلی I/O کنه. هندلری که exception بندازه skip می شه و ضربه به جریان داخلی
+می‌رسه.
 
 ## ساخت پکیج `.gpl`
 

@@ -40,5 +40,26 @@ public final class PluginUiExtensionPoints {
       new ExtensionPoint<>(
           "ir.hanzodev1375.ghostide.ui.fileIconContributor", FileIconContributor.class);
 
+  /**
+   * Toolbar actions shown persistently next to the IDE's own toolbar icons. Each {@link
+   * PluginToolbarIcon} is added to the toolbar of the screen it targets ({@link
+   * PluginIconState#Editor} in the editor, {@link PluginIconState#FileES} in the file manager), so
+   * a plugin action is always one tap away instead of living only in the plugin popup.
+   */
+  public static final ExtensionPoint<PluginToolbarIcon> TOOLBAR_ICON =
+      new ExtensionPoint<>("ir.hanzodev1375.ghostide.ui.toolbarIcon", PluginToolbarIcon.class);
+
+  /**
+   * Handlers that take over a single tap on a file or folder in the file manager, so a plugin can
+   * react to its own formats (SVG, archives, custom project files, ...) and show its own UI instead
+   * of the IDE's built-in viewer. Consulted in descending priority order; the first {@link
+   * FileClickHandler} returning {@code true} from {@link FileClickHandler#supports} wins and the
+   * built-in opening is skipped. A plugin that returns {@code false}, or that is not registered at
+   * all, leaves the default behaviour untouched.
+   */
+  public static final ExtensionPoint<FileClickHandler> FILE_CLICK_HANDLER =
+      new ExtensionPoint<>(
+          "ir.hanzodev1375.ghostide.ui.fileClickHandler", FileClickHandler.class);
+
   private PluginUiExtensionPoints() {}
 }

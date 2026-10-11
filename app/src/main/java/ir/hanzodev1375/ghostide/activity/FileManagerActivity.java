@@ -53,6 +53,7 @@ import ir.hanzodev1375.components.sheet.customitemsheet.ui.CustomItemSheet;
 import ir.hanzodev1375.components.ui.ProfileView;
 import ir.hanzodev1375.ghostide.adapters.FileManagerAdapter;
 import ir.hanzodev1375.ghostide.adapters.ToolbarAdapter;
+import ir.hanzodev1375.ghostide.adapters.ToolbarListAdapter;
 import ir.hanzodev1375.ghostide.helper.FileGitHelper;
 import ir.hanzodev1375.ghostide.helper.PluginPopupHelper;
 import ir.hanzodev1375.ghostide.plugin.PluginPanelHost;
@@ -67,6 +68,7 @@ import ir.hanzodev1375.ghostide.jgit.GitHubClient;
 import ir.hanzodev1375.ghostide.jgit.GitHubProfileSheet;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.datamanager.GitViewModel;
 import ir.hanzodev1375.ghostide.models.FileManagerModel;
+import ir.hanzodev1375.ghostide.models.ToolbarModel;
 import ir.hanzodev1375.ghostide.postman.PostManActivity;
 import ir.hanzodev1375.ghostide.refactor.rename.ui.RenamePackageBottomSheet;
 import ir.hanzodev1375.ghostide.bookmark.BookmarkBottomSheet;
@@ -77,7 +79,11 @@ import ir.hanzodev1375.ghostide.history.HistoryViewModel;
 
 import ir.hanzodev1375.ghostide.mvvm.viewmodel.FileViewModel;
 import ir.hanzodev1375.ghostide.adapters.FileManagerHostAdapter;
+import ir.hanzodev1375.ghostide.ide.ui.api.FileClickHandlers;
 import ir.hanzodev1375.ghostide.ide.ui.api.IdeHostServices;
+import ir.hanzodev1375.ghostide.ide.ui.api.PluginIconState;
+import ir.hanzodev1375.ghostide.ide.ui.api.PluginToolbarIcon;
+import ir.hanzodev1375.ghostide.ide.ui.api.PluginUiExtensionPoints;
 import ir.hanzodev1375.ghostide.plugin.PluginHostRouter;
 import ir.hanzodev1375.ghostide.plugin.PluginManager;
 import ir.hanzodev1375.ghostide.pulse.PulseBridge;
@@ -151,6 +157,11 @@ public class FileManagerActivity extends BaseCompat
   private FileGitHelper gitHelper;
   private PluginPopupHelper pluginPopupHelper;
   private PluginPanelHost pluginPanelHost;
+  private List<ToolbarModel> toolbarModel = new ArrayList<>();
+  private ToolbarListAdapter toolbarAdapter;
+  private boolean gitToolbarVisible = true;
+  private int gitToolbarIcon = R.drawable.ic_git;
+  private View openFilesItemView;
   private final ExecutorService ftpExecutor = Executors.newSingleThreadExecutor();
   private String currentDir;
   private int systemBarsBottomInset = 0;
@@ -180,12 +191,7 @@ public class FileManagerActivity extends BaseCompat
     Integer headlineColor = M3Theme.surfaceContainer();
     M3Theme.imageB(
         bind.btnGoToDir,
-        bind.btnGoToDir,
-        bind.buttonAi,
-        bind.buttonPlugins,
-        bind.btnSettings,
-        bind.gitActionButton,
-        bind.openFilesIcon);
+        bind.btnGoToDir);
     M3Theme.textView(bind.userNameText);
     setupOpenFilesIndicator();
     if (appsetting.isShowBackground()) {
@@ -375,14 +381,17 @@ public class FileManagerActivity extends BaseCompat
         (item, view, pos) -> {
           viewModel.clearFileEvents();
           historyViewModel.addToHistory(item.getPath(), item.getName(), item.isDirectory());
-          if (item.isDirectory()) {
-            pendingAnimation = true;
-            bind.rvfiles.saveScrollPosition();
-            viewModel.navigateTo(item.getPath());
-          } else if (item.getPath().toLowerCase().endsWith(".zip")) {
-            zipModeHelper.enterZipMode(item.getPath());
-          } else {
-            setupClick(item.getPath(), item.getName(), view);
+          if (!FileClickHandlers.dispatch(
+              this, item.getPath(), item.getName(), item.isDirectory(), view)) {
+            if (item.isDirectory()) {
+              pendingAnimation = true;
+              bind.rvfiles.saveScrollPosition();
+              viewModel.navigateTo(item.getPath());
+            } else if (item.getPath().toLowerCase().endsWith(".zip")) {
+              zipModeHelper.enterZipMode(item.getPath());
+            } else {
+              setupClick(item.getPath(), item.getName(), view);
+            }
           }
           String currentPath = viewModel.getCurrentPath().getValue();
           if (currentPath != null) {
@@ -490,19 +499,11 @@ public class FileManagerActivity extends BaseCompat
           }
         });
 
-    bind.buttonAi.setOnClickListener(
-        v ->
-            startActivityWithSharedElement(
-                new Intent(getApplicationContext(), AiChatActivity.class),
-                v,
-                ObjectUtil.TRANSITION_AI_CHAT));
-
     pluginPanelHost = PluginPanelHost.forFileManager(this);
     pluginPopupHelper = new PluginPopupHelper(pluginPanelHost);
-    bind.buttonPlugins.setOnClickListener(v -> pluginPopupHelper.show(this, v));
+    stepToolbar();
 
     setOnBackPress();
-    gitHelper.setupButton();
     gitHelper.observe(this, viewModel.getCurrentPath());
     observePulseRoot();
     initZipModeHelper();
@@ -736,6 +737,120 @@ public class FileManagerActivity extends BaseCompat
 
   public void updateGitActionVisibility(String path) {
     gitHelper.updateGitActionVisibility(path);
+  }
+
+  /**
+   * آخرین وضعیت آیکون git را ذخیره و توپ‌بار را تازه می‌کند. از داخل {@link FileGitHelper} صدا
+   * زده می‌شود تا به‌جای تغییر مستقیم یک ImageButton، آیتم ریسایکلر آپدیت شود.
+   */
+  public void updateGitToolbar(boolean visible, int iconRes) {
+    gitToolbarVisible = visible;
+    gitToolbarIcon = iconRes;
+    if (toolbarModel != null) {
+      for (ToolbarModel model : toolbarModel) {
+        if ("git".equals(model.getTag())) {
+          model.setVisible(visible);
+          model.setIcon(iconRes);
+        }
+      }
+    }
+    if (toolbarAdapter != null) {
+      toolbarAdapter.notifyDataSetChanged();
+    }
+  }
+
+  /** توپ‌بار هدر فایل‌منیجر (مثل ادیتور) از یک ریسایکلر افقی ساخته می‌شود تا آیتم‌های افزونه هم اضافه شوند. */
+  private void stepToolbar() {
+    toolbarModel.clear();
+    boolean hasTabs = !readOpenTabs().isEmpty();
+    toolbarModel.add(new ToolbarModel(gitToolbarIcon, "git", gitToolbarVisible, gitToolbarVisible));
+    int priorityInsertIndex = toolbarModel.size();
+    for (var registration :
+        GlobalRegistry.extensions().registrations(PluginUiExtensionPoints.TOOLBAR_ICON)) {
+      PluginToolbarIcon icon = registration.extension();
+      if (icon.getState() == PluginIconState.FileES) {
+        toolbarModel.add(
+            priorityInsertIndex++,
+            new ToolbarModel(icon.getIcon(), "plugin:" + icon.getId()));
+      }
+    }
+    toolbarModel.add(new ToolbarModel(R.drawable.ic_ai_robot, "ai"));
+    toolbarModel.add(new ToolbarModel(R.drawable.ic_panel, "plugins"));
+    toolbarModel.add(new ToolbarModel(R.drawable.ic_open_files, "openfiles", hasTabs));
+    toolbarModel.add(new ToolbarModel(R.drawable.more_vert, "settings"));
+    if (toolbarAdapter == null) {
+      toolbarAdapter = new ToolbarListAdapter(toolbarModel, this::onToolbarClicked, this);
+      bind.rvtoolbar.setLayoutManager(
+          new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+      bind.rvtoolbar.setAdapter(toolbarAdapter);
+    } else {
+      toolbarAdapter.notifyDataSetChanged();
+    }
+    attachOpenFilesBadge();
+  }
+
+  private void onToolbarClicked(View view, ToolbarModel model, int position) {
+    String tag = model.getTag();
+    if (tag == null) {
+      return;
+    }
+    if (tag.startsWith("plugin:")) {
+      for (var registration :
+          GlobalRegistry.extensions().registrations(PluginUiExtensionPoints.TOOLBAR_ICON)) {
+        PluginToolbarIcon icon = registration.extension();
+        if (("plugin:" + icon.getId()).equals(tag)) {
+          icon.onClick(view);
+          return;
+        }
+      }
+      return;
+    }
+    switch (tag) {
+      case "git" -> gitHelper.handleGitClick(view);
+      case "ai" ->
+          startActivityWithSharedElement(
+              new Intent(getApplicationContext(), AiChatActivity.class),
+              view,
+              ObjectUtil.TRANSITION_AI_CHAT);
+      case "plugins" -> pluginPopupHelper.show(this, view);
+      case "openfiles" -> showOpenFilesSheet();
+      case "settings" -> stepButton(view);
+    }
+  }
+
+  /** آیتم توپ‌بار را با tag پیدا می‌کند (ویوها تازه ساخته‌شده‌ی ریسایکلر). */
+  private View findToolbarItem(String tag) {
+    if (bind == null || tag == null) return null;
+    for (int i = 0; i < bind.rvtoolbar.getChildCount(); i++) {
+      View child = bind.rvtoolbar.getChildAt(i);
+      if (tag.equals(child.getTag())) {
+        return child;
+      }
+    }
+    return null;
+  }
+
+  /** بدج (تعداد فایل‌های باز) را به آیتم open files توپ‌بار وصل می‌کند. */
+  private void attachOpenFilesBadge() {
+    if (bind == null || openFilesBadge == null) return;
+    bind.rvtoolbar.post(
+        () -> {
+          if (bind == null) return;
+          View item = findToolbarItem("openfiles");
+          if (item == null) return;
+          if (!item.equals(openFilesItemView)) {
+            if (openFilesItemView != null) {
+              try {
+                BadgeUtils.detachBadgeDrawable(openFilesBadge, openFilesItemView);
+              } catch (Exception ignored) {
+              }
+            }
+            openFilesItemView = item;
+            BadgeUtils.attachBadgeDrawable(openFilesBadge, item);
+          }
+          openFilesBadge.updateBadgeCoordinates(item);
+          openFilesBadge.setVisible(!readOpenTabs().isEmpty());
+        });
   }
 
   public void markPasteAvailable() {
@@ -1088,22 +1203,13 @@ public class FileManagerActivity extends BaseCompat
   }
 
   /**
-   * M3Theme.apply() skip می‌کنه چون این ImageButton ها داخل ویوهای glass هستن، پس tint شون زنده
-   * آپدیت نمی‌شه. اینجا صریح دوباره tint رو ست می‌کنیم (شامل openFilesIcon) تا موقع تعویض تم
-   * بدون ری‌استارت آپدیت شن.
+   * M3Theme.apply() برای ریسایکلر توپ‌بار رد می‌شه، پس اینجا بعد از تعویض تم دوباره آیتم‌ها را
+   * bind می‌کنیم تا tint شان زنده آپدیت شود.
    */
   private void applyToolbarIconTint() {
-    if (bind == null) {
-      return;
+    if (bind != null && toolbarAdapter != null) {
+      toolbarAdapter.notifyDataSetChanged();
     }
-    M3Theme.imageB(
-        bind.btnGoToDir,
-        bind.btnGoToDir,
-        bind.buttonAi,
-        bind.buttonPlugins,
-        bind.btnSettings,
-        bind.gitActionButton,
-        bind.openFilesIcon);
   }
 
   private void setOnBackPress() {
@@ -1380,20 +1486,13 @@ public class FileManagerActivity extends BaseCompat
                 .show();
           }
         });
-    bind.btnSettings.setOnClickListener(v -> stepButton(v));
   }
 
   private void setupOpenFilesIndicator() {
     openFilesBadge = BadgeDrawable.create(this);
     openFilesBadge.setBadgeGravity(BadgeDrawable.TOP_END);
-    BadgeUtils.attachBadgeDrawable(openFilesBadge, bind.openFilesIcon);
-    bind.openFilesIcon.setOnClickListener(v -> showOpenFilesSheet());
-    bind.openFilesIcon.addOnLayoutChangeListener(
-        (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-          if (right - left > 0 && bottom - top > 0) {
-            updateOpenFilesIndicator();
-          }
-        });
+    attachOpenFilesBadge();
+    updateOpenFilesIndicator();
   }
 
   private List<TabModel> readOpenTabs() {
@@ -1414,12 +1513,19 @@ public class FileManagerActivity extends BaseCompat
     if (bind == null || openFilesBadge == null) return;
     int count = readOpenTabs().size();
     boolean hasTabs = count > 0;
-    M3Theme.imageB(bind.openFilesIcon);
-    bind.openFilesIcon.setEnabled(hasTabs);
-    bind.openFilesIcon.setAlpha(hasTabs ? 1f : 0.38f);
     openFilesBadge.setNumber(count);
     openFilesBadge.setVisible(hasTabs);
-    openFilesBadge.updateBadgeCoordinates(bind.openFilesIcon);
+    if (toolbarModel != null) {
+      for (ToolbarModel model : toolbarModel) {
+        if ("openfiles".equals(model.getTag())) {
+          model.setShowVisblityItem(hasTabs);
+        }
+      }
+    }
+    if (toolbarAdapter != null) {
+      toolbarAdapter.notifyDataSetChanged();
+    }
+    attachOpenFilesBadge();
   }
 
   private void showOpenFilesSheet() {
@@ -1435,6 +1541,9 @@ public class FileManagerActivity extends BaseCompat
   @Override
   protected void onResume() {
     super.onResume();
+    if (toolbarAdapter != null) {
+      stepToolbar();
+    }
     updateOpenFilesIndicator();
     relaxPulseRoot();
     setupHeader();
@@ -1468,17 +1577,20 @@ public class FileManagerActivity extends BaseCompat
       adapter.setupSelectionTracker(bind.rvfiles);
 
       adapter.setOnItemClickListener(
-          (item, pos, f) -> {
+          (item, view, pos) -> {
             viewModel.clearFileEvents();
             historyViewModel.addToHistory(item.getPath(), item.getName(), item.isDirectory());
-            if (item.isDirectory()) {
-              pendingAnimation = true;
-              bind.rvfiles.saveScrollPosition();
-              viewModel.navigateTo(item.getPath());
-            } else if (item.getPath().toLowerCase().endsWith(".zip")) {
-              zipModeHelper.enterZipMode(item.getPath());
-            } else {
-              setupClick(item.getPath(), item.getName());
+            if (!FileClickHandlers.dispatch(
+                this, item.getPath(), item.getName(), item.isDirectory(), view)) {
+              if (item.isDirectory()) {
+                pendingAnimation = true;
+                bind.rvfiles.saveScrollPosition();
+                viewModel.navigateTo(item.getPath());
+              } else if (item.getPath().toLowerCase().endsWith(".zip")) {
+                zipModeHelper.enterZipMode(item.getPath());
+              } else {
+                setupClick(item.getPath(), item.getName());
+              }
             }
             String currentPath = viewModel.getCurrentPath().getValue();
             if (currentPath != null) {

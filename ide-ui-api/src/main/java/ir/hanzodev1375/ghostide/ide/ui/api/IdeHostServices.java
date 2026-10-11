@@ -40,5 +40,12 @@ public final class IdeHostServices {
   public static final ServiceKey<UiFeedbackHost> UI_FEEDBACK =
       new ServiceKey<>("ir.hanzodev1375.ghostide.ui.uiFeedback", UiFeedbackHost.class);
 
+  /**
+   * Opens a plugin {@link Panel} (editor/file manager panels) in its registered display mode, so a
+   * plugin action like a toolbar icon can run its panel directly instead of going through the popup.
+   */
+  public static final ServiceKey<PanelHostService> PANEL_HOST =
+      new ServiceKey<>("ir.hanzodev1375.ghostide.ui.panelHost", PanelHostService.class);
+
   private IdeHostServices() {}
 }

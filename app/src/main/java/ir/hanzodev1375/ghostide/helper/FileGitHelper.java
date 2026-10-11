@@ -70,28 +70,26 @@ public class FileGitHelper {
     this.pathSupplier = pathSupplier;
   }
 
-  public void setupButton() {
-    bind.gitActionButton.setOnClickListener(
-        v -> {
-          String repoPath = findGitRepositoryPathForCurrent();
-          if (repoPath != null) {
-            GitBottomSheetFragment.newInstance(repoPath)
-                .show(activity.getSupportFragmentManager(), "git_bottom_sheet");
-            return;
-          }
-          String dir = pathSupplier.get();
-          if (dir == null || !new File(dir).isDirectory()) {
-            GhostToast.makeText(activity, "Git dir not found", GhostToast.LENGTH_LONG).show();
-            return;
-          }
-          GitInitSheet sheet = GitInitSheet.newInstance(dir);
-          sheet.setOnGitInitListener(
-              success -> {
-                updateGitActionVisibility(pathSupplier.get());
-                refreshGitStatus();
-              });
-          sheet.show(activity.getSupportFragmentManager(), "git_init_sheet");
+  /** کلیک روی آیکون git در توپ‌بار فایل‌منیجر: شیت گیت یا ساخت مخزن. */
+  public void handleGitClick(View ignored) {
+    String repoPath = findGitRepositoryPathForCurrent();
+    if (repoPath != null) {
+      GitBottomSheetFragment.newInstance(repoPath)
+          .show(activity.getSupportFragmentManager(), "git_bottom_sheet");
+      return;
+    }
+    String dir = pathSupplier.get();
+    if (dir == null || !new File(dir).isDirectory()) {
+      GhostToast.makeText(activity, "Git dir not found", GhostToast.LENGTH_LONG).show();
+      return;
+    }
+    GitInitSheet sheet = GitInitSheet.newInstance(dir);
+    sheet.setOnGitInitListener(
+        success -> {
+          updateGitActionVisibility(pathSupplier.get());
+          refreshGitStatus();
         });
+    sheet.show(activity.getSupportFragmentManager(), "git_init_sheet");
   }
 
   public void observe(LifecycleOwner owner, LiveData<String> currentPath) {
@@ -103,23 +101,21 @@ public class FileGitHelper {
   }
 
   public void showGitAction(boolean visible) {
-    bind.gitActionButton.setVisibility(visible ? View.VISIBLE : View.GONE);
+    activity.updateGitToolbar(visible, R.drawable.ic_git);
   }
 
   /**
-   * ظاهر دکمه git را بر اساس وضعیت مخزن عوض می‌کند. اگر درون یک مخزن گیت باشیم آیکون معمولی git و
-   * کلیک = شیت گیت؛ اگر مخزنی نباشد آیکون ic_git_add و کلیک = دیالوگ ساخت مخزن از لینک گیت‌هاب.
+   * ظاهر آیکون git را بر اساس وضعیت مخزن عوض می‌کند و از طریق فعالیت، آیتم ریسایکلر توپ‌بار را
+   * آپدیت می‌کند. اگر درون یک مخزن گیت باشیم آیکون معمولی git و کلیک = شیت گیت؛ اگر مخزنی نباشد
+   * آیکون ic_git_add و کلیک = دیالوگ ساخت مخزن از لینک گیت‌هاب.
    */
   public void updateGitActionVisibility(String path) {
     if (path == null || !new File(path).isDirectory()) {
-      bind.gitActionButton.setVisibility(View.GONE);
+      activity.updateGitToolbar(false, R.drawable.ic_git);
       return;
     }
     boolean isRepo = findGitRepositoryPath(path) != null;
-    bind.gitActionButton.setVisibility(View.VISIBLE);
-    bind.gitActionButton.setImageResource(isRepo ? R.drawable.ic_git : R.drawable.ic_git_add);
-    bind.gitActionButton.setContentDescription(
-        isRepo ? "Git repository" : "Create git repository from URL");
+    activity.updateGitToolbar(true, isRepo ? R.drawable.ic_git : R.drawable.ic_git_add);
   }
 
   public boolean isRepo(String path) {

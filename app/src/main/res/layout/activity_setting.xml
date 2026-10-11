@@ -81,6 +81,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp" />
+
+            <ir.hanzodev1375.ghostide.customui.ExpandableLayout
+                android:id="@+id/expandPlugins"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -66,7 +66,12 @@ public class ToolbarListAdapter extends RecyclerView.Adapter<ToolbarListAdapter.
     }
 
     public void bind(ToolbarModel model, OnItemClickListener<ToolbarModel> clickListener) {
-      icon.setImageResource(model.getIcon());
+      if (model.getDrawable() != null) {
+        icon.setImageDrawable(model.getDrawable());
+      } else {
+        icon.setImageResource(model.getIcon());
+      }
+      icon.setTag(model.getTag());
       icon.setColorFilter(null);
       M3Theme.imageView(icon);
       if (icon.getColorFilter() == null) {
@@ -85,6 +90,7 @@ public class ToolbarListAdapter extends RecyclerView.Adapter<ToolbarListAdapter.
         icon.setEnabled(false);
         icon.setAlpha(0.5f);
       }
+      icon.setVisibility(model.isVisible() ? View.VISIBLE : View.GONE);
       icon.setOnLongClickListener(
           v -> {
             TooltipCompat.setTooltipText(v, model.getTag());

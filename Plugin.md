@@ -257,6 +257,45 @@ context.registerDisposable(
 
 Ids must be unique and reverse-domain namespaced.
 
+## Contributing settings to the IDE
+
+Instead of drawing your own preferences view, you can drop your options straight into the IDE's
+settings screen. Implement `PluginSettingsContributor` (`plugin-api`) and register it at
+`CoreExtensionPoints.PLUGIN_SETTINGS`; the host lists every `PluginSetting` you return and tags
+each row with your `getDisplayName()`. Two row kinds exist:
+
+- `PluginSetting.toggle(...)` — a switch. Pass the current value and a callback that persists it.
+- `PluginSetting.action(...)` — a plain clickable row that runs your callback on the UI thread.
+
+Rows are rebuilt every time the screen opens, so read the current value from
+`CoreServices.PLUGIN_STORAGE` inside `getSettings()` and save it in the callback:
+
+```java
+public final class MySettings implements PluginSettingsContributor {
+  private final PluginStorage storage;
+
+  MySettings(PluginStorage storage) { this.storage = storage; }
+
+  @Override public String getId() { return "com.example.myplugin.settings"; }
+  @Override public String getDisplayName() { return "My Plugin"; }
+
+  @Override public List<PluginSetting> getSettings() {
+    return List.of(
+        PluginSetting.toggle("wrap", "Word wrap", "Wrap long lines",
+            storage.getBoolean("wrap", true), value -> storage.putBoolean("wrap", value)),
+        PluginSetting.action("reset", "Reset cache", () -> clearCache()));
+  }
+}
+
+// in activate():
+PluginStorage storage = context.getServices().require(CoreServices.PLUGIN_STORAGE);
+context.registerDisposable(context.getExtensions().register(
+    CoreExtensionPoints.PLUGIN_SETTINGS, new MySettings(storage)));
+```
+
+Need something richer than a switch (a choice, a slider, ...)? Use an action row and show your own
+dialog from the callback. The section only appears when at least one plugin contributes a row.
+
 ## Handling your own LSP actions (optional editor access)
 
 Commands that are not `ghostide.*` are still forwarded to your server via
@@ -330,6 +369,45 @@ Multiple icon plugins can be active at once. The **newest installed** plugin is 
 answer wins per path, so a newer pack overrides older packs on the keys it declares and falls
 back to them — and finally to the built-in set — everywhere else. Unloading a plugin removes its
 contributions automatically.
+
+## Taking over a file click
+
+Implement `FileClickHandler` (`ide-ui-api`) and register it at
+`PluginUiExtensionPoints.FILE_CLICK_HANDLER` to claim a single tap on a file the IDE would
+otherwise open with one of its built-in viewers. On every tap the host asks each handler, in
+descending priority order, `supports(path, name, isDirectory)`; the first `true` wins, receives a
+`FileClickContext`, and the built-in opening (editor, image/audio viewer, apk install, ...) is
+skipped for that tap:
+
+```java
+public final class SvgToPngHandler implements FileClickHandler {
+  private final UiFeedbackHost ui;
+
+  SvgToPngHandler(PluginContext context) {
+    ui = context.getServices().require(IdeHostServices.UI_FEEDBACK);
+  }
+
+  @Override public boolean supports(String path, String name, boolean isDirectory) {
+    return !isDirectory && name.toLowerCase().endsWith(".svg");
+  }
+
+  @Override public void onFileClick(FileClickContext context) {
+    ui.confirm("Convert to PNG?", context.path(), ok -> {
+      if (ok) convert(context.file(), context.path());
+    });
+  }
+}
+
+// in activate():
+context.registerDisposable(context.getExtensions().register(
+    PluginUiExtensionPoints.FILE_CLICK_HANDLER, new SvgToPngHandler(context)));
+```
+
+`FileClickContext` carries the host `context()` (to show dialogs / start activities), the absolute
+`path()`, the display `name()`, `file()`, `isDirectory()`, and the tapped row `anchor()` view for a
+shared-element transition or popup anchor. Return `false` from `supports` for paths you don't handle
+so the next handler — or the built-in flow — takes over. Keep `supports` fast: it runs on every tap
+and must not do I/O on the UI thread. A handler that throws is skipped and the tap falls through.
 
 ## Building the `.gpl` package
 
