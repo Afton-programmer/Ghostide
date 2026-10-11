@@ -20,6 +20,7 @@ import android.os.Looper;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import ir.hanzodev1375.components.views.GhostToast;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -268,7 +269,9 @@ public class EditorActivity extends BaseCompat
     ViewGroup toolbar = binding.rvtoolbar;
     for (int i = 0; i < toolbar.getChildCount(); i++) {
       View child = toolbar.getChildAt(i);
-      if (child instanceof ImageView) {
+      if (child instanceof ImageButton) {
+        M3Theme.imageB((ImageButton) child);
+      } else if (child instanceof ImageView) {
         M3Theme.image((ImageView) child);
       }
     }

@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
  * <p>فایل های کوچک (تا ~۲۰۰ هزار کاراکتر) همزمان با هر تغییر اسکن می شوند تا رنگ هیچ وقت روی
  * کاراکتر اشتباه ننشیند؛ فایل های بزرگ تر debounce شده و در ترد پس زمینه اسکن می شوند.
  */
-public final class RainbowBracketHighlighter {
+public class RainbowBracketHighlighter {
 
   /**
    * تنها نقطه ای که واقعا {@code editor.setHighlightTexts} را صدا می زند (هماهنگی با چکر وابستگی).
@@ -150,7 +150,7 @@ public final class RainbowBracketHighlighter {
   public void applyOnly() {
     HighlightTextContainer container = new HighlightTextContainer();
     contribute(container);
-   // editor.setHighlightTexts(container.isEmpty() ? null : container);
+    // editor.setHighlightTexts(container.isEmpty() ? null : container);
   }
 
   /** براکت های خطوط قابل دیدن را به {@code container} اضافه می کند. */
@@ -192,9 +192,6 @@ public final class RainbowBracketHighlighter {
     if (scope == null) {
       scope = TextMateScopeMap.scopeOf(filePath);
     }
-    // اگر زبان فعال است ولی اسکوپش معلوم نیست (مثل setEditorLanguage مستقیم پلاگین برای .astro)
-    // forScope(null) سینتکس عمومی را می دهد
-    // respectDisabled=false تا برای زبان‌های در DISABLED هم GENERIC برگردانده شود (وقتی کاربر فعال کرده)
     syntax = BracketSyntaxLoader.forScope(context, scope, false);
   }
 

@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:id="@+id/contentContainer">
 
+            <!-- شروع هدر اصلاح شده -->
             <LinearLayout
                 android:layout_height="150dp"
                 android:layout_width="match_parent"
@@ -34,7 +35,7 @@
                 android:id="@+id/headtop">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_width="match_parent"
                     android:paddingHorizontal="8dp">
 
@@ -53,34 +54,36 @@
                         android:id="@+id/userAvatar" />
 
                     <TextView
-                        android:layout_height="40dp"
+                        android:id="@+id/userNameText"
                         android:layout_width="0dp"
-                        android:textSize="16sp"
+                        android:layout_height="0dp"
                         android:layout_marginStart="12dp"
+                        android:ellipsize="end"
                         android:gravity="center_vertical"
                         android:maxLines="1"
-                        android:ellipsize="end"
+                        android:textSize="18sp"
                         android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/userAvatar"
                         app:layout_constraintEnd_toStartOf="@id/rvtoolbar"
-                        android:id="@+id/userNameText" />
+                        app:layout_constraintStart_toEndOf="@id/userAvatar"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="0.24" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:layout_height="40dp"
+                        android:id="@+id/rvtoolbar"
                         android:layout_width="0dp"
-                        android:layout_marginEnd="6dp"
+                        android:layout_height="0dp"
                         android:layout_marginStart="8dp"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_marginEnd="6dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/userNameText"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:id="@+id/rvtoolbar" />
+                        app:layout_constraintStart_toEndOf="@id/userNameText"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
+            <!-- پایان هدر اصلاح شده -->
 
             <LinearLayout
                 android:layout_height="match_parent"

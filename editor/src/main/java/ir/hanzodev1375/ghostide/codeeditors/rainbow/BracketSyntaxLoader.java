@@ -18,7 +18,7 @@ import org.json.JSONObject;
  * از {@code textmate/languages.json} مسیر {@code languageConfiguration} هر scope را پیدا می کند و
  * کامنت ها و کوتاسیون های آن زبان را می خواند. نتیجه cache می شود.
  */
-final class BracketSyntaxLoader {
+public final class BracketSyntaxLoader {
 
   /** زبان هایی که براکت رنگی برایشان بی معنی یا پر از مثبت کاذب است. */
   private static final Set<String> DISABLED =
@@ -60,17 +60,18 @@ final class BracketSyntaxLoader {
 
   /** null یعنی این زبان رنگین کمانی نمی گیرد. */
   @Nullable
-  static synchronized BracketSyntax forScope(Context context, @Nullable String scope) {
+  public static synchronized BracketSyntax forScope(Context context, @Nullable String scope) {
     return forScope(context, scope, true);
   }
 
   /**
-   * @param respectDisabled اگر true باشد زبان‌های در لیست DISABLED مقدار null برمی‌گردانند.
-   *                        وقتی کاربر در تنظیمات rainbow brackets را روشن کرده، false فرستاده می‌شود
-   *                        تا به جای غیرفعال کردن کل، از GENERIC استفاده شود.
+   * @param respectDisabled اگر true باشد زبان‌های در لیست DISABLED مقدار null برمی‌گردانند. وقتی
+   *     کاربر در تنظیمات rainbow brackets را روشن کرده، false فرستاده می‌شود تا به جای غیرفعال کردن
+   *     کل، از GENERIC استفاده شود.
    */
   @Nullable
-  static synchronized BracketSyntax forScope(Context context, @Nullable String scope, boolean respectDisabled) {
+  public static synchronized BracketSyntax forScope(
+      Context context, @Nullable String scope, boolean respectDisabled) {
     if (scope == null) {
       return BracketSyntax.GENERIC;
     }
@@ -146,18 +147,82 @@ final class BracketSyntaxLoader {
         dq = true;
       }
 
+      // براکت ها را از خود کانفیگ TextMate می گیریم (brackets یا autoClosingPairs)
+      java.util.List<Character> opens = new java.util.ArrayList<>();
+      java.util.List<Character> closes = new java.util.ArrayList<>();
+      for (String key : new String[] {"brackets", "autoClosingPairs"}) {
+        JSONArray pairs = config.optJSONArray(key);
+        if (pairs == null || pairs.length() == 0) {
+          continue;
+        }
+        for (int i = 0; i < pairs.length(); i++) {
+          String[] pair = pairOf(pairs.opt(i));
+          if (pair == null) {
+            continue;
+          }
+          char o = pair[0].charAt(0);
+          char cl = pair[1].charAt(0);
+          if (o == cl) {
+            continue;
+          }
+          if (!opens.contains(o)) {
+            opens.add(o);
+            closes.add(cl);
+          }
+        }
+        if (!opens.isEmpty()) {
+          break;
+        }
+      }
+      char[] openArr = toChars(opens);
+      char[] closeArr = toChars(closes);
+
       return new BracketSyntax(
           lineComment,
           blockStart,
           blockEnd,
+          null,
+          null,
           dq,
           sq,
           bt,
           TRIPLE.contains(scope),
-          MULTILINE_BACKTICK.contains(scope));
+          MULTILINE_BACKTICK.contains(scope),
+          openArr,
+          closeArr);
     } catch (Exception e) {
       return BracketSyntax.GENERIC;
     }
+  }
+
+  private static char[] toChars(java.util.List<Character> list) {
+    if (list.isEmpty()) {
+      return null;
+    }
+    char[] out = new char[list.size()];
+    for (int i = 0; i < out.length; i++) {
+      out[i] = list.get(i);
+    }
+    return out;
+  }
+
+  /** یک جفت تک کاراکتری از یک ورودی {@code brackets}/{@code autoClosingPairs} می سازد. */
+  private static String[] pairOf(Object entry) {
+    String open = null;
+    String close = null;
+    if (entry instanceof JSONArray) {
+      JSONArray array = (JSONArray) entry;
+      open = array.optString(0, null);
+      close = array.optString(1, null);
+    } else if (entry instanceof JSONObject) {
+      JSONObject object = (JSONObject) entry;
+      open = object.optString("open", null);
+      close = object.optString("close", null);
+    }
+    if (open != null && close != null && open.length() == 1 && close.length() == 1) {
+      return new String[] {open, close};
+    }
+    return null;
   }
 
   /** اگر جفت از یک کاراکتر یکسان تشکیل شده باشد همان را برمی گرداند، وگرنه 0. */

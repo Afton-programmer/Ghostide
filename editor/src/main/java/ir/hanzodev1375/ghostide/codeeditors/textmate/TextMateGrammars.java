@@ -31,13 +31,20 @@ public final class TextMateGrammars {
 
   private TextMateGrammars() {}
 
-  /** اجرای بارگذاری گرامرها در پس زمینه؛ چندباره امن است و ترد را بلاک نمی کند. */
+  /**
+   * اجرای بارگذاری گرامرها در پس زمینه؛ چندباره امن است و ترد را بلاک نمی کند.
+   *
+   * <p>اگر بارگذاری قبلی با خطا شکست خورده باشد دوباره تلاش می شود؛ در غیر این صورت یک خطای
+   * گذرا (کمبود حافظه، خواندن کند assets و ...) هایلایت را برای همیشه از بین می برد.
+   */
   public static void ensureStarted(Context context) {
     synchronized (LOCK) {
-      if (started) {
+      if (started && initError == null) {
         return;
       }
       started = true;
+      initError = null;
+      ready = false;
       Context app = context.getApplicationContext();
       Thread thread =
           new Thread(

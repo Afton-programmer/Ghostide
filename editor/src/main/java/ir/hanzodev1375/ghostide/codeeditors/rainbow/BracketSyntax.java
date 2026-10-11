@@ -38,6 +38,16 @@ public final class BracketSyntax {
   /** بک‌تیک چند خطی (template literal در JS/TS و raw string در Go). */
   final boolean multiLineBacktick;
 
+  /**
+   * براکت های باز/بسته که از {@code brackets} یا {@code autoClosingPairs} کانفیگ TextMate می آیند.
+   */
+  public final char[] open;
+
+  public final char[] close;
+
+  private static final char[] DEFAULT_OPEN = {'(', '[', '{'};
+  private static final char[] DEFAULT_CLOSE = {')', ']', '}'};
+
   public BracketSyntax(
       String lineComment,
       String blockStart,
@@ -57,7 +67,9 @@ public final class BracketSyntax {
         singleQuote,
         backtick,
         tripleQuote,
-        multiLineBacktick);
+        multiLineBacktick,
+        null,
+        null);
   }
 
   public BracketSyntax(
@@ -71,6 +83,34 @@ public final class BracketSyntax {
       boolean backtick,
       boolean tripleQuote,
       boolean multiLineBacktick) {
+    this(
+        lineComment,
+        blockStart,
+        blockEnd,
+        blockStart2,
+        blockEnd2,
+        doubleQuote,
+        singleQuote,
+        backtick,
+        tripleQuote,
+        multiLineBacktick,
+        null,
+        null);
+  }
+
+  public BracketSyntax(
+      String lineComment,
+      String blockStart,
+      String blockEnd,
+      String blockStart2,
+      String blockEnd2,
+      boolean doubleQuote,
+      boolean singleQuote,
+      boolean backtick,
+      boolean tripleQuote,
+      boolean multiLineBacktick,
+      char[] open,
+      char[] close) {
     this.lineComment = isBlank(lineComment) ? null : lineComment;
     boolean block = !isBlank(blockStart) && !isBlank(blockEnd);
     this.blockStart = block ? blockStart : null;
@@ -83,6 +123,10 @@ public final class BracketSyntax {
     this.backtick = backtick;
     this.tripleQuote = tripleQuote;
     this.multiLineBacktick = multiLineBacktick;
+    boolean pairsOk =
+        open != null && close != null && open.length > 0 && open.length == close.length;
+    this.open = pairsOk ? open : DEFAULT_OPEN;
+    this.close = pairsOk ? close : DEFAULT_CLOSE;
   }
 
   private static boolean isBlank(String s) {

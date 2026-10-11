@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import io.github.rosemoe.sora.lang.Language;
+import io.github.rosemoe.sora.langs.textmate.RainbowTextMateLanguage;
 import io.github.rosemoe.sora.langs.textmate.TextMateLanguage;
 import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry;
 import ir.hanzodev1375.ghostide.codeeditors.langs.html.HtmlLanguage;
@@ -23,7 +24,11 @@ public final class TextMateLanguages {
 
   /** گرامرهای ثبت‌شده توسط پلاگین ها بعد از languages.json بار می شوند؛ چند بار تلاش می کنیم. */
   private static final int PLUGIN_SCOPE_RETRIES = 40;
+
   private static final long PLUGIN_SCOPE_RETRY_MS = 150L;
+
+  /** برای اسکوپ های عادی هم چند بار تلاش می کنیم تا آماده شدن گذرای گرامر/تم از دست نرود. */
+  private static final int SCOPE_RETRIES = 10;
 
   private TextMateLanguages() {}
 
@@ -61,12 +66,24 @@ public final class TextMateLanguages {
     if (GrammarRegistry.getInstance().findGrammar(scope) == null) {
       return null;
     }
+    return createRainbow(context, scope);
+  }
+
+  /** زبان TextMate با آنالایزر رنگین کمانی؛ اگر نسخه ی سفارشی نساخت به نسخه ی سورا برمی گردد. */
+  private static Language createRainbow(Context context, String scope) {
+    try {
+      RainbowTextMateLanguage rainbow = RainbowTextMateLanguage.create(context, scope);
+      if (rainbow != null) {
+        return rainbow;
+      }
+    } catch (RuntimeException ignored) {
+    }
     return TextMateLanguage.create(scope, true);
   }
 
   /**
-   * نسخه ی غیر بلاک کننده؛ اگر گرامرها آماده نباشند منتظر می ماند و کال بک را روی ترد اصلی صدا
-   * می زند. اگر زبان پشتیبانی نشود کال بک با null فراخوانی می شود.
+   * نسخه ی غیر بلاک کننده؛ اگر گرامرها آماده نباشند منتظر می ماند و کال بک را روی ترد اصلی صدا می
+   * زند. اگر زبان پشتیبانی نشود کال بک با null فراخوانی می شود.
    */
   public static void resolveAsync(Context context, String filePath, Consumer<Language> callback) {
     resolveAsync(context, filePath, null, callback);
@@ -89,14 +106,14 @@ public final class TextMateLanguages {
       return;
     }
     // اسکوپ پلاگین ممکن است چند صد میلی ثانیه دیرتر از languages.json ثبت شود.
+    // برای اسکوپ های عادی هم چند بار تلاش می کنیم تا یک نبود گذرا باعث بی رنگ شدن دائمی نشود.
     boolean pluginScope = overrideScope != null && !overrideScope.isEmpty();
+    int retries = pluginScope ? PLUGIN_SCOPE_RETRIES : SCOPE_RETRIES;
     TextMateGrammars.whenReady(
         () -> {
-          if (TextMateGrammars.getInitError() != null) {
-            callback.accept(null);
-            return;
-          }
-          awaitGrammar(handler, scope, pluginScope ? PLUGIN_SCOPE_RETRIES : 0, callback);
+          // حتی اگر initError باشد هم تلاش می کنیم؛ ممکن است گرامر همین اسکوپ قبل از خطا لود شده
+          // باشد.
+          awaitGrammar(context, handler, scope, retries, false, callback);
         });
   }
 
@@ -109,21 +126,39 @@ public final class TextMateLanguages {
   }
 
   private static void awaitGrammar(
-      Handler handler, String scope, int retriesLeft, Consumer<Language> callback) {
+      Context context,
+      Handler handler,
+      String scope,
+      int retriesLeft,
+      boolean loadRetried,
+      Consumer<Language> callback) {
     if (GrammarRegistry.getInstance().findGrammar(scope) != null) {
       try {
-          callback.accept(TextMateLanguage.create(scope, true));
+        callback.accept(createRainbow(context, scope));
+        return;
       } catch (RuntimeException e) {
-        callback.accept(null);
+        // ساخت زبان ممکن است به خاطر آماده نبودن تم به صورت گذرا شکست بخورد؛ دوباره تلاش می کنیم.
+        if (retriesLeft <= 0) {
+          callback.accept(null);
+          return;
+        }
       }
-      return;
+    } else {
+      // نبود گرامر می تواند به خاطر خطای بارگذاری اولیه باشد؛ یک بار کل بارگذاری را دوباره شروع
+      // می کنیم تا در همین باز شدن فایل هم هایلایت برگردد.
+      if (!loadRetried && context != null && TextMateGrammars.getInitError() != null) {
+        loadRetried = true;
+        TextMateGrammars.ensureStarted(context);
+      }
+      if (retriesLeft <= 0) {
+        callback.accept(null);
+        return;
+      }
     }
-    if (retriesLeft <= 0) {
-      callback.accept(null);
-      return;
-    }
+    final boolean loadRetriedNext = loadRetried;
     handler.postDelayed(
-        () -> awaitGrammar(handler, scope, retriesLeft - 1, callback), PLUGIN_SCOPE_RETRY_MS);
+        () -> awaitGrammar(context, handler, scope, retriesLeft - 1, loadRetriedNext, callback),
+        PLUGIN_SCOPE_RETRY_MS);
   }
 
   private static String scopeFor(String filePath, String overrideScope) {

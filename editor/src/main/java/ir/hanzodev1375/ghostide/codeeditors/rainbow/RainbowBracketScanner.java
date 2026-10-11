@@ -3,8 +3,8 @@ package ir.hanzodev1375.ghostide.codeeditors.rainbow;
 /**
  * اسکنر خالص (بدون وابستگی به اندروید) که عمق تو در تویی براکت های {@code () [] {}} را حساب می کند.
  *
- * <p>کامنت ها و رشته ها طبق {@link BracketSyntax} رد می شوند. براکت بسته ی بدون جفت نادیده گرفته
- * می شود تا یک اشتباه در وسط فایل رنگ بقیه را خراب نکند.
+ * <p>کامنت ها و رشته ها طبق {@link BracketSyntax} رد می شوند. براکت بسته ی بدون جفت نادیده گرفته می
+ * شود تا یک اشتباه در وسط فایل رنگ بقیه را خراب نکند.
  */
 public final class RainbowBracketScanner {
 
@@ -100,7 +100,9 @@ public final class RainbowBracketScanner {
       }
 
       // آپاستروف داخل کلمه (don't, it's) شروع رشته نیست
-      if (c == '\'' && i > lineStart && i + 1 < n
+      if (c == '\''
+          && i > lineStart
+          && i + 1 < n
           && Character.isLetterOrDigit(text.charAt(i - 1))
           && Character.isLetter(text.charAt(i + 1))) {
         i++;
@@ -163,7 +165,7 @@ public final class RainbowBracketScanner {
       }
 
       // براکت ها
-      int open = openKind(c);
+      int open = openKind(syn, c);
       if (open >= 0) {
         if (sp == stack.length) {
           stack = java.util.Arrays.copyOf(stack, sp * 2);
@@ -171,7 +173,7 @@ public final class RainbowBracketScanner {
         out.add(line, i - lineStart, sp);
         stack[sp++] = open;
       } else {
-        int close = closeKind(c);
+        int close = closeKind(syn, c);
         if (close >= 0) {
           int idx = sp - 1;
           while (idx >= 0 && stack[idx] != close) {
@@ -188,30 +190,24 @@ public final class RainbowBracketScanner {
     return out;
   }
 
-  private static int openKind(char c) {
-    switch (c) {
-      case '(':
-        return 0;
-      case '[':
-        return 1;
-      case '{':
-        return 2;
-      default:
-        return -1;
+  private static int openKind(BracketSyntax syn, char c) {
+    char[] opens = syn.open;
+    for (int k = 0; k < opens.length; k++) {
+      if (opens[k] == c) {
+        return k;
+      }
     }
+    return -1;
   }
 
-  private static int closeKind(char c) {
-    switch (c) {
-      case ')':
-        return 0;
-      case ']':
-        return 1;
-      case '}':
-        return 2;
-      default:
-        return -1;
+  private static int closeKind(BracketSyntax syn, char c) {
+    char[] closes = syn.close;
+    for (int k = 0; k < closes.length; k++) {
+      if (closes[k] == c) {
+        return k;
+      }
     }
+    return -1;
   }
 
   private static boolean isWhitespace(char c) {

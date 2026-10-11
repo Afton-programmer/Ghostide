@@ -1,11 +1,12 @@
 package ir.hanzodev1375.ghostide.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.TooltipCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,18 +33,32 @@ public class ToolbarListAdapter extends RecyclerView.Adapter<ToolbarListAdapter.
   @NonNull
   @Override
   public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    ImageView imageView = new ImageView(parent.getContext());
-    float density = parent.getContext().getResources().getDisplayMetrics().density;
-    int marginInPx = (int) (3 * density + 0.5f);
-    RecyclerView.LayoutParams lp =
-        new RecyclerView.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-    lp.setMargins(marginInPx, 0, marginInPx, 0);
-    imageView.setLayoutParams(lp);
+    Context ctx = parent.getContext();
+    float density = ctx.getResources().getDisplayMetrics().density;
 
-    imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-    imageView.setPadding((int) (2 * density + 0.5f), 0, (int) (2 * density + 0.5f), 0);
-    return new VH(imageView);
+    int sizePx = (int) (40 * density + 0.5f);
+    int marginPx = (int) (2 * density + 0.5f);
+    LinearLayout container = new LinearLayout(ctx);
+    container.setOrientation(LinearLayout.VERTICAL);
+    container.setGravity(Gravity.CENTER);
+
+    RecyclerView.LayoutParams lp =
+        new RecyclerView.LayoutParams(sizePx, ViewGroup.LayoutParams.MATCH_PARENT);
+    lp.setMargins(marginPx, 0, marginPx, 0);
+    container.setLayoutParams(lp);
+
+    ImageButton imageButton = new ImageButton(ctx);
+    LinearLayout.LayoutParams btnLp = new LinearLayout.LayoutParams(sizePx, sizePx);
+    imageButton.setLayoutParams(btnLp);
+    imageButton.setBackground(null);
+    imageButton.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+    imageButton.setAdjustViewBounds(false);
+    int paddingPx = (int) (8 * density + 0.5f);
+    imageButton.setPadding(paddingPx, paddingPx, paddingPx, paddingPx);
+
+    container.addView(imageButton);
+
+    return new VH(container, imageButton);
   }
 
   @Override
@@ -58,11 +73,11 @@ public class ToolbarListAdapter extends RecyclerView.Adapter<ToolbarListAdapter.
   }
 
   class VH extends RecyclerView.ViewHolder {
-    private ImageView icon;
+    private final ImageButton icon;
 
-    public VH(@NonNull ImageView itemView) {
+    public VH(@NonNull View itemView, ImageButton icon) {
       super(itemView);
-      this.icon = itemView;
+      this.icon = icon;
     }
 
     public void bind(ToolbarModel model, OnItemClickListener<ToolbarModel> clickListener) {
@@ -71,18 +86,26 @@ public class ToolbarListAdapter extends RecyclerView.Adapter<ToolbarListAdapter.
       } else {
         icon.setImageResource(model.getIcon());
       }
+
+      M3Theme.imageB(icon);
+
+      icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+      float density = icon.getContext().getResources().getDisplayMetrics().density;
+      int paddingPx = (int) (8 * density + 0.5f);
+      icon.setPadding(paddingPx, paddingPx, paddingPx, paddingPx);
+
+      // 🔥 تگ روی آیکون (برای کلیک‌ها)
       icon.setTag(model.getTag());
-      icon.setColorFilter(null);
-      M3Theme.imageView(icon);
-      if (icon.getColorFilter() == null) {
-        icon.setColorFilter(fallback(M3Theme.onSurface(), Color.parseColor("#8A000000")));
-      }
+      // 🔥 تگ روی کانتینر (برای اینکه findToolbarItem توی FileManagerActivity پیداش کنه و بج رو بچسبونه)
+      itemView.setTag(model.getTag());
+
       icon.setOnClickListener(
           v -> {
             if (clickListener != null) {
               clickListener.onClick(v, model, getBindingAdapterPosition());
             }
           });
+
       if (model.isShowVisblityItem()) {
         icon.setEnabled(true);
         icon.setAlpha(1f);
@@ -97,9 +120,5 @@ public class ToolbarListAdapter extends RecyclerView.Adapter<ToolbarListAdapter.
             return false;
           });
     }
-  }
-
-  private static int fallback(Integer value, int def) {
-    return value != null ? value : def;
   }
 }
