@@ -500,6 +500,8 @@
   <string name="terminal_debian_installed_success">डेबियन स्थापित ✓</string>
   <string name="pref_glass_tint">कांच की रंग तीव्रता</string>
   <string name="pref_glass_tint_desc">कांच की सतहों पर लागू रंग की ताकत समायोजित करें</string>
+  <string name="pref_glass_mode">कांच मोड</string>
+  <string name="pref_glass_mode_desc">लिक्विड ग्लास लुक का उपयोग करें। इसके बजाय Material 3 घटकों के लिए बंद करें</string>
   <string name="webcolor">कलर पिकरवेब दिखाएँ</string>
   <string name="lsp_inlaytitle">जड़ना दिखाएँ</string>
   <string name="lsp_inlaysubtitle">इनले आइटम एडिटर दिखाएँ सभी लैंग काम नहीं करते</string>

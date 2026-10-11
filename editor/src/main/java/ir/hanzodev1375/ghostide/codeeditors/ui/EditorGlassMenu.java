@@ -17,6 +17,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.example.liquidglass.GlassMaterial;
 import io.github.rosemoe.sora.widget.schemes.EditorColorScheme;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
 import java.util.List;
 
@@ -64,16 +65,22 @@ public final class EditorGlassMenu {
         new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     glassView.setCornerRadius(24f * activity.getResources().getDisplayMetrics().density);
-    glassView.setRefractionHeight(66f);
-    glassView.setBevelWidth(10f);
-    glassView.setMaterial(GlassMaterial.REGULAR);
-    glassView.setDispersionStrength(0.12f);
-    glassView.setEnableDynamicBackground(true);
-    glassView.setEnableSensorHighlight(true);
-    glassView.setEnableAdaptiveTint(true);
-    View backdrop = activity.findViewById(android.R.id.content);
-    if (backdrop == null && tokenParent != null) backdrop = tokenParent;
-    glassView.setBackdropSource(backdrop);
+    if (Glass.isGlassEnabled(activity)) {
+      glassView.setRefractionHeight(66f);
+      glassView.setBevelWidth(10f);
+      glassView.setMaterial(GlassMaterial.REGULAR);
+      glassView.setDispersionStrength(0.12f);
+      glassView.setEnableDynamicBackground(true);
+      glassView.setEnableSensorHighlight(true);
+      glassView.setEnableAdaptiveTint(true);
+      View backdrop = activity.findViewById(android.R.id.content);
+      if (backdrop == null && tokenParent != null) backdrop = tokenParent;
+      glassView.setBackdropSource(backdrop);
+    } else {
+      // Rebuild the Material surface with the radius set above; re-enabling the glass effects here
+      // would otherwise paint glass on a device where the user turned it off.
+      Glass.applyFallback(glassView);
+    }
     glassView.setAlpha(0f);
 
     PopupWindow popupWindow =

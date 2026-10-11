@@ -13,7 +13,7 @@
     android:textAppearance="?textAppearanceLabelLarge"
     android:text="@string/project_type" />
 
-  <com.example.liquidglass.LiquidGlassChipGroup
+  <ir.hanzodev1375.components.glass.ChipGroupCompat
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:layout_marginBottom="16dp"
@@ -23,84 +23,84 @@
     app:glassChipSpacingVertical="8dp"
     android:id="@+id/chipGroupType">
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipHtml"
       android:text="HTML" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipNodejs"
       android:text="Node.js" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipJava"
       android:text="Java" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipFlutter"
       android:text="Flutter" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipPython"
       android:text="Python" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipPythonC"
       android:text="PythonC" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipPhp"
       android:text="PHP" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipC"
       android:text="C" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipCpp"
       android:text="C++" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipRuby"
       android:text="Ruby" />
 
-    <com.example.liquidglass.LiquidGlassChip
+    <ir.hanzodev1375.components.glass.ChipCompat
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:checkable="true"
       android:id="@+id/chipAndroidModule"
       android:text="Android Module" />
 
-  </com.example.liquidglass.LiquidGlassChipGroup>
+  </ir.hanzodev1375.components.glass.ChipGroupCompat>
 
   <com.google.android.material.textfield.TextInputLayout
     android:layout_height="wrap_content"

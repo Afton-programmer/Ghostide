@@ -42,7 +42,7 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
-            <com.example.liquidglass.LiquidGlassFab
+            <ir.hanzodev1375.components.sheet.customitemsheet.ui.FabGlass
                 android:id="@+id/btnBack"
                 android:layout_width="52dp"
                 android:layout_height="52dp"
@@ -58,7 +58,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal" />
 
-            <com.example.liquidglass.LiquidGlassFab
+            <ir.hanzodev1375.components.sheet.customitemsheet.ui.FabGlass
                 android:id="@+id/btnNext"
                 android:layout_width="52dp"
                 android:layout_height="52dp"

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import androidx.annotation.StringRes;
 import com.example.liquidglass.LiquidGlassToast;
+import ir.hanzodev1375.components.glass.Glass;
 
 /**
  * GhostToast — thin wrapper over the LiquidGlass library's own {@link LiquidGlassToast}.
@@ -85,7 +86,7 @@ public final class GhostToast {
   }
 
   public static GhostToast makeText(CharSequence text, int duration) {
-    if (currentActivity != null) {
+    if (currentActivity != null && Glass.isGlassEnabled(currentActivity)) {
       return makeLiquid(currentActivity, text, duration);
     }
     if (appContext == null) {
@@ -101,7 +102,7 @@ public final class GhostToast {
 
   public static GhostToast makeText(Context ctx, CharSequence text, int duration) {
     Activity activity = findActivity(ctx);
-    if (activity != null) {
+    if (activity != null && Glass.isGlassEnabled(activity)) {
       return makeLiquid(activity, text, duration);
     }
     Context base = resolveBaseContext(ctx);

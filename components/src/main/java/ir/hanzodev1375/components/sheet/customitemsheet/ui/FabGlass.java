@@ -1,14 +1,22 @@
 package ir.hanzodev1375.components.sheet.customitemsheet.ui;
 
 import android.content.Context;
-import com.example.liquidglass.LiquidGlassFab;
-import ir.hanzodev1375.components.R;
-import ir.hanzodev1375.components.utils.ComponentsPrefs;
 import android.util.AttributeSet;
+import com.example.liquidglass.LiquidGlassFab;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import ir.hanzodev1375.components.glass.Glass;
+import ir.hanzodev1375.components.utils.ComponentsPrefs;
 import ir.theme.M3Theme;
 
+/**
+ * {@link LiquidGlassFab} that can fall back to a real Material 3 {@link FloatingActionButton}.
+ *
+ * <p>When the glass mode is turned off the glass icon is hidden and a genuine Material FAB is drawn
+ * in its place.
+ */
 public class FabGlass extends LiquidGlassFab {
   private ComponentsPrefs setting;
+  private FloatingActionButton materialFab;
 
   public FabGlass(Context c) {
     super(c);
@@ -27,9 +35,38 @@ public class FabGlass extends LiquidGlassFab {
 
   void init() {
     setting = new ComponentsPrefs(getContext());
+    refresh();
+  }
+
+  /** Re-applies the glass tint, or the Material 3 FAB when glass is turned off. */
+  public void refresh() {
+    if (setting == null) {
+      setting = new ComponentsPrefs(getContext());
+    }
+    if (!setting.isGlassEnabled()) {
+      applyMaterialFallback();
+      return;
+    }
     if (setting.isGlassMaterialColor()) {
       setGlassTint(fallback(M3Theme.surface(), 0), setting.getGlassTint());
     }
+  }
+
+  /** Swaps the glass rendering for a real Material 3 FAB. */
+  private void applyMaterialFallback() {
+    Glass.stripGlassEffects(this);
+    // Hide the library's icon so only the Material FAB below is measured and drawn.
+    Glass.hideGlassChildren(this, materialFab);
+    if (materialFab == null) {
+      materialFab = new FloatingActionButton(getContext());
+      materialFab.setClickable(false);
+      materialFab.setFocusable(false);
+      addView(
+          materialFab,
+          new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+    }
+    materialFab.setImageDrawable(getIcon());
+    M3Theme.fabView(materialFab);
   }
 
   private static int fallback(Integer value, int def) {

@@ -529,6 +529,8 @@
   <string name="terminal_debian_installed_success">دبیان نصب شد ✓</string>
   <string name="pref_glass_tint">شدت رنگ شیشه</string>
   <string name="pref_glass_tint_desc">میزان شدت رنگی که روی سطوح شیشه‌ای اعمال می‌شود</string>
+  <string name="pref_glass_mode">حالت شیشه‌ای</string>
+  <string name="pref_glass_mode_desc">ظاهر شیشهٔ مایع را فعال می‌کند. برای استفاده از کامپوننت‌های متریال ۳ خاموش کنید</string>
   <string name="webcolor">نمایش Color PickerWeb</string>
   <string name="lsp_inlaytitle">نمایش Inlay</string>
   <string name="lsp_inlaysubtitle">نمایش ویرایشگر آیتم Inlay نه همه زبانها</string>

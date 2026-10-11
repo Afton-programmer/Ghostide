@@ -32,6 +32,7 @@ import io.github.rosemoe.sora.text.Cursor;
 import io.github.rosemoe.sora.widget.EditorTouchEventHandler;
 import io.github.rosemoe.sora.widget.component.EditorTextActionWindow;
 import io.github.rosemoe.sora.widget.schemes.EditorColorScheme;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
 import ir.hanzodev1375.ghostide.codeeditors.IdeEditor;
@@ -210,18 +211,23 @@ public class CustomEditorTextActionWindow extends EditorTextActionWindow {
     glass = new GlassCompat(editor.getContext());
     float density = glass.getResources().getDisplayMetrics().density;
     glass.setCornerRadius(windowCornerRadius * density);
-    glass.setRefractionHeight(40f);
-    glass.setBevelWidth(8f);
-    glass.setMaterial(GlassMaterial.REGULAR);
-    glass.setDispersionStrength(0.08f);
-    glass.setEnableDynamicBackground(true);
-    glass.setEnableAdaptiveTint(true);
-    Activity activity = findActivity(editor.getContext());
-    View backdrop =
-        activity != null && activity.getWindow() != null
-            ? activity.findViewById(android.R.id.content)
-            : null;
-    glass.setBackdropSource(backdrop != null ? backdrop : editor);
+    if (Glass.isGlassEnabled(editor.getContext())) {
+      glass.setRefractionHeight(40f);
+      glass.setBevelWidth(8f);
+      glass.setMaterial(GlassMaterial.REGULAR);
+      glass.setDispersionStrength(0.08f);
+      glass.setEnableDynamicBackground(true);
+      glass.setEnableAdaptiveTint(true);
+      Activity activity = findActivity(editor.getContext());
+      View backdrop =
+          activity != null && activity.getWindow() != null
+              ? activity.findViewById(android.R.id.content)
+              : null;
+      glass.setBackdropSource(backdrop != null ? backdrop : editor);
+    } else {
+      // A real Material surface replaces the glass; without it the window would be transparent.
+      Glass.applyFallback(glass);
+    }
     glass.addView(
         content,
         new FrameLayout.LayoutParams(

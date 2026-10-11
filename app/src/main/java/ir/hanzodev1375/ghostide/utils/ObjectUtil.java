@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.example.liquidglass.GlassMaterial;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
 import ir.hanzodev1375.ghostide.R;
 import ir.theme.M3Theme;
@@ -42,14 +43,20 @@ public class ObjectUtil {
         new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     glassView.setCornerRadius(24f * activity.getResources().getDisplayMetrics().density);
-    glassView.setRefractionHeight(66f);
-    glassView.setBevelWidth(10f);
-    glassView.setMaterial(GlassMaterial.REGULAR);
-    glassView.setDispersionStrength(0.12f);
-    glassView.setEnableDynamicBackground(true);
-    glassView.setEnableSensorHighlight(true);
-    glassView.setEnableAdaptiveTint(true);
-    glassView.setBackdropSource(activity.findViewById(android.R.id.content));
+    if (Glass.isGlassEnabled(activity)) {
+      glassView.setRefractionHeight(66f);
+      glassView.setBevelWidth(10f);
+      glassView.setMaterial(GlassMaterial.REGULAR);
+      glassView.setDispersionStrength(0.12f);
+      glassView.setEnableDynamicBackground(true);
+      glassView.setEnableSensorHighlight(true);
+      glassView.setEnableAdaptiveTint(true);
+      glassView.setBackdropSource(activity.findViewById(android.R.id.content));
+    } else {
+      // Rebuild the Material surface with the radius set above; re-enabling the glass effects here
+      // would otherwise paint glass on a device where the user turned it off.
+      Glass.applyFallback(glassView);
+    }
 
     PopupWindow popupWindow =
         new PopupWindow(
@@ -98,14 +105,20 @@ public class ObjectUtil {
         new FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     glassView.setCornerRadius(24f * activity.getResources().getDisplayMetrics().density);
-    glassView.setRefractionHeight(66f);
-    glassView.setBevelWidth(10f);
-    glassView.setMaterial(GlassMaterial.REGULAR);
-    glassView.setDispersionStrength(0.12f);
-    glassView.setEnableDynamicBackground(true);
-    glassView.setEnableSensorHighlight(true);
-    glassView.setEnableAdaptiveTint(true);
-    glassView.setBackdropSource(activity.findViewById(android.R.id.content));
+    if (Glass.isGlassEnabled(activity)) {
+      glassView.setRefractionHeight(66f);
+      glassView.setBevelWidth(10f);
+      glassView.setMaterial(GlassMaterial.REGULAR);
+      glassView.setDispersionStrength(0.12f);
+      glassView.setEnableDynamicBackground(true);
+      glassView.setEnableSensorHighlight(true);
+      glassView.setEnableAdaptiveTint(true);
+      glassView.setBackdropSource(activity.findViewById(android.R.id.content));
+    } else {
+      // Rebuild the Material surface with the radius set above; re-enabling the glass effects here
+      // would otherwise paint glass on a device where the user turned it off.
+      Glass.applyFallback(glassView);
+    }
     glassView.setAlpha(0f);
 
     PopupWindow popupWindow =

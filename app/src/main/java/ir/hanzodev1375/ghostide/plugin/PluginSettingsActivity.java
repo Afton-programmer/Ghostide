@@ -13,6 +13,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.ArrayList;
 import java.util.List;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.FabGlass;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
 import ir.hanzodev1375.ghostide.R;
@@ -42,17 +43,21 @@ public class PluginSettingsActivity extends BaseCompat {
     toolbar.setNavigationOnClickListener(v -> finish());
 
     GlassCompat glass = findViewById(R.id.glassBackdrop);
-    glass.setEnableDynamicBackground(true);
-    glass.setEnableChromaticAberration(true);
-    glass.setEnableEdgeHighlight(true);
-    glass.setEnableSensorHighlight(false);
-    glass.setBackdropSource(findViewById(android.R.id.content));
+    if (Glass.isGlassEnabled(this)) {
+      glass.setEnableDynamicBackground(true);
+      glass.setEnableChromaticAberration(true);
+      glass.setEnableEdgeHighlight(true);
+      glass.setEnableSensorHighlight(false);
+      glass.setBackdropSource(findViewById(android.R.id.content));
+    }
 
     recyclerView = findViewById(R.id.recycler);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     FabGlass fab = findViewById(R.id.refreshFab);
-    fab.setEnableDynamicBackground(true);
+    if (Glass.isGlassEnabled(this)) {
+      fab.setEnableDynamicBackground(true);
+    }
     fab.setOnClickListener(v -> refreshPlugins());
 
     View root = findViewById(R.id.pluginSettingsRoot);

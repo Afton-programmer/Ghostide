@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import androidx.appcompat.app.AlertDialog;
-import com.example.liquidglass.LiquidGlassChipGroup;
+import ir.hanzodev1375.components.glass.ChipGroupCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import ir.hanzodev1375.ghostide.R;
@@ -32,7 +32,7 @@ public class NewProjectDialog {
   public void show() {
     View view = LayoutInflater.from(context).inflate(R.layout.dialog_new_project, null);
 
-    LiquidGlassChipGroup chipGroup = view.findViewById(R.id.chipGroupType);
+    ChipGroupCompat chipGroup = view.findViewById(R.id.chipGroupType);
     View chipBackdrop = findActivityContentView(context);
     if (chipBackdrop != null) {
       chipGroup.setBackdropSource(chipBackdrop);
@@ -135,7 +135,7 @@ public class NewProjectDialog {
     return null;
   }
 
-  private ProjectCreator.ProjectType getSelectedType(LiquidGlassChipGroup group) {
+  private ProjectCreator.ProjectType getSelectedType(ChipGroupCompat group) {
     int id = group.getCheckedChipId();
     if (id == R.id.chipNodejs) return ProjectCreator.ProjectType.NODEJS;
     if (id == R.id.chipJava) return ProjectCreator.ProjectType.JAVA;

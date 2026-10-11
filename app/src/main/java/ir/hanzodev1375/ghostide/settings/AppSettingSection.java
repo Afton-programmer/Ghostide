@@ -49,7 +49,7 @@ public class AppSettingSection extends SettingSection {
   private static final int POS_SHOW_BACKGROUND = 7;
   private static final int POS_ANIMATION_THRESHOLD = 9;
   private static final int POS_GRID_COUNT = 10;
-  private static final int POS_GLASS_TINT = 13;
+  private static final int POS_GLASS_TINT = 14;
 
   private static final String THEMES_DIRECTORY = "ghostide/themes";
 
@@ -139,6 +139,15 @@ public class AppSettingSection extends SettingSection {
             R.string.terfrsubtitle,
             prefs.isTerminalFragment(),
             prefs::setTerminalFragment));
+    items.add(
+        switchItem(
+            R.string.pref_glass_mode,
+            R.string.pref_glass_mode_desc,
+            new ComponentsPrefs(activity).isGlassEnabled(),
+            isChecked -> {
+              new ComponentsPrefs(activity).setGlassEnabled(isChecked);
+              activity.recreate();
+            }));
     items.add(
         textItem(
             R.string.pref_glass_tint,

@@ -19,6 +19,7 @@ import com.example.liquidglass.GlassMaterial;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import ir.hanzodev1375.components.R;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.theme.M3Theme;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +155,10 @@ public class LiquidGlassDialogBuilderJava extends MaterialAlertDialogBuilder {
 
   @Override
   public AlertDialog create() {
+    // Glass off: keep the plain Material dialog exactly as MaterialAlertDialogBuilder built it.
+    if (!Glass.isGlassEnabled(getContext())) {
+      return super.create();
+    }
     final AlertDialog dialog = super.create();
     alertDialog = dialog;
     final View decor = dialog.getWindow() != null ? dialog.getWindow().getDecorView() : null;
@@ -236,17 +241,22 @@ public class LiquidGlassDialogBuilderJava extends MaterialAlertDialogBuilder {
 
     glassView.setCornerRadius(
         cornerRadiusDp * glassView.getResources().getDisplayMetrics().density);
-    glassView.setEnableDynamicBackground(true);
-    // Dialogs are large with busy backgrounds, so blur + adaptive tint are what give the text
-    // contrast. The default blurAmount (0.0625) only works out to a 6px radius -- barely blurred --
-    // and text would sit right on top of background icons/text (that's what the original PR #8
-    // version had).
-    glassView.setMaterial(GlassMaterial.REGULAR);
-    glassView.setEnableAdaptiveTint(true);
-    glassView.setBlurAmount(glassBlurAmount);
-    Activity activity = findActivity(getContext());
-    glassView.setBackdropSource(
-        activity != null ? activity.findViewById(android.R.id.content) : null);
+    if (Glass.isGlassEnabled(getContext())) {
+      glassView.setEnableDynamicBackground(true);
+      // Dialogs are large with busy backgrounds, so blur + adaptive tint are what give the text
+      // contrast. The default blurAmount (0.0625) only works out to a 6px radius -- barely blurred --
+      // and text would sit right on top of background icons/text (that's what the original PR #8
+      // version had).
+      glassView.setMaterial(GlassMaterial.REGULAR);
+      glassView.setEnableAdaptiveTint(true);
+      glassView.setBlurAmount(glassBlurAmount);
+      Activity activity = findActivity(getContext());
+      glassView.setBackdropSource(
+          activity != null ? activity.findViewById(android.R.id.content) : null);
+    } else {
+      // A real Material surface replaces the glass; without it the dialog panel is transparent.
+      Glass.applyFallback(glassView);
+    }
     glassView.setLayoutParams(buildGlassLayoutParams(content, originalLp));
     glassView.setAlpha(animateShow ? 0f : 1f);
     glassView.setScaleX(animateShow ? ENTER_SCALE : 1f);

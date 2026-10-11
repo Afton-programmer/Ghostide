@@ -130,23 +130,23 @@ public class StoreActivity extends BaseCompat {
   }
 
   private void syncNavItem(int position) {
-    bottomNav.setSelectedIndex(position);
+    bottomNav.setCompatSelectedIndex(position);
   }
 
   private void setupTabBar() {
     // The backdrop, the live backdrop refresh and the theme tint are all handled by TabBarCompat.
     Integer primary = M3Theme.primary();
     if (primary != null) {
-      bottomNav.setSelectedTintColor(primary);
+      bottomNav.setCompatSelectedTintColor(primary);
     }
-    bottomNav.setTabs(
+    bottomNav.setCompatTabs(
         java.util.Arrays.asList(
             tabItem(R.drawable.ic_outline_project, R.string.store_tab_projects),
             tabItem(R.drawable.ic_outline_palette, R.string.store_tab_themes),
             tabItem(R.drawable.ic_outline_font, R.string.store_tab_fonts),
             tabItem(R.drawable.ic_outline_extension, R.string.store_tab_plugins),
             tabItem(R.drawable.ic_outline_grid, R.string.store_tab_icons)));
-    bottomNav.setOnTabSelected(
+    bottomNav.setCompatOnTabSelected(
         index -> {
           if (index >= 0 && index < ViewPagerAdapter.PAGE_COUNT) {
             viewPager.setCurrentItem(index, true);
@@ -156,7 +156,7 @@ public class StoreActivity extends BaseCompat {
     // The ViewPager fires onPageSelected as soon as the adapter is attached, which happens
     // before the tabs exist, so that sync was dropped. Apply the initial selection here, after
     // setTabs(), otherwise the first tab renders without the glass selection indicator.
-    bottomNav.setSelectedIndex(viewPager.getCurrentItem());
+    bottomNav.setCompatSelectedIndex(viewPager.getCurrentItem());
   }
 
   private LiquidGlassTabBar.TabItem tabItem(int iconRes, int titleRes) {

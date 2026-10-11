@@ -118,7 +118,7 @@
              android:textSize="12sp"
              android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <com.example.liquidglass.LiquidGlassChipGroup
+        <ir.hanzodev1375.components.glass.ChipGroupCompat
              android:layout_height="wrap_content"
              android:layout_width="match_parent"
              android:layout_marginBottom="8dp"

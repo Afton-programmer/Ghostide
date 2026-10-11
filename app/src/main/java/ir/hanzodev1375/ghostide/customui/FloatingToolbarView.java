@@ -17,7 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.liquidglass.LiquidGlassFab;
+import ir.hanzodev1375.components.sheet.customitemsheet.ui.FabGlass;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.theme.M3Theme;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
@@ -37,7 +38,7 @@ public class FloatingToolbarView extends FrameLayout {
   private State state = State.COLLAPSED;
 
   private LinearLayout root;
-  private LiquidGlassFab fab;
+  private FabGlass fab;
   private GlassCompat cardView;
   private RecyclerView recyclerView;
 
@@ -76,8 +77,10 @@ public class FloatingToolbarView extends FrameLayout {
     cardView = findViewById(R.id.floating_card_view);
     recyclerView = findViewById(R.id.floating_recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-    fab.setEnableDynamicBackground(true);
-    cardView.setEnableDynamicBackground(true);
+    if (Glass.isGlassEnabled(context)) {
+      fab.setEnableDynamicBackground(true);
+      cardView.setEnableDynamicBackground(true);
+    }
     setFabCustomSize(dp(70));
     fab.setOnClickListener(v -> toggleToolbar());
     applyOrientation();
@@ -90,8 +93,10 @@ public class FloatingToolbarView extends FrameLayout {
 
   public void bindOfAcivity(Activity v) {
     if (v != null) {
-      fab.setBackdropSource(v.findViewById(R.id.backdropContent));
-      cardView.setBackdropSource(v.findViewById(R.id.backdropContent));
+      if (Glass.isGlassEnabled(v)) {
+        fab.setBackdropSource(v.findViewById(R.id.backdropContent));
+        cardView.setBackdropSource(v.findViewById(R.id.backdropContent));
+      }
     }
   }
 
@@ -318,7 +323,7 @@ public class FloatingToolbarView extends FrameLayout {
     return recyclerView;
   }
 
-  public LiquidGlassFab getFab() {
+  public FabGlass getFab() {
     return fab;
   }
 

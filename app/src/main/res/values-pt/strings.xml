@@ -521,6 +521,8 @@
   <string name="terminal_debian_installed_success">Debian instalado ✓</string>
   <string name="pref_glass_tint">Intensidade da cor do vidro</string>
   <string name="pref_glass_tint_desc">Ajuste a intensidade da cor aplicada às superfícies de vidro</string>
+  <string name="pref_glass_mode">Modo vidro</string>
+  <string name="pref_glass_mode_desc">Use o visual de vidro líquido. Desative para usar componentes Material 3</string>
   <string name="webcolor">Mostrar seletor de coresWeb</string>
   <string name="lsp_inlaytitle">Mostrar incrustação</string>
   <string name="lsp_inlaysubtitle">Mostrar editor de itens embutidos nem todos os idiomas funcionam</string>

@@ -531,6 +531,8 @@
     <string name="terminal_debian_installed_success">Debian installed ✓</string>
     <string name="pref_glass_tint">Glass tint intensity</string>
     <string name="pref_glass_tint_desc">Adjust the strength of the color applied to glass surfaces</string>
+    <string name="pref_glass_mode">Glass mode</string>
+    <string name="pref_glass_mode_desc">Use the liquid glass look. Turn off to use Material 3 components instead</string>
     <string name="webcolor"> Show Color PickerWeb</string>
     <string name="lsp_inlaytitle"> Show Inlay</string>
     <string name="lsp_inlaysubtitle"> Show Inlay Item Editor not all lang work</string>

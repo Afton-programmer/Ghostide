@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import ir.hanzodev1375.components.R;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
 import ir.hanzodev1375.components.databinding.BaseBlurBottomSheetBinding;
 import ir.theme.M3Theme;
@@ -57,8 +58,10 @@ public abstract class BaseBlurBottomSheet extends BottomSheetDialogFragment {
             if (activity == null) return;
             bottomSheet.setBackgroundColor(Color.TRANSPARENT);
             GlassCompat glass = binding.glassView;
-            glass.setBackdropSource(activity.findViewById(android.R.id.content));
-            glass.setEnableDynamicBackground(true);
+            if (Glass.isGlassEnabled(requireContext())) {
+              glass.setBackdropSource(activity.findViewById(android.R.id.content));
+              glass.setEnableDynamicBackground(true);
+            }
           });
     }
   }

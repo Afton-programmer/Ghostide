@@ -500,6 +500,8 @@
   <string name="terminal_debian_installed_success">已安装 Debian ✓</string>
   <string name="pref_glass_tint">玻璃色调强度</string>
   <string name="pref_glass_tint_desc">调整应用于玻璃表面的颜色强度</string>
+  <string name="pref_glass_mode">玻璃模式</string>
+  <string name="pref_glass_mode_desc">使用液态玻璃外观。关闭后改用 Material 3 组件</string>
   <string name="webcolor">显示颜色选择器Web</string>
   <string name="lsp_inlaytitle">显示镶嵌</string>
   <string name="lsp_inlaysubtitle">显示镶嵌项目编辑器并非所有语言都有效</string>

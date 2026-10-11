@@ -1,7 +1,11 @@
 package ir.hanzodev1375.components.glass;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -13,12 +17,17 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
 import com.example.liquidglass.GlassMaterial;
 import com.example.liquidglass.LiquidGlassButton;
+import com.google.android.material.button.MaterialButton;
+import ir.theme.M3Theme;
 
 /**
  * {@link LiquidGlassButton} that wires its own backdrop.
  *
  * <p>Use this instead of the raw library class and the glass keeps working inside dialogs and
  * bottom sheets without any manual {@code setBackdropSource(android.R.id.content)} call.
+ *
+ * <p>When the glass mode is turned off the button hosts a real Material 3 {@link MaterialButton}
+ * instead of drawing a glass panel.
  */
 public class ButtonCompat extends LiquidGlassButton {
 
@@ -39,6 +48,7 @@ public class ButtonCompat extends LiquidGlassButton {
   private LinearLayout contentRow;
   private TextView label;
   private ImageView iconView;
+  private MaterialButton materialButton;
 
   public ButtonCompat(Context context) {
     super(context);
@@ -61,7 +71,12 @@ public class ButtonCompat extends LiquidGlassButton {
     setEnableSensorHighlight(true);
     setEnableAdaptiveTint(true);
     setPressScale(0.96f);
-    Glass.applyThemeTint(this);
+    refresh();
+  }
+
+  /** Re-applies the glass material, or the Material 3 button when glass is turned off. */
+  public void refresh() {
+    Glass.applyButton(this);
   }
 
   @Override
@@ -76,7 +91,7 @@ public class ButtonCompat extends LiquidGlassButton {
    */
   public ButtonCompat setTone(Tone tone) {
     this.tone = tone == null ? Tone.DEFAULT : tone;
-    Glass.applyButton(this);
+    refresh();
     return this;
   }
 
@@ -109,6 +124,12 @@ public class ButtonCompat extends LiquidGlassButton {
   }
 
   public void setIconDrawable(@Nullable Drawable drawable) {
+    if (materialButton != null) {
+      materialButton.setIcon(drawable);
+      materialButton.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
+      materialButton.setIconPadding(Glass.dp(this, 8));
+      return;
+    }
     ensureContentRow();
     if (contentRow == null) {
       return;
@@ -130,6 +151,64 @@ public class ButtonCompat extends LiquidGlassButton {
     }
     iconView.setImageDrawable(drawable);
     iconView.setVisibility(VISIBLE);
+  }
+
+  @Override
+  public void setEnabled(boolean enabled) {
+    super.setEnabled(enabled);
+    if (materialButton != null) {
+      materialButton.setEnabled(enabled);
+    }
+  }
+
+  /** Swaps the glass rendering for a real Material 3 button. Called by {@link Glass}. */
+  void applyMaterialFallback() {
+    Glass.stripGlassEffects(this);
+    // Hide the library's label/row so only the Material button below is measured and drawn.
+    Glass.hideGlassChildren(this, materialButton);
+    if (materialButton == null) {
+      materialButton = new MaterialButton(getContext());
+      materialButton.setClickable(false);
+      materialButton.setFocusable(false);
+      materialButton.setInsetTop(0);
+      materialButton.setInsetBottom(0);
+      addView(
+          materialButton,
+          new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+      TextView labelView = label != null ? label : getTextView();
+      if (labelView != null) {
+        labelView.addTextChangedListener(
+            new TextWatcher() {
+              @Override
+              public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+              @Override
+              public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (materialButton != null) {
+                  materialButton.setText(s);
+                }
+              }
+
+              @Override
+              public void afterTextChanged(Editable s) {}
+            });
+      }
+    }
+    materialButton.setText(getText());
+    styleMaterialButton();
+  }
+
+  private void styleMaterialButton() {
+    if (materialButton == null) {
+      return;
+    }
+    M3Theme.materialButton(materialButton);
+    if (tone == Tone.ERROR) {
+      int background = Glass.errorColor();
+      materialButton.setBackgroundTintList(ColorStateList.valueOf(background));
+      materialButton.setTextColor(Glass.onErrorColor());
+      materialButton.setIconTint(ColorStateList.valueOf(Glass.onErrorColor()));
+    }
   }
 
   /**

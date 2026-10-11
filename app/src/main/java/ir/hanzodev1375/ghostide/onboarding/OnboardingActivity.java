@@ -16,7 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.liquidglass.GlassMaterial;
-import com.example.liquidglass.LiquidGlassFab;
+import ir.hanzodev1375.components.glass.Glass;
+import ir.hanzodev1375.components.sheet.customitemsheet.ui.FabGlass;
 import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.activity.BaseCompat;
 import ir.hanzodev1375.ghostide.activity.FileManagerActivity;
@@ -94,9 +95,11 @@ public class OnboardingActivity extends BaseCompat {
     styleGlassFab(bind.btnNext);
   }
 
-  private void styleGlassFab(LiquidGlassFab fab) {
-    fab.setEnableDynamicBackground(true);
-    fab.setMaterial(GlassMaterial.REGULAR);
+  private void styleGlassFab(FabGlass fab) {
+    if (Glass.isGlassEnabled(this)) {
+      fab.setEnableDynamicBackground(true);
+      fab.setMaterial(GlassMaterial.REGULAR);
+    }
     int darkTint = fallback(M3Theme.surfaceContainerHighest(), BTN_BG_FALLBACK);
     fab.setGlassTint(darkTint, 0.88f);
     fab.setIconTint(fallback(M3Theme.onSurface(), 0xFFE6E1E5));
@@ -178,7 +181,7 @@ public class OnboardingActivity extends BaseCompat {
     OnboardingAnim.shimmer(bind.dotsHost);
   }
 
-  private void bindingScaleBack(com.example.liquidglass.LiquidGlassFab fab) {
+  private void bindingScaleBack(FabGlass fab) {
     fab.animate().scaleX(1f).scaleY(1f).setDuration(220).start();
   }
 

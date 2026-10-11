@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.example.liquidglass.GlassMaterial;
 import com.example.liquidglass.LiquidGlassView;
+import ir.hanzodev1375.components.glass.Glass;
 
 public class GlassChip extends LiquidGlassView {
 
@@ -64,6 +65,12 @@ public class GlassChip extends LiquidGlassView {
     labelView.setIncludeFontPadding(false);
     labelView.setTextColor(Color.WHITE);
     contentRow.addView(labelView);
+
+    if (!Glass.isGlassEnabled(context)) {
+      Glass.stripGlassEffects(this);
+      setBackground(Glass.roundedSurface(context, Glass.surfaceHighColor(), 999f, true));
+      labelView.setTextColor(Glass.onSurfaceColor());
+    }
   }
 
   public void setLabel(CharSequence label) {

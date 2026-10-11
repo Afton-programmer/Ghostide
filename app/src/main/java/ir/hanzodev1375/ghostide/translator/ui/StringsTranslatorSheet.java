@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import ir.hanzodev1375.components.sheet.BaseBlurBottomSheet;
-import com.example.liquidglass.LiquidGlassChip;
+import ir.hanzodev1375.components.glass.ChipCompat;
 import com.google.android.material.snackbar.Snackbar;
 import java.io.File;
 import java.util.ArrayList;
@@ -98,7 +98,7 @@ public class StringsTranslatorSheet extends BaseBlurBottomSheet {
     String resDir = resDirOrNull();
     int total = sourceTranslatableEntries.size();
     for (AndroidLanguage lang : AndroidLanguage.ALL) {
-      LiquidGlassChip chip = new LiquidGlassChip(requireContext());
+      ChipCompat chip = new ChipCompat(requireContext());
       chip.setCheckable(true);
       chip.setCheckedIconVisible(true);
       chip.setTag(lang);
@@ -156,14 +156,14 @@ public class StringsTranslatorSheet extends BaseBlurBottomSheet {
         v -> {
           selectedLanguages.clear();
           for (int i = 0; i < binding.chipGroupLanguages.getChildCount(); i++) {
-            ((LiquidGlassChip) binding.chipGroupLanguages.getChildAt(i)).setChecked(true);
+            ((ChipCompat) binding.chipGroupLanguages.getChildAt(i)).setChecked(true);
           }
         });
     binding.btnDeselectAll.setOnClickListener(
         v -> {
           selectedLanguages.clear();
           for (int i = 0; i < binding.chipGroupLanguages.getChildCount(); i++) {
-            ((LiquidGlassChip) binding.chipGroupLanguages.getChildAt(i)).setChecked(false);
+            ((ChipCompat) binding.chipGroupLanguages.getChildAt(i)).setChecked(false);
           }
           binding.btnTranslate.setEnabled(false);
         });

@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import com.example.liquidglass.LiquidGlassChip;
-import com.example.liquidglass.LiquidGlassChipGroup;
+import ir.hanzodev1375.components.glass.ChipCompat;
+import ir.hanzodev1375.components.glass.ChipGroupCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import ir.theme.M3Theme;
@@ -46,7 +46,7 @@ public class NewModuleDialog {
 
     TextInputLayout tilLibs = view.findViewById(R.id.tilLibraries);
     TextInputEditText etLibs = view.findViewById(R.id.etLibraries);
-    LiquidGlassChipGroup chipGroupModules = view.findViewById(R.id.chipGroupModules);
+    ChipGroupCompat chipGroupModules = view.findViewById(R.id.chipGroupModules);
 
     View chipBackdrop = findActivityContentView(context);
     if (chipBackdrop != null) {
@@ -55,7 +55,7 @@ public class NewModuleDialog {
 
     List<String> existingModules = ModuleScanner.scanModules(projectRootPath);
     for (String moduleName : existingModules) {
-      LiquidGlassChip chip = new LiquidGlassChip(context);
+      ChipCompat chip = new ChipCompat(context);
       chip.setText(moduleName);
       chip.setCheckable(true);
       chip.setChecked(false);
@@ -147,8 +147,8 @@ public class NewModuleDialog {
                     List<String> selectedModules = new ArrayList<>();
                     for (int i = 0; i < chipGroupModules.getChildCount(); i++) {
                       View child = chipGroupModules.getChildAt(i);
-                      if (child instanceof LiquidGlassChip && ((LiquidGlassChip) child).isChecked()) {
-                        selectedModules.add(((LiquidGlassChip) child).getText().toString());
+                      if (child instanceof ChipCompat && ((ChipCompat) child).isChecked()) {
+                        selectedModules.add(((ChipCompat) child).getText().toString());
                       }
                     }
 

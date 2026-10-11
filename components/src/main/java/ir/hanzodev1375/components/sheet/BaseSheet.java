@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import ir.hanzodev1375.components.R;
+import ir.hanzodev1375.components.glass.Glass;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
 import ir.hanzodev1375.components.databinding.BaseBlurBottomSheetBinding;
 import ir.hanzodev1375.components.utils.ComponentsPrefs;
@@ -81,8 +82,10 @@ public class BaseSheet extends BottomSheetDialog {
               if (activity == null) return;
               bottomSheet.setBackgroundColor(Color.TRANSPARENT);
               GlassCompat glass = binding.glassView;
-              glass.setBackdropSource(activity.findViewById(android.R.id.content));
-              glass.setEnableDynamicBackground(true);
+              if (Glass.isGlassEnabled(getContext())) {
+                glass.setBackdropSource(activity.findViewById(android.R.id.content));
+                glass.setEnableDynamicBackground(true);
+              }
               behavior.addBottomSheetCallback(
                   new BottomSheetBehavior.BottomSheetCallback() {
                     @Override

@@ -82,7 +82,7 @@
             android:paddingBottom="16dp"
             android:paddingHorizontal="12dp">
 
-            <com.example.liquidglass.LiquidGlassChipGroup
+            <ir.hanzodev1375.components.glass.ChipGroupCompat
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 app:glassChipSpacingVertical="4dp"
