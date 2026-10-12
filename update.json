@@ -1,7 +1,7 @@
 {
-  "title": "Ghost IDE 1.1.5",
-  "massges": "Ghost ide 1.1.5 🎃\r\n\r\n- Fixed reported bugs 🐛\r\n- Improved plugin performance ⚡\r\n- Added LSP settings ⚙️\r\n- Added icon pack selection 🎨\r\n- Fixed an error where clicking a plugin only displayed a toast 🍞\r\n- Removed manually coded programming languages; they have been replaced with textmate 📝\r\n- Application performance has become more stable 📈\r\n- The application UI has improved compared to previous versions ✨",
-  "version": "1.1.5",
-  "link": "",
+  "title": "Ghost IDE 1.1.6beta1",
+  "massges": "## Ghostide 1.1.6beta1\r\n\r\n- Fix errors reported by users\r\n\r\n- Improved text highlighting\r\n- Added new APIs for plugins\r\n- Improved glass mode is now more optimal\r\n- Added an icon to display open files, the number of which is known\r\n- Optimizing the program compared to other versions\r\n- Added settings to turn off glass mode (doesn't work well at the moment, don't test) \r\n- Improvement of the menu above the code editor\r\n- Fixed the regex search error, the code editor no longer crashes the program\r\n- Improved store ui\r\n- and many other features\r\n\r\n## Support \r\n- Support us by giving us stars",
+  "version": "1.1.6beta1",
+  "link": "https://github.com/HanzoDev30/Ghostide/releases/download/1.1.6beta1/app-release.apk",
   "appname": "Ghost IDE"
 }
