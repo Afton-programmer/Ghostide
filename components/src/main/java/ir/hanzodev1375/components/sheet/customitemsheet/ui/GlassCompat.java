@@ -35,13 +35,11 @@ public class GlassCompat extends LiquidGlassView {
     if (setting == null) {
       setting = new ComponentsPrefs(getContext());
     }
-    if (!setting.isGlassEnabled()) {
+    if (!setting.isGlassEnabled() || !setting.isGlassMaterialColor()) {
       Glass.applyFallback(this);
       return;
     }
-    if (setting.isGlassMaterialColor()) {
-      setGlassColorByCustomHint(M3Theme.surface());
-    }
+    setGlassColorByCustomHint(M3Theme.surface());
   }
 
   public void setGlassColorByCustomHint(Integer color) {

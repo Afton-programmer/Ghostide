@@ -43,13 +43,11 @@ public class FabGlass extends LiquidGlassFab {
     if (setting == null) {
       setting = new ComponentsPrefs(getContext());
     }
-    if (!setting.isGlassEnabled()) {
+    if (!setting.isGlassEnabled() || !setting.isGlassMaterialColor()) {
       applyMaterialFallback();
       return;
     }
-    if (setting.isGlassMaterialColor()) {
-      setGlassTint(fallback(M3Theme.surface(), 0), setting.getGlassTint());
-    }
+    setGlassTint(fallback(M3Theme.surface(), 0), setting.getGlassTint());
   }
 
   /** Swaps the glass rendering for a real Material 3 FAB. */
@@ -61,9 +59,10 @@ public class FabGlass extends LiquidGlassFab {
       materialFab = new FloatingActionButton(getContext());
       materialFab.setClickable(false);
       materialFab.setFocusable(false);
+      int size = Glass.dp(getContext(), 56f);
       addView(
           materialFab,
-          new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+          new LayoutParams(size, size));
     }
     materialFab.setImageDrawable(getIcon());
     M3Theme.fabView(materialFab);

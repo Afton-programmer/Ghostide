@@ -85,7 +85,8 @@ public final class Glass {
    * hard-coded per screen and light/dark stay in sync.
    */
   public static void applyChip(ChipCompat chip) {
-    if (!isGlassEnabled(chip.getContext())) {
+    if (!isGlassEnabled(chip.getContext())
+        || !new ComponentsPrefs(chip.getContext()).isGlassMaterialColor()) {
       chip.applyMaterialFallback();
       return;
     }

@@ -115,13 +115,10 @@ public class ObjectUtil {
       glassView.setEnableAdaptiveTint(true);
       glassView.setBackdropSource(activity.findViewById(android.R.id.content));
     } else {
-      // Rebuild the Material surface with the radius set above; re-enabling the glass effects here
-      // would otherwise paint glass on a device where the user turned it off.
       Glass.applyFallback(glassView);
     }
-    glassView.setAlpha(0f);
 
-    PopupWindow popupWindow =
+    var popupWindow =
         new PopupWindow(
             glassView,
             ViewGroup.LayoutParams.WRAP_CONTENT,
