@@ -18,6 +18,7 @@ import ir.hanzodev1375.ghostide.plugin.gpl.GplManifestReader;
 import ir.hanzodev1375.ghostide.plugin.gpl.GplPluginLoader;
 import ir.hanzodev1375.ghostide.utils.ObjectUtil;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class PluginPopupController {
 
@@ -138,7 +139,7 @@ public final class PluginPopupController {
                 })
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .toList();
+            .collect(Collectors.toList());
 
     Log.d(TAG, "showPluginPopup: pluginItems size = " + pluginItems.size());
 

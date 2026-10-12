@@ -19,6 +19,7 @@ import ir.hanzodev1375.ghostide.plugin.PluginPopupDispatcher;
 import ir.hanzodev1375.ghostide.plugin.PluginPanelHost;
 import ir.hanzodev1375.ghostide.utils.ObjectUtil;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** مسئول ساخت و نمایش پاپ‌آپ لیست پلاگین‌های نصب‌شده (دکمه‌ی پلاگین‌ها). */
 public class PluginPopupHelper {
@@ -108,7 +109,7 @@ public class PluginPopupHelper {
                 })
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .toList();
+            .collect(Collectors.toList());
 
     if (pluginItems.isEmpty()) {
       GhostToast.makeText(activity, R.string.no_plugins, GhostToast.LENGTH_SHORT).show();

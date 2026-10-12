@@ -25,6 +25,7 @@ import ir.theme.M3Theme;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class PluginPopupAdapter extends RecyclerView.Adapter<PluginPopupAdapter.VH> {
 
@@ -84,7 +85,7 @@ public final class PluginPopupAdapter extends RecyclerView.Adapter<PluginPopupAd
         .registrations(PluginUiExtensionPoints.EDITOR_PANEL).stream()
         .filter(r -> pluginId.equals(r.ownerPluginId()))
         .map(r -> (EditorPanel) r.extension())
-        .toList();
+        .collect(Collectors.toList());
   }
 
   public static List<FilePanel> filePanelsOf(String pluginId) {
@@ -95,7 +96,7 @@ public final class PluginPopupAdapter extends RecyclerView.Adapter<PluginPopupAd
         .registrations(PluginUiExtensionPoints.FILE_PANEL).stream()
         .filter(r -> pluginId.equals(r.ownerPluginId()))
         .map(r -> (FilePanel) r.extension())
-        .toList();
+        .collect(Collectors.toList());
   }
 
   public static List<PluginScreen> screensOf(String pluginId) {
@@ -106,7 +107,7 @@ public final class PluginPopupAdapter extends RecyclerView.Adapter<PluginPopupAd
         .registrations(PluginUiExtensionPoints.PLUGIN_SCREEN).stream()
         .filter(r -> pluginId.equals(r.ownerPluginId()))
         .map(r -> (PluginScreen) r.extension())
-        .toList();
+        .collect(Collectors.toList());
   }
 
   public static boolean isLsp(String pluginId) {

@@ -128,7 +128,7 @@ public final class DirectoryPulse {
 
   private FileObserver hatch(File dir, long round) {
     final String marker = key(dir);
-    return new FileObserver(dir) {
+    return new FileObserver(dir.getAbsolutePath()) {
       @Override
       public void onEvent(int event, @Nullable String child) {
         int seen = event & WATCH_BITS;

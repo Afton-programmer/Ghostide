@@ -20,6 +20,6 @@ public class Mp3CoverModelLoader implements ModelLoader<String, Bitmap> {
 
   @Override
   public boolean handles(@NonNull String model) {
-    return true;
+    return model.toLowerCase().endsWith(".mp3");
   }
 }

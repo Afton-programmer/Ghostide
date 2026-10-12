@@ -120,6 +120,7 @@ dependencies {
     
     implementation 'com.caverock:androidsvg:1.4'
     implementation project(':musicpreview')
+    implementation project(':vectormaster')
     api fileTree(dir: "libs", include: ["*.jar", "*.aar"])
     implementation 'org.apache.commons:commons-compress:1.26.0'
     implementation 'org.tukaani:xz:1.9'

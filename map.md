@@ -283,9 +283,14 @@ Directory structure:
     │           │       │       │   │   ├── Mp3CoverLoader.java
     │           │       │       │   │   ├── Mp3CoverLoaderFactory.java
     │           │       │       │   │   └── Mp3CoverModelLoader.java
-    │           │       │       │   └── svg/
-    │           │       │       │       ├── SvgDecoder.java
-    │           │       │       │       └── SvgDrawableTranscoder.java
+    │           │       │       │   ├── svg/
+    │           │       │       │   │   ├── SvgDecoder.java
+    │           │       │       │   │   └── SvgDrawableTranscoder.java
+    │           │       │       │   └── xml/
+    │           │       │       │       ├── VectorModel.java
+    │           │       │       │       ├── VectorModelFetcher.java
+    │           │       │       │       ├── VectorModelLoader.java
+    │           │       │       │       └── VectorModelLoaderFactory.java
     │           │       │       ├── helper/
     │           │       │       │   ├── FileGitHelper.java
     │           │       │       │   ├── PluginPopupHelper.java
@@ -2488,6 +2493,39 @@ Directory structure:
     │                           ├── ThemeFileUtil.java
     │                           ├── ThemePrefsHelper.java
     │                           └── ThemeRefResolver.java
+    ├── vectormaster/
+    │   ├── build.gradle
+    │   └── src/
+    │       └── main/
+    │           ├── AndroidManifest.xml
+    │           ├── java/
+    │           │   └── ir/
+    │           │       └── hanzodev1375/
+    │           │           └── filetreelib/
+    │           │               └── vectormaster/
+    │           │                   ├── DefaultValues.java
+    │           │                   ├── VectorMasterDrawable.java
+    │           │                   ├── VectorMasterView.java
+    │           │                   ├── drawablexml/
+    │           │                   │   ├── DrawableXmlLoader.java
+    │           │                   │   └── XmlShapeParser.java
+    │           │                   ├── enums/
+    │           │                   │   └── TintMode.java
+    │           │                   ├── models/
+    │           │                   │   ├── ClipPathModel.java
+    │           │                   │   ├── GroupModel.java
+    │           │                   │   ├── PathModel.java
+    │           │                   │   └── VectorModel.java
+    │           │                   └── utilities/
+    │           │                       ├── Utils.java
+    │           │                       ├── legacyparser/
+    │           │                       │   └── PathParser.java
+    │           │                       └── parser/
+    │           │                           ├── ParserHelper.java
+    │           │                           └── PathParser.java
+    │           └── res/
+    │               └── values/
+    │                   └── attrs.xml
     └── .github/
         ├── ISSUE_TEMPLATE/
         │   ├── bug_report.md
