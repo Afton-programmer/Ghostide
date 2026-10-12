@@ -117,12 +117,7 @@ dependencies {
     implementation("androidx.palette:palette:1.0.0")
     implementation('com.github.HanzoDev1375.AndroidFileTree:filetreelib:1.1.5')
     
-    implementation('com.github.HanzoDev1375.AndroidFileTree:filetreeglide:1.1.5') {
-      transitive = false
-      exclude group: 'com.github.bumptech.glide', module: 'glide'
-      exclude group: 'com.github.bumptech.glide', module: 'compiler'
     
-    }
     implementation 'com.caverock:androidsvg:1.4'
     implementation project(':musicpreview')
     api fileTree(dir: "libs", include: ["*.jar", "*.aar"])

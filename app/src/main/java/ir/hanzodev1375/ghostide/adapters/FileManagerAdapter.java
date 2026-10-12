@@ -35,7 +35,6 @@ import com.bumptech.glide.Glide;
 
 import com.google.android.material.listitem.ListItemCardView;
 import com.google.android.material.listitem.ListItemViewHolder;
-import ir.hanzodev1375.filetreelib.filetreelibglide.glide.xml.VectorModel;
 import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.fileevents.FileEventCheck;

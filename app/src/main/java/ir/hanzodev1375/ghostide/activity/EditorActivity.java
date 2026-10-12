@@ -38,7 +38,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import io.github.rosemoe.sora.lsp.editor.LspEditorStatus;
 import ir.hanzodev1375.components.colors.ColorPickerBottomSheet;
-import ir.hanzodev1375.filetreelib.widget.FileTreeView;
 import ir.hanzodev1375.ghostide.codeeditors.langs.lsp.model.BreadcrumbItem;
 import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.codeeditors.ui.model.OpenFileLocationEvent;
@@ -561,40 +560,6 @@ public class EditorActivity extends BaseCompat
     openFile(filePath, file.getName());
   }
 
-  public void stepFileTree() {
-    String currentPath = getCurrentFilePath();
-    if (currentPath == null) {
-      GhostToast.makeText(this, "هیچ فایلی باز نیست", GhostToast.LENGTH_SHORT).show();
-      return;
-    }
-
-    File currentFile = new File(currentPath);
-    String rootPath = currentFile.isDirectory() ? currentPath : currentFile.getParent();
-
-    if (rootPath == null) {
-      GhostToast.makeText(this, "مسیر نامعتبر است", GhostToast.LENGTH_SHORT).show();
-      return;
-    }
-    FileTreeView tree = new FileTreeView(this);
-    tree.setNodePath(rootPath);
-    tree.loadTree();
-
-    tree.setClickNode(
-        (v, c) -> {
-          if (v != null && !v.isFolder()) {
-            String filePath = v.getAbsolutePath();
-            if (filePath != null) {
-              openFile(filePath);
-            }
-          }
-        });
-
-    SideSheetDialog sideSheet = new SideSheetDialog(this);
-    sideSheet.setContentView(tree);
-    sideSheet.getWindow().setNavigationBarColor(0);
-    theme.applySideSheetAndFileTree(sideSheet, tree);
-    sideSheet.show();
-  }
 
   private void setupKeyboardListener() {
     View rootView = getWindow().getDecorView();
@@ -797,14 +762,14 @@ public class EditorActivity extends BaseCompat
         (pos, title) -> {
           switch (pos) {
             case 0 -> toggleOrShowSplitPopup(v);
-            case 1 -> stepFileTree();
-            case 2 -> stepSearch();
-            case 3 -> saveCurrentTab();
-            case 4 -> saveAllTabs();
-            case 5 -> showCommandPaletteSheet();
-            case 6 -> showOutlineSheet();
-            case 7 -> showSnippetManagerSheet();
-            case 8 -> {
+           
+            case 1 -> stepSearch();
+            case 2 -> saveCurrentTab();
+            case 3 -> saveAllTabs();
+            case 4 -> showCommandPaletteSheet();
+            case 5 -> showOutlineSheet();
+            case 6 -> showSnippetManagerSheet();
+            case 7 -> {
               var colors = new ColorPickerBottomSheet();
               colors.show(getSupportFragmentManager(), "");
             }
