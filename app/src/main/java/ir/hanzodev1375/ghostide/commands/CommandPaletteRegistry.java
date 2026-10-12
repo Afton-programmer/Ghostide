@@ -28,18 +28,66 @@ public final class CommandPaletteRegistry {
 
   public static List<CommandItem> buildCommands(Context context) {
     List<CommandItem> commands = new ArrayList<>();
-    commands.add(new CommandItem(CMD_SAVE, context.getString(R.string.saveitemthis), "Ctrl+S", R.drawable.save, true));
-    commands.add(new CommandItem(CMD_SAVE_ALL, context.getString(R.string.saveitemall), "Ctrl+Shift+S", R.drawable.save, true));
+    commands.add(
+        new CommandItem(
+            CMD_SAVE, context.getString(R.string.saveitemthis), "Ctrl+S", R.drawable.save, true));
+    commands.add(
+        new CommandItem(
+            CMD_SAVE_ALL,
+            context.getString(R.string.saveitemall),
+            "Ctrl+Shift+S",
+            R.drawable.save,
+            true));
     commands.add(new CommandItem(CMD_UNDO, "Undo", "Ctrl+Z", R.drawable.outline_undo, true));
     commands.add(new CommandItem(CMD_REDO, "Redo", "Ctrl+Y", R.drawable.outline_redo, true));
-    commands.add(new CommandItem(CMD_FORMAT, "Format Code", "Format the whole file", R.drawable.ic_edit, true));
-    commands.add(new CommandItem(CMD_TOGGLE_COMMENT, "Toggle Comment", "Comment or uncomment the current line", R.drawable.ic_bug_report, true));
-    commands.add(new CommandItem(CMD_GOTO_LINE, "Go to Line", "Navigate to a specific line", R.drawable.ic_arrow_forward, true));
-    commands.add(new CommandItem(CMD_FILE_TREE, "Show File Tree", "Toggle the project file tree", R.drawable.round_account_tree, true));
-    commands.add(new CommandItem(CMD_SEARCH, "Find in File", "Open the search panel", R.drawable.outline_search, true));
-    commands.add(new CommandItem(CMD_DUPLICATE_LINE, "Duplicate Line", "Copy the current line below", R.drawable.ic_content_copy, true));
-    commands.add(new CommandItem(CMD_SELECT_WORD, "Select Current Word", "Select the word under the cursor", R.drawable.outline_select_all, true));
-    commands.add(new CommandItem(CMD_CLOSE_TABS, "Close All Tabs", "Close every open editor tab", R.drawable.ic_close, true));
+    commands.add(
+        new CommandItem(
+            CMD_FORMAT, "Format Code", "Format the whole file", R.drawable.ic_edit, true));
+    commands.add(
+        new CommandItem(
+            CMD_TOGGLE_COMMENT,
+            "Toggle Comment",
+            "Comment or uncomment the current line",
+            R.drawable.ic_bug_report,
+            true));
+    commands.add(
+        new CommandItem(
+            CMD_GOTO_LINE,
+            "Go to Line",
+            "Navigate to a specific line",
+            R.drawable.ic_arrow_forward,
+            true));
+    commands.add(
+        new CommandItem(
+            CMD_FILE_TREE,
+            "Show File Tree",
+            "Toggle the project file tree",
+            R.drawable.round_account_tree,
+            true));
+    commands.add(
+        new CommandItem(
+            CMD_SEARCH, "Find in File", "Open the search panel", R.drawable.outline_search, true));
+    commands.add(
+        new CommandItem(
+            CMD_DUPLICATE_LINE,
+            "Duplicate Line",
+            "Copy the current line below",
+            R.drawable.ic_content_copy,
+            true));
+    commands.add(
+        new CommandItem(
+            CMD_SELECT_WORD,
+            "Select Current Word",
+            "Select the word under the cursor",
+            R.drawable.outline_select_all,
+            true));
+    commands.add(
+        new CommandItem(
+            CMD_CLOSE_TABS,
+            "Close All Tabs",
+            "Close every open editor tab",
+            R.drawable.ic_close,
+            true));
     return commands;
   }
 
@@ -67,7 +115,7 @@ public final class CommandPaletteRegistry {
         if (editor != null) editor.toggleCommentForCurrentLine();
       }
       case CMD_GOTO_LINE -> activity.showGotoLineDialog();
-      case CMD_FILE_TREE -> activity.stepFileTree();
+   //   case CMD_FILE_TREE -> activity.stepFileTree();
       case CMD_SEARCH -> activity.stepSearch();
       case CMD_DUPLICATE_LINE -> {
         IdeEditor editor = activity.getEditor();
