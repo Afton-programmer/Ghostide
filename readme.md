@@ -12,6 +12,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/HanzoDev30/Ghostide?style=for-the-badge&logo=github&logoColor=white&color=FF6B6B)](https://github.com/HanzoDev30/Ghostide/releases)
 [![Downloads](https://img.shields.io/github/downloads/HanzoDev30/Ghostide/latest/total?style=for-the-badge&logo=github&logoColor=white&color=4ECDC4)](https://github.com/HanzoDev30/Ghostide/releases/latest)
+[![Github All Releases](https://img.shields.io/github/downloads/HanzoDev30/Ghostide/total?style=for-the-badge&logo=github&logoColor=white&color=F18A07)]()
 [![License](https://img.shields.io/github/license/HanzoDev30/Ghostide?style=for-the-badge&logo=opensourceinitiative&logoColor=white&color=A78BFA)](LICENSE)
 [![Telegram](https://img.shields.io/badge/Telegram-ghost__web__ide?style=for-the-badge&logo=telegram&logoColor=white&color=4A90E2)](https://t.me/ghost_web_ide)
 
