@@ -838,17 +838,24 @@ public class FileManagerActivity extends BaseCompat
           if (bind == null) return;
           View item = findToolbarItem("openfiles");
           if (item == null) return;
-          if (!item.equals(openFilesItemView)) {
+          View anchor = item;
+          if (item instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup) item;
+            if (group.getChildCount() > 0) {
+              anchor = group.getChildAt(0);
+            }
+          }
+          if (!anchor.equals(openFilesItemView)) {
             if (openFilesItemView != null) {
               try {
                 BadgeUtils.detachBadgeDrawable(openFilesBadge, openFilesItemView);
               } catch (Exception ignored) {
               }
             }
-            openFilesItemView = item;
-            BadgeUtils.attachBadgeDrawable(openFilesBadge, item);
+            openFilesItemView = anchor;
+            BadgeUtils.attachBadgeDrawable(openFilesBadge, anchor);
           }
-          openFilesBadge.updateBadgeCoordinates(item);
+          openFilesBadge.updateBadgeCoordinates(anchor);
           openFilesBadge.setVisible(!readOpenTabs().isEmpty());
         });
   }

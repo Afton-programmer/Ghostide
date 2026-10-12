@@ -23,6 +23,7 @@
     <string name="tab_reset">Reset</string>
     <string name="tab_tags">Tags</string>
     <string name="tab_gitignore">Gitignore</string>
+    <string name="tab_submodules">Submodules</string>
 
     <!-- Branches -->
     <string name="branch_new_hint">New branch name</string>
@@ -114,6 +115,23 @@
 
     <string name="tab_blame">Blame</string>
 
+    <!-- Submodules -->
+    <string name="submodule_init">Init</string>
+    <string name="submodule_update">Update</string>
+    <string name="submodule_sync">Sync</string>
+    <string name="submodule_add">Add Submodule</string>
+    <string name="submodule_add_title">Add Submodule</string>
+    <string name="submodule_url_hint">Repository URL</string>
+    <string name="submodule_path_hint">Path (e.g. libs/foo)</string>
+    <string name="submodule_name_hint">Name (optional)</string>
+    <string name="submodule_url_required">URL required</string>
+    <string name="submodule_path_required">Path required</string>
+    <string name="submodule_no_url">No URL</string>
+    <string name="submodule_state_initialized">Initialized</string>
+    <string name="submodule_state_uninitialized">Not initialized</string>
+    <string name="submodule_state_rev_checked_out">Different commit checked out</string>
+    <string name="submodule_state_missing">Missing from .gitmodules</string>
+
     <string name="git_empty_changes_title">No changes</string>
     <string name="git_empty_changes_desc">Your working tree is clean. Edited or new files will show up here.</string>
     <string name="git_stage_all">Stage All</string>
@@ -133,6 +151,8 @@
     <string name="git_empty_stash_desc">Stash your changes to keep them safe for later.</string>
     <string name="git_empty_tags_title">No tags</string>
     <string name="git_empty_tags_desc">Create a tag to mark important points in history.</string>
+    <string name="git_empty_submodules_title">No submodules</string>
+    <string name="git_empty_submodules_desc">This repository has no submodules. Use Add Submodule to register one.</string>
 
     <!-- Git init from GitHub URL -->
     <string name="git_init_hint">آدرس مخزن (https://github.com/user/repo.git)</string>

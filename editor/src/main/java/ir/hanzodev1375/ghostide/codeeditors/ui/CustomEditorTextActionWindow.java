@@ -41,7 +41,7 @@ import ir.hanzodev1375.ghostide.codeeditors.colorscheme.GhostColorScheme;
 import ir.hanzodev1375.ghostide.codeeditors.langs.lsp.AndroidClasspathResolver;
 import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.codeeditors.ui.model.OpenFileLocationEvent;
-import ir.hanzodev1375.ghostide.codeeditors.util.TranslateTask;
+import ir.hanzodev1375.components.translate.TranslateTask;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;

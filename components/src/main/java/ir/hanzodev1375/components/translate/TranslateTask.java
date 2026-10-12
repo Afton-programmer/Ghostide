@@ -1,4 +1,4 @@
-package ir.hanzodev1375.ghostide.codeeditors.util;
+package ir.hanzodev1375.components.translate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

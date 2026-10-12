@@ -17,6 +17,7 @@ import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.ConflictFile;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.TagInfo;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.ResetMode;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.BlameInfo;
+import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.SubmoduleInfo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -77,6 +78,9 @@ public class GitViewModel extends ViewModel {
 
   private final MutableLiveData<List<BlameInfo>> _blameResult = new MutableLiveData<>();
   public final LiveData<List<BlameInfo>> blameResult = _blameResult;
+
+  private final MutableLiveData<List<SubmoduleInfo>> _submodules = new MutableLiveData<>();
+  public final LiveData<List<SubmoduleInfo>> submodules = _submodules;
 
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
   private final MutableLiveData<String> _selectedDiffFile = new MutableLiveData<>();
@@ -1037,6 +1041,90 @@ public class GitViewModel extends ViewModel {
           _operationResult.postValue(result);
           if (result.isSuccess()) loadGitIgnore();
         });
+  }
+
+  // ─────────────────────────── SUBMODULES ───────────────────────────
+
+  public void refreshSubmodules() {
+    executor.execute(
+        () -> {
+          List<SubmoduleInfo> list =
+              gitManager != null ? gitManager.getSubmodules() : Collections.emptyList();
+          _submodules.postValue(list);
+        });
+  }
+
+  public void initSubmodules() {
+    _progressMessage.postValue("Initializing submodules...");
+    executor.execute(
+        () -> {
+          OperationResult result =
+              gitManager != null
+                  ? gitManager.initSubmodules()
+                  : new OperationResult(false, "Git manager not initialized");
+          _operationResult.postValue(result);
+          invalidateGitCaches();
+          if (result.isSuccess()) refreshSubmodulesNow();
+          _progressMessage.postValue(null);
+        });
+  }
+
+  public void syncSubmodules() {
+    _progressMessage.postValue("Synchronizing submodules...");
+    executor.execute(
+        () -> {
+          OperationResult result =
+              gitManager != null
+                  ? gitManager.syncSubmodules()
+                  : new OperationResult(false, "Git manager not initialized");
+          _operationResult.postValue(result);
+          invalidateGitCaches();
+          if (result.isSuccess()) refreshSubmodulesNow();
+          _progressMessage.postValue(null);
+        });
+  }
+
+  public void updateSubmodules(String username, String password) {
+    _progressMessage.postValue("Updating submodules...");
+    executor.execute(
+        () -> {
+          OperationResult result =
+              gitManager != null
+                  ? gitManager.updateSubmodules(username, password)
+                  : new OperationResult(false, "Git manager not initialized");
+          _operationResult.postValue(result);
+          invalidateGitCaches();
+          if (result.isSuccess()) {
+            refreshSubmodulesNow();
+            refreshChangedFiles();
+          }
+          _progressMessage.postValue(null);
+        });
+  }
+
+  public void addSubmodule(
+      String url, String path, String name, String username, String password) {
+    _progressMessage.postValue("Adding submodule...");
+    executor.execute(
+        () -> {
+          OperationResult result =
+              gitManager != null
+                  ? gitManager.addSubmodule(url, path, name, username, password)
+                  : new OperationResult(false, "Git manager not initialized");
+          _operationResult.postValue(result);
+          invalidateGitCaches();
+          if (result.isSuccess()) {
+            refreshSubmodulesNow();
+            refreshChangedFiles();
+          }
+          _progressMessage.postValue(null);
+        });
+  }
+
+  private void refreshSubmodulesNow() {
+    List<SubmoduleInfo> list =
+        gitManager != null ? gitManager.getSubmodules() : Collections.emptyList();
+    _submodules.postValue(list);
   }
 
   @Override

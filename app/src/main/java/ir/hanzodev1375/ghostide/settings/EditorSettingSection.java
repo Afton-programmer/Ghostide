@@ -6,7 +6,7 @@ import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.activity.SettingActivity;
 import ir.hanzodev1375.ghostide.codeeditors.IdeEditor;
 import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
-import ir.hanzodev1375.ghostide.codeeditors.util.TranslateLanguages;
+import ir.hanzodev1375.components.translate.TranslateLanguages;
 import ir.hanzodev1375.ghostide.dialogs.ShortcutSettingsDialog;
 import ir.hanzodev1375.ghostide.models.CursorPack;
 import ir.hanzodev1375.ghostide.models.SettingItem;

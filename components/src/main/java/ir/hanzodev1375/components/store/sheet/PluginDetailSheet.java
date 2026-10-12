@@ -21,6 +21,7 @@ import ir.hanzodev1375.components.store.event.PluginResultEvent;
 import ir.hanzodev1375.components.store.model.PluginDoc;
 import ir.hanzodev1375.components.store.model.PluginItem;
 import ir.hanzodev1375.components.store.viewmodel.PluginStoreViewModel;
+import ir.hanzodev1375.components.translate.TranslateTask;
 import ir.hanzodev1375.components.views.PluginInstallButton;
 import ir.theme.M3Theme;
 import java.util.Locale;
@@ -165,7 +166,7 @@ public class PluginDetailSheet extends BaseBlurBottomSheet {
               devView.setText(context.getString(R.string.pluginstore_by_dev, dev));
             }
             if (note != null && !note.trim().isEmpty()) {
-              markwon.setMarkdown(noteView, note);
+              renderDescription(markwon, note);
             }
             if (doc.icon() != null && !doc.icon().trim().isEmpty() && iconView != null) {
               String url = doc.icon();
@@ -189,6 +190,29 @@ public class PluginDetailSheet extends BaseBlurBottomSheet {
             noteView.setText(R.string.pluginstore_no_description);
           }
         });
+  }
+
+  private void renderDescription(Markwon markwon, String note) {
+    markwon.setMarkdown(noteView, note);
+    String target = Locale.getDefault().getLanguage();
+    if (target == null || target.trim().isEmpty()) return;
+    new TranslateTask(
+            note,
+            target,
+            new TranslateTask.Callback() {
+              @Override
+              public void onSuccess(String translatedText) {
+                if (noteView == null) return;
+                if (translatedText != null && !translatedText.trim().isEmpty()) {
+                  markwon.setMarkdown(noteView, translatedText);
+                }
+              }
+
+              @Override
+              public void onFailure(String error) {
+              }
+            })
+        .execute();
   }
 
   private void loadSize(Context context) {
@@ -253,6 +277,7 @@ public class PluginDetailSheet extends BaseBlurBottomSheet {
       installed = true;
       started = false;
       installButton.setState(PluginInstallButton.State.INSTALLED);
+      dismiss();
     } else {
       started = false;
       installButton.setState(PluginInstallButton.State.IDLE);

@@ -9,6 +9,7 @@ import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.FetchResult;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.StashInfo;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.ConflictFile;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.OperationResult;
+import ir.hanzodev1375.ghostide.jgit.jgitandroid.model.SubmoduleInfo;
 import ir.hanzodev1375.ghostide.jgit.jgitandroid.ChangeType;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -26,6 +27,8 @@ import org.eclipse.jgit.transport.RemoteRefUpdate;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.submodule.SubmoduleWalk;
+import org.eclipse.jgit.submodule.SubmoduleStatus;
+import org.eclipse.jgit.submodule.SubmoduleStatusType;
 import org.eclipse.jgit.ignore.IgnoreNode;
 import org.eclipse.jgit.attributes.AttributesNode;
 
@@ -38,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class GitManager {
@@ -1239,6 +1243,149 @@ public class GitManager {
       return saveGitIgnore(newContent);
     } catch (Exception e) {
       return new OperationResult(false, "Failed: " + e.getMessage());
+    }
+  }
+
+  // ─────────────────────────── SUBMODULES ───────────────────────────
+
+  /**
+   * تمام ورودی‌های gitlink در index را می‌خواند و وضعیت هرکدام را از config مخزن و ساب‌ماژول
+   * استخراج می‌کند. مسیرهای بدون رکورد در .gitmodules یا .git/config نیز به‌عنوان
+   * MISSING/UNINITIALIZED گزارش می‌شوند تا کاربر بتواند آن‌ها را init کند.
+   */
+  public List<SubmoduleInfo> getSubmodules() {
+    List<SubmoduleInfo> list = new ArrayList<>();
+    if (git == null || repository == null) return list;
+
+    Map<String, SubmoduleStatus> statuses = null;
+    try {
+      statuses = git.submoduleStatus().call();
+    } catch (Exception e) {
+    }
+
+    try (SubmoduleWalk walk = SubmoduleWalk.forIndex(repository)) {
+      while (walk.next()) {
+        String path = walk.getPath();
+        String url = null;
+        try {
+          url = walk.getRemoteUrl();
+        } catch (Exception e) {
+        }
+        SubmoduleStatus status = statuses != null ? statuses.get(path) : null;
+        SubmoduleInfo.State state =
+            status != null
+                ? toSubmoduleState(status.getType())
+                : SubmoduleInfo.State.UNINITIALIZED;
+        String index = status != null ? shortObjectId(status.getIndexId()) : null;
+        String head = status != null ? shortObjectId(status.getHeadId()) : null;
+        list.add(new SubmoduleInfo(path, url, state, index, head));
+      }
+    } catch (Exception e) {
+    }
+    return list;
+  }
+
+  private static SubmoduleInfo.State toSubmoduleState(SubmoduleStatusType type) {
+    switch (type) {
+      case INITIALIZED:
+        return SubmoduleInfo.State.INITIALIZED;
+      case REV_CHECKED_OUT:
+        return SubmoduleInfo.State.REV_CHECKED_OUT;
+      case MISSING:
+        return SubmoduleInfo.State.MISSING;
+      default:
+        return SubmoduleInfo.State.UNINITIALIZED;
+    }
+  }
+
+  private static String shortObjectId(org.eclipse.jgit.lib.ObjectId id) {
+    return id != null ? id.getName().substring(0, 7) : null;
+  }
+
+  /** معادل git submodule init: مقادیر .gitmodules را در .git/config ثبت می‌کند. */
+  public OperationResult initSubmodules() {
+    try {
+      if (git == null) return notOpen();
+      Collection<String> initialized = git.submoduleInit().call();
+      return new OperationResult(
+          true,
+          initialized.isEmpty()
+              ? "Submodules already initialized"
+              : "Initialized " + initialized.size() + " submodule(s)");
+    } catch (Exception e) {
+      return new OperationResult(false, describe(e));
+    }
+  }
+
+  /** معادل git submodule sync: آدرس ریموت هر ساب‌ماژول را با .gitmodules همگام می‌کند. */
+  public OperationResult syncSubmodules() {
+    try {
+      if (git == null) return notOpen();
+      Map<String, String> synced = git.submoduleSync().call();
+      return new OperationResult(
+          true,
+          synced.isEmpty()
+              ? "No submodules to synchronize"
+              : "Synchronized " + synced.size() + " submodule(s)");
+    } catch (Exception e) {
+      return new OperationResult(false, describe(e));
+    }
+  }
+
+  /**
+   * معادل git submodule update --init --remote: ابتدا url/update را از .gitmodules در config ثبت
+   * می‌کند (چون خود SubmoduleUpdateCommand ساب‌ماژول ثبت‌نشده را رد می‌کند) و سپس هر ساب‌ماژول را
+   * با کامیت ثبت‌شده در index همگام می‌کند. برای ساب‌ماژول‌های clone‌نشده، خود JGit آن‌ها را
+   * clone می‌کند؛ بنابراین اعتبارنامه‌ها در صورت وجود به clone/fetch منتقل می‌شوند.
+   */
+  public OperationResult updateSubmodules(String username, String password) {
+    try {
+      if (git == null) return notOpen();
+      git.submoduleInit().call();
+      org.eclipse.jgit.api.SubmoduleUpdateCommand update = git.submoduleUpdate().setFetch(true);
+      if (username != null && password != null) {
+        update.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
+      }
+      Collection<String> updated = update.call();
+      return new OperationResult(
+          true,
+          updated.isEmpty()
+              ? "Submodules already up to date"
+              : "Updated " + updated.size() + " submodule(s)");
+    } catch (Exception e) {
+      return new OperationResult(false, describe(e));
+    }
+  }
+
+  /**
+   * معادل git submodule add: ساب‌ماژول را clone کرده، در .gitmodules و .git/config ثبت می‌کند و
+   * پوشه به‌همراه فایل .gitmodules را در index اضافه می‌کند.
+   */
+  public OperationResult addSubmodule(
+      String uri, String path, String name, String username, String password) {
+    try {
+      if (git == null) return notOpen();
+      if (uri == null || uri.trim().isEmpty()) {
+        return new OperationResult(false, "Submodule URL required");
+      }
+      if (path == null || path.trim().isEmpty()) {
+        return new OperationResult(false, "Submodule path required");
+      }
+
+      org.eclipse.jgit.api.SubmoduleAddCommand add =
+          git.submoduleAdd().setURI(uri.trim()).setPath(path.trim());
+      if (name != null && !name.trim().isEmpty()) {
+        add.setName(name.trim());
+      }
+      if (username != null && password != null) {
+        add.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
+      }
+
+      Repository subRepository = add.call();
+      if (subRepository != null) subRepository.close();
+      return new OperationResult(true, "Submodule added: " + path.trim());
+    } catch (Exception e) {
+      return new OperationResult(false, describe(e));
     }
   }
 }

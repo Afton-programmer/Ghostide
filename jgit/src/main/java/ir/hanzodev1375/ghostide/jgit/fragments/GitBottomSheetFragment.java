@@ -355,6 +355,7 @@ public class GitBottomSheetFragment extends BaseBlurBottomSheet {
     tabs.add(new GitTab(getString(R.string.tab_reset), new ResetFragment()));
     tabs.add(new GitTab(getString(R.string.tab_tags), new TagsFragment()));
     tabs.add(new GitTab(getString(R.string.tab_gitignore), new GitignoreFragment()));
+    tabs.add(new GitTab(getString(R.string.tab_submodules), new SubmodulesFragment()));
     tabs.add(new GitTab(getString(R.string.tab_blame), new BlameFragment()));
     tabs.add(new GitTab(getString(R.string.tab_diff), new DiffViewerFragment()));
 

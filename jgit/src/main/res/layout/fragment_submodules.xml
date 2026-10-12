@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="12dp">
+
+        <ir.hanzodev1375.components.glass.ButtonCompat
+            android:id="@+id/btnInitSubmodules"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/submodule_init" />
+
+        <ir.hanzodev1375.components.glass.ButtonCompat
+            android:id="@+id/btnUpdateSubmodules"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/submodule_update" />
+
+        <ir.hanzodev1375.components.glass.ButtonCompat
+            android:id="@+id/btnSyncSubmodules"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/submodule_sync" />
+    </LinearLayout>
+
+    <ir.hanzodev1375.components.glass.ButtonCompat
+        android:id="@+id/btnAddSubmodule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        android:text="@string/submodule_add" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSubmodules"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ir.hanzodev1375.components.views.EmptyView
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:emptyIcon="@drawable/ic_empty_state"
+            app:emptyTitle="@string/git_empty_submodules_title"
+            app:emptyDescription="@string/git_empty_submodules_desc" />
+
+    </FrameLayout>
+
+</LinearLayout>

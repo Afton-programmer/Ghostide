@@ -982,6 +982,9 @@ Directory structure:
     │           │   │           │       ├── PluginStoreViewModel.java
     │           │   │           │       ├── ThemesViewModel.java
     │           │   │           │       └── WebStoreViewModel.java
+    │           │   │           ├── translate/
+    │           │   │           │   ├── TranslateLanguages.java
+    │           │   │           │   └── TranslateTask.java
     │           │   │           ├── ui/
     │           │   │           │   └── ProfileView.java
     │           │   │           ├── utils/
@@ -1677,8 +1680,6 @@ Directory structure:
     │           │                   │       └── OpenFileLocationEvent.java
     │           │                   └── util/
     │           │                       ├── CustomFormatter.java
-    │           │                       ├── TranslateLanguages.java
-    │           │                       ├── TranslateTask.java
     │           │                       └── formatter/
     │           │                           ├── BaseFormatter.java
     │           │                           ├── CssFormatter.java
@@ -1800,6 +1801,7 @@ Directory structure:
     │           │                   │   ├── RemoteAdapter.java
     │           │                   │   ├── RepoAdapter.java
     │           │                   │   ├── StashAdapter.java
+    │           │                   │   ├── SubmoduleAdapter.java
     │           │                   │   ├── TagAdapter.java
     │           │                   │   └── ViewPagerAdapter.java
     │           │                   ├── dialogs/
@@ -1826,6 +1828,7 @@ Directory structure:
     │           │                   │   ├── RemotesFragment.java
     │           │                   │   ├── ResetFragment.java
     │           │                   │   ├── StashFragment.java
+    │           │                   │   ├── SubmodulesFragment.java
     │           │                   │   └── TagsFragment.java
     │           │                   ├── jgitandroid/
     │           │                   │   ├── ChangeType.java
@@ -1846,6 +1849,7 @@ Directory structure:
     │           │                   │       ├── RemoteOperationResult.java
     │           │                   │       ├── ResetMode.java
     │           │                   │       ├── StashInfo.java
+    │           │                   │       ├── SubmoduleInfo.java
     │           │                   │       └── TagInfo.java
     │           │                   └── model/
     │           │                       ├── GitHubEvent.java
@@ -1873,6 +1877,7 @@ Directory structure:
     │               │   ├── bottom_sheet_git.xml
     │               │   ├── bottom_sheet_git_init.xml
     │               │   ├── dialog_add_remote.xml
+    │               │   ├── dialog_add_submodule.xml
     │               │   ├── dialog_commit.xml
     │               │   ├── fragment_blame.xml
     │               │   ├── fragment_branches.xml
@@ -1885,6 +1890,7 @@ Directory structure:
     │               │   ├── fragment_remotes.xml
     │               │   ├── fragment_reset.xml
     │               │   ├── fragment_stash.xml
+    │               │   ├── fragment_submodules.xml
     │               │   ├── fragment_tags.xml
     │               │   ├── git_local_config.xml
     │               │   ├── item_blame.xml
@@ -1896,6 +1902,7 @@ Directory structure:
     │               │   ├── item_remote.xml
     │               │   ├── item_repo.xml
     │               │   ├── item_stash.xml
+    │               │   ├── item_submodule.xml
     │               │   └── item_tag.xml
     │               ├── values/
     │               │   └── strings.xml

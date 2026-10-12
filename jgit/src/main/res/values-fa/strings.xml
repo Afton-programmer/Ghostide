@@ -23,6 +23,7 @@
   <string name="tab_reset">بازنشانی</string>
   <string name="tab_tags">برچسب‌ها</string>
   <string name="tab_gitignore">Gitignore</string>
+  <string name="tab_submodules">زیرماژول‌ها</string>
 
   <!-- Branches -->
   <string name="branch_new_hint">نام شاخه جدید</string>
@@ -114,6 +115,23 @@
 
   <string name="tab_blame">Blame (پیگیری تغییرات)</string>
 
+  <!-- Submodules -->
+  <string name="submodule_init">راه‌اندازی</string>
+  <string name="submodule_update">به‌روزرسانی</string>
+  <string name="submodule_sync">همگام‌سازی</string>
+  <string name="submodule_add">افزودن زیرماژول</string>
+  <string name="submodule_add_title">افزودن زیرماژول</string>
+  <string name="submodule_url_hint">آدرس مخزن</string>
+  <string name="submodule_path_hint">مسیر (مثلاً libs/foo)</string>
+  <string name="submodule_name_hint">نام (اختیاری)</string>
+  <string name="submodule_url_required">آدرس الزامی است</string>
+  <string name="submodule_path_required">مسیر الزامی است</string>
+  <string name="submodule_no_url">بدون آدرس</string>
+  <string name="submodule_state_initialized">راه‌اندازی‌شده</string>
+  <string name="submodule_state_uninitialized">راه‌اندازی‌نشده</string>
+  <string name="submodule_state_rev_checked_out">کامیت متفاوتی checkout شده</string>
+  <string name="submodule_state_missing">در .gitmodules موجود نیست</string>
+
   <string name="git_empty_changes_title">تغییری وجود ندارد</string>
   <string name="git_empty_changes_desc">فضای کاری شما تمیز است. فایل‌های ویرایش‌شده یا جدید اینجا نمایش داده می‌شوند.</string>
   <string name="git_empty_history_title">هنوز کامیتی وجود ندارد</string>
@@ -126,6 +144,8 @@
   <string name="git_empty_stash_desc">تغییرات خود را استاش کنید تا برای بعد امن بمانند.</string>
   <string name="git_empty_tags_title">برچسبی وجود ندارد</string>
   <string name="git_empty_tags_desc">برای مشخص کردن نقاط مهم تاریخچه یک برچسب ایجاد کنید.</string>
+  <string name="git_empty_submodules_title">زیرماژولی وجود ندارد</string>
+  <string name="git_empty_submodules_desc">این مخزن زیرماژول ندارد. با «افزودن زیرماژول» یکی ثبت کنید.</string>
 
   <!-- Git init from GitHub URL -->
   <string name="git_init_hint">آدرس مخزن (https://github.com/user/repo.git)</string>
