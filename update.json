@@ -1,7 +1,7 @@
 {
-  "title": "Ghost IDE 1.1.6beta1",
-  "massges": "## Ghostide 1.1.6beta1\r\n\r\n- Fix errors reported by users\r\n\r\n- Improved text highlighting\r\n- Added new APIs for plugins\r\n- Improved glass mode is now more optimal\r\n- Added an icon to display open files, the number of which is known\r\n- Optimizing the program compared to other versions\r\n- Added settings to turn off glass mode (doesn't work well at the moment, don't test) \r\n- Improvement of the menu above the code editor\r\n- Fixed the regex search error, the code editor no longer crashes the program\r\n- Improved store ui\r\n- and many other features\r\n\r\n## Support \r\n- Support us by giving us stars",
-  "version": "1.1.6beta1",
-  "link": "https://github.com/HanzoDev30/Ghostide/releases/download/1.1.6beta1/app-release.apk",
+  "title": "Ghost IDE 1.1.6beta2",
+  "massges": "## Ghostide 1.1.6beta2\r\n\r\n- Fixed the icon not loading error\r\n- Support Android Photos xml and Android Shape xml\r\n- Fixed the click error in the panel in lower Androids 10 to 12\r\n- Added submodule in Git panel\r\n\r\n## Support \r\n- Support us by giving us stars",
+  "version": "1.1.6beta2",
+  "link": "https://github.com/HanzoDev30/Ghostide/releases/download/1.1.6beta2/app-release.apk",
   "appname": "Ghost IDE"
 }
