@@ -98,6 +98,12 @@
                         android:id="@+id/tab">
                     </com.google.android.material.tabs.TabLayout>
 
+                    <ir.hanzodev1375.components.views.SyncBar
+                        android:id="@+id/syncBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvBreadcrumb"
                         android:layout_width="match_parent"

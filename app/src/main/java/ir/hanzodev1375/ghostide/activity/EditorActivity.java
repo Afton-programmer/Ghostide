@@ -71,6 +71,7 @@ import ir.hanzodev1375.ghostide.models.TabModel;
 import ir.hanzodev1375.ghostide.models.ToolbarModel;
 import ir.hanzodev1375.ghostide.adapters.EditorHostAdapter;
 import ir.hanzodev1375.ghostide.adapters.CodeRunnerHostAdapter;
+import ir.hanzodev1375.ghostide.adapters.SyncHostAdapter;
 import ir.hanzodev1375.ghostide.ide.ui.api.EditorPanel;
 import ir.hanzodev1375.ghostide.ide.ui.api.CodeRunnerHost;
 import ir.hanzodev1375.ghostide.ide.ui.api.FileEvent;
@@ -127,6 +128,7 @@ public class EditorActivity extends BaseCompat
   private BreadcrumbAdapter breadcrumbAdapter;
   private Disposable editorHostRegistration;
   private Disposable codeRunnerHostRegistration;
+  private Disposable syncHostRegistration;
   private PluginPanelHost pluginPanelHost;
   private final Runnable lspStatusPollRunnable =
       new Runnable() {
@@ -194,6 +196,9 @@ public class EditorActivity extends BaseCompat
     codeRunnerHostRegistration =
         GlobalRegistry.services()
             .register(IdeHostServices.CODE_RUNNER_HOST, new CodeRunnerHostAdapter(this));
+    syncHostRegistration =
+        GlobalRegistry.services()
+            .register(IdeHostServices.SYNC_HOST, new SyncHostAdapter(this));
     GlobalRegistry.services()
         .register(IdeHostServices.PANEL_HOST, panel -> pluginPanelHost.showPanel(panel));
     applyThemeInternal(false);
@@ -284,6 +289,7 @@ public class EditorActivity extends BaseCompat
     theme.applyGhostIdeEditorSearch(binding.editorSearch);
     theme.applyTabLayout(binding.tab, getCurrentFilePath());
     theme.applyEditorStatusBar(binding.editorStatusBar);
+    binding.syncBar.applyTheme();
     if (applyEditor) {
       IdeEditor editor = getEditor();
       if (editor != null) {
@@ -417,6 +423,10 @@ public class EditorActivity extends BaseCompat
     if (codeRunnerHostRegistration != null) {
       codeRunnerHostRegistration.dispose();
       codeRunnerHostRegistration = null;
+    }
+    if (syncHostRegistration != null) {
+      syncHostRegistration.dispose();
+      syncHostRegistration = null;
     }
   }
 
@@ -560,7 +570,6 @@ public class EditorActivity extends BaseCompat
     openFile(filePath, file.getName());
   }
 
-
   private void setupKeyboardListener() {
     View rootView = getWindow().getDecorView();
 
@@ -581,13 +590,11 @@ public class EditorActivity extends BaseCompat
             if (keypadHeight > screenHeight * 0.15) {
               binding.backgroundicon.animate().scaleX(1.5f).scaleY(1.5f).setDuration(1000).start();
               binding.symbolBarContainer.show();
-              // کیبورد بازه؛ استاتوس‌بار مخفی و نماد‌بار نمایش داده می‌شه
               binding.editorStatusBar.setVisibility(View.GONE);
             } else {
               binding.backgroundicon.animate().scaleX(1.0f).scaleY(1.0f).setDuration(1000).start();
               isShowSys = false;
               binding.symbolBarContainer.hide();
-              // کیبورد بسته‌ست؛ استاتوس‌بار نمایش داده و نماد‌بار مخفی می‌شه
               binding.editorStatusBar.setVisibility(View.VISIBLE);
             }
           }
@@ -612,8 +619,7 @@ public class EditorActivity extends BaseCompat
       PluginToolbarIcon icon = registration.extension();
       if (icon.getState() == PluginIconState.Editor) {
         toolbarModel.add(
-            priorityInsertIndex++,
-            new ToolbarModel(icon.getIcon(), "plugin:" + icon.getId()));
+            priorityInsertIndex++, new ToolbarModel(icon.getIcon(), "plugin:" + icon.getId()));
       }
     }
     toolbarModel.add(new ToolbarModel(R.drawable.outline_undo, "undo"));
@@ -630,7 +636,8 @@ public class EditorActivity extends BaseCompat
                 String tag = m.getTag();
                 if (tag != null && tag.startsWith("plugin:")) {
                   for (var registration :
-                      GlobalRegistry.extensions().registrations(PluginUiExtensionPoints.TOOLBAR_ICON)) {
+                      GlobalRegistry.extensions()
+                          .registrations(PluginUiExtensionPoints.TOOLBAR_ICON)) {
                     PluginToolbarIcon icon = registration.extension();
                     if (("plugin:" + icon.getId()).equals(tag)) {
                       icon.onClick(view);
@@ -743,15 +750,17 @@ public class EditorActivity extends BaseCompat
             getString(R.string.split_layout_title), R.drawable.ic_split_column));
     items.add(
         new EditorGlassMenu.GlassMenuItem(
-            getString(R.string.editor_file_tree), R.drawable.round_account_tree));
-    items.add(
-        new EditorGlassMenu.GlassMenuItem(
             getString(R.string.editor_search), R.drawable.outline_search));
     items.add(new EditorGlassMenu.GlassMenuItem(getString(R.string.saveitemthis), R.drawable.save));
     items.add(new EditorGlassMenu.GlassMenuItem(getString(R.string.saveitemall), R.drawable.save));
-    items.add(new EditorGlassMenu.GlassMenuItem(getString(R.string.command_palette_title), R.drawable.outline_search));
-    items.add(new EditorGlassMenu.GlassMenuItem(getString(R.string.outline_title), R.drawable.round_account_tree));
-    items.add(new EditorGlassMenu.GlassMenuItem(getString(R.string.snippets_title), R.drawable.ic_edit));
+    items.add(
+        new EditorGlassMenu.GlassMenuItem(
+            getString(R.string.command_palette_title), R.drawable.outline_search));
+    items.add(
+        new EditorGlassMenu.GlassMenuItem(
+            getString(R.string.outline_title), R.drawable.round_account_tree));
+    items.add(
+        new EditorGlassMenu.GlassMenuItem(getString(R.string.snippets_title), R.drawable.ic_edit));
     items.add(
         new EditorGlassMenu.GlassMenuItem(
             getString(R.string.webcolor), R.drawable.outline_color_lens));
@@ -762,7 +771,6 @@ public class EditorActivity extends BaseCompat
         (pos, title) -> {
           switch (pos) {
             case 0 -> toggleOrShowSplitPopup(v);
-           
             case 1 -> stepSearch();
             case 2 -> saveCurrentTab();
             case 3 -> saveAllTabs();
@@ -814,8 +822,7 @@ public class EditorActivity extends BaseCompat
           if (editor == null) return;
           try {
             CodeSnippet snippet = CodeSnippetParser.parse(entry.body);
-            editor.getSnippetController()
-                .startSnippet(editor.getCursor().getLeft(), snippet, "");
+            editor.getSnippetController().startSnippet(editor.getCursor().getLeft(), snippet, "");
           } catch (Exception ignored) {
             editor.commitText(entry.body);
           }
@@ -901,7 +908,8 @@ public class EditorActivity extends BaseCompat
               if (position < tabsList.size()) {
                 TabCustomView customView = new TabCustomView(this);
                 customView.bind(tabsList.get(position));
-                customView.setGitChanged(gitStatus.isFileGitChanged(tabsList.get(position).getFilePath()));
+                customView.setGitChanged(
+                    gitStatus.isFileGitChanged(tabsList.get(position).getFilePath()));
                 tab.setCustomView(customView);
               }
             });
@@ -1096,6 +1104,53 @@ public class EditorActivity extends BaseCompat
     if (binding == null || activePane != null) return;
     if (getEditor() != source.getEditor()) return;
     breadcrumbAdapter.setItems(items);
+  }
+
+  /** Shows the Android-Studio-style sync bar under the editor tabs (see {@code SyncHost}). */
+  public void showSyncBar(CharSequence title) {
+    if (binding == null) return;
+    binding.syncBar.applyTheme();
+    binding.syncBar.show(title);
+  }
+
+  /** Shows the sync bar asking the user to confirm before a plugin starts its work. */
+  public void showSyncBarPrompt(
+      CharSequence title,
+      CharSequence message,
+      CharSequence confirmLabel,
+      CharSequence cancelLabel,
+      Runnable onConfirm,
+      Runnable onCancel) {
+    if (binding == null) return;
+    binding.syncBar.applyTheme();
+    binding.syncBar.showPrompt(title, message, confirmLabel, cancelLabel, onConfirm, onCancel);
+  }
+
+  /** Shows the sync bar in a persistent error state whose message can be copied. */
+  public void showSyncBarError(CharSequence title, CharSequence message) {
+    if (binding == null) return;
+    binding.syncBar.applyTheme();
+    binding.syncBar.showError(title, message);
+  }
+
+  public void setSyncBarTitle(CharSequence title) {
+    if (binding == null) return;
+    binding.syncBar.setTitle(title);
+  }
+
+  public void setSyncBarMessage(CharSequence message) {
+    if (binding == null) return;
+    binding.syncBar.setMessage(message);
+  }
+
+  public void setSyncBarProgress(int percent) {
+    if (binding == null) return;
+    binding.syncBar.setProgress(percent);
+  }
+
+  public void hideSyncBar() {
+    if (binding == null) return;
+    binding.syncBar.hide();
   }
 
   private void closeTab(int position) {

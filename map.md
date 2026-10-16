@@ -213,6 +213,7 @@ Directory structure:
     │           │       │       │   ├── PluginPopupAdapter.java
     │           │       │       │   ├── SettingsAdapter.java
     │           │       │       │   ├── SnippetAdapter.java
+    │           │       │       │   ├── SyncHostAdapter.java
     │           │       │       │   ├── SysmbolbarAdapter.java
     │           │       │       │   ├── ThemeFilesAdapter.java
     │           │       │       │   ├── ToolbarAdapter.java
@@ -1007,6 +1008,7 @@ Directory structure:
     │           │   │               ├── PluginInstallButton.java
     │           │   │               ├── RoundedProgressFill.java
     │           │   │               ├── SegmentedAvatarView.java
+    │           │   │               ├── SyncBar.java
     │           │   │               ├── SwipeBackLayout.java
     │           │   │               └── TouchableWebView.java
     │           │   └── jp/
@@ -1040,6 +1042,7 @@ Directory structure:
     │               │   ├── ic_outline_project.xml
     │               │   ├── ic_public_24.xml
     │               │   ├── ic_search_color.xml
+    │               │   ├── ic_sync.xml
     │               │   ├── more_vert.xml
     │               │   ├── outline_search24.xml
     │               │   └── shadow_gradient_hard_bottom_top.xml
@@ -1070,6 +1073,7 @@ Directory structure:
     │               │   ├── item_theme_preview.xml
     │               │   ├── layout_customsheet_rv.xml
     │               │   ├── layout_itemsheet_custom.xml
+    │               │   ├── layout_sync.xml
     │               │   ├── layout_webstore.xml
     │               │   ├── search_layout.xml
     │               │   ├── sheet_plugin_detail.xml
@@ -1783,6 +1787,8 @@ Directory structure:
     │                                       ├── PluginToolbarIcon.java
     │                                       ├── PluginUiExtensionPoints.java
     │                                       ├── ProotProcessLauncher.java
+    │                                       ├── SyncHost.java
+    │                                       ├── SyncSession.java
     │                                       └── UiFeedbackHost.java
     ├── jgit/
     │   ├── consumer-rules.pro

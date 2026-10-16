@@ -79,7 +79,7 @@ public final class CommandAdapter extends RecyclerView.Adapter<CommandAdapter.Ho
       GradientDrawable gd = new GradientDrawable();
       gd.setColor(M3Theme.surface());
       gd.setStroke(1, M3Theme.outline());
-      gd.setCornerRadius(8);
+      gd.setCornerRadius(15);
       holder.icon.setPadding(5, 5, 5, 5);
       holder.icon.setBackground(gd);
     } else {
@@ -87,7 +87,7 @@ public final class CommandAdapter extends RecyclerView.Adapter<CommandAdapter.Ho
       GradientDrawable gd = new GradientDrawable();
       gd.setColor(M3Theme.surface());
       gd.setStroke(1, M3Theme.outline());
-      gd.setCornerRadius(8);
+      gd.setCornerRadius(15);
       holder.icon.setPadding(5, 5, 5, 5);
       holder.icon.setBackground(gd);
     }

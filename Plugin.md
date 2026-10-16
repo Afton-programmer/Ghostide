@@ -181,6 +181,30 @@ Pass a `Consumer<String>` as the second argument to receive each merged stdout/s
 arrives. Note this runs in the app's own shell environment; binaries that live inside the proot
 rootfs should go through `ProotProcessLauncher` instead.
 
+## Syncing project dependencies (Android Studio-style sync bar)
+
+When your plugin installs or refreshes a project's libraries (a Gradle resolve, `npm install`, a
+pip install, ...), drive the host's sync bar instead of opening the terminal. The IDE shows a 56dp
+bar under the editor tabs and reloads the language servers when the sync ends, so the new classes
+become visible to completion and navigation. Use this API instead of `CodeRunnerHost.runShell` for
+install steps, so the work is not shown in a visible terminal.
+
+```java
+SyncHost sync = context.getServices().require(IdeHostServices.SYNC_HOST);
+SyncSession session = sync.begin("Gradle sync");
+
+session.setProgress(-1);                 // indeterminate while resolving
+session.setMessage("Downloading appcompat-1.7.0.aar");
+// ... run the install ...
+session.setProgress(100);
+session.succeed();                       // hides the bar, reloads the language servers
+```
+
+Call `sync.begin(...)` on the UI thread. Reporting (`setMessage` / `setProgress` / `succeed` /
+`fail` / `cancel`) is safe from any thread. Only one sync runs on an editor at a time: starting a
+new session cancels the previous one. `succeed()` and `fail(...)` both reload the language servers
+(the cached Gradle classpath is dropped first); `cancel()` only hides the bar.
+
 ## Subscribing to IDE events
 
 Register a `FileEventListener` at `IdeEvents.FILE_EVENT` (`ide-ui-api`) to observe file

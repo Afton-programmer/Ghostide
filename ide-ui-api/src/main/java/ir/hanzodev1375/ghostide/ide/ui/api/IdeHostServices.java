@@ -47,5 +47,12 @@ public final class IdeHostServices {
   public static final ServiceKey<PanelHostService> PANEL_HOST =
       new ServiceKey<>("ir.hanzodev1375.ghostide.ui.panelHost", PanelHostService.class);
 
+  /**
+   * Drives the editor's Android-Studio-style sync bar so a plugin can install project dependencies
+   * without exposing the terminal; see {@link SyncHost}.
+   */
+  public static final ServiceKey<SyncHost> SYNC_HOST =
+      new ServiceKey<>("ir.hanzodev1375.ghostide.ui.syncHost", SyncHost.class);
+
   private IdeHostServices() {}
 }

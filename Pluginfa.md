@@ -182,6 +182,30 @@ if (result.success()) {
 لحظه به دستتون می‌رسه. توجه: این اجرا تو محیط شل خود اپه؛ باینری‌های داخل rootfs پرووت باید از
 `ProotProcessLauncher` برن.
 
+## سینک کردن وابستگی‌های پروژه (نوار سینک به سبک Android Studio)
+
+وقتی پلاگین شما کتابخانه‌های یه پروژه رو نصب/به‌روزرسانی می‌کنه (resolve گریدل، `npm install`،
+نصب pip و ...)، به‌جای باز کردن ترمینال از نوار سینک هاست استفاده کنه. IDE یه نوار ۵۶dp زیر
+تب‌های ادیتور نشون می‌ده و موقع تموم شدن سینک، زبان‌سرورها رو دوباره لود می‌کنه تا کلاس‌های جدید
+برای تکمیل و ناوبری دیده بشن. برای مراحل نصب به‌جای `CodeRunnerHost.runShell` از این API استفاده
+کن تا کار تو ترمینال قابل‌دیدن نشه.
+
+```java
+SyncHost sync = context.getServices().require(IdeHostServices.SYNC_HOST);
+SyncSession session = sync.begin("Gradle sync");
+
+session.setProgress(-1);                 // نامشخص موقع resolve
+session.setMessage("Downloading appcompat-1.7.0.aar");
+// ... نصب رو اجرا کن ...
+session.setProgress(100);
+session.succeed();                       // نوار محو می‌شه، زبان‌سرورها دوباره لود می‌شن
+```
+
+`sync.begin(...)` رو روی ترد UI صدا بزن. گزارش دادن (`setMessage` / `setProgress` / `succeed` /
+`fail` / `cancel`) از هر تردی امنه. روی هر ادیتور فقط یه سینک هم‌زمان می‌تونه اجرا بشه: شروع
+سشن جدید، قبلی رو کنسل می‌کنه. `succeed()` و `fail(...)` هر دو زبان‌سرورها رو دوباره لود می‌کنن
+(اول کش کلاسپث گریدل پاک می‌شه)؛ `cancel()` فقط نوار رو مخفی می‌کنه.
+
 ## گوش دادن به رویدادهای IDE
 
 یه `FileEventListener` پیاده کنید و تو `IdeEvents.FILE_EVENT` (تو `ide-ui-api`) ثبتش کنید تا

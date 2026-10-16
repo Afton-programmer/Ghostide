@@ -644,4 +644,28 @@ public final class AndroidClasspathResolver {
     }
     return sb.toString();
   }
+
+  /**
+   * کش کلاسپث (نتیجهی query گریدل و AARهای استخراجشده) رو پاک میکنه تا بعد از نصب کتابخانهی جدید،
+   * اتصال بعدی LSP دوباره کلاسپث واقعی رو بخونه. از SyncHost بعد از پایان موفق/ناموفق سینک صدا زده میشه.
+   */
+  public static void clearClasspathCache(Context context) {
+    if (context == null) return;
+    File cacheRoot = context.getCacheDir();
+    if (cacheRoot == null) return;
+    deleteRecursively(new File(cacheRoot, "gradle-classpath-cache"));
+    deleteRecursively(new File(cacheRoot, "aar-extracted"));
+  }
+
+  private static void deleteRecursively(File file) {
+    if (file == null || !file.exists()) return;
+    File[] children = file.listFiles();
+    if (children != null) {
+      for (File child : children) {
+        deleteRecursively(child);
+      }
+    }
+    //noinspection ResultOfMethodCallIgnored
+    file.delete();
+  }
 }
