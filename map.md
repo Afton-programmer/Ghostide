@@ -337,6 +337,7 @@ Directory structure:
     │           │       │       ├── paged/
     │           │       │       │   └── PagedEditSession.java
     │           │       │       ├── plugin/
+    │           │       │       │   ├── BackgroundRendererBridge.java
     │           │       │       │   ├── FloatingPanelWindow.java
     │           │       │       │   ├── Plugin.java
     │           │       │       │   ├── PluginConfigModel.java
@@ -835,6 +836,8 @@ Directory structure:
     │           │   │           │   ├── GridListMorph.java
     │           │   │           │   └── SpringInterpolator.java
     │           │   │           ├── childern/
+    │           │   │           │   ├── BackgroundChildFactory.java
+    │           │   │           │   ├── BackgroundChildRegistry.java
     │           │   │           │   ├── GifChild.java
     │           │   │           │   ├── IChild.java
     │           │   │           │   ├── ImageChild.java
@@ -1781,6 +1784,7 @@ Directory structure:
     │                                       ├── PanelHostService.java
     │                                       ├── PanelStateStore.java
     │                                       ├── PluginIcons.java
+    │                                       ├── PluginBackgroundRenderer.java
     │                                       ├── PluginIconState.java
     │                                       ├── PluginScreen.java
     │                                       ├── PluginStateMod.java

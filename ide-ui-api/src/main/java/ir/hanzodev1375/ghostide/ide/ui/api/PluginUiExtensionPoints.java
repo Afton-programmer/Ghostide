@@ -61,5 +61,16 @@ public final class PluginUiExtensionPoints {
       new ExtensionPoint<>(
           "ir.hanzodev1375.ghostide.ui.fileClickHandler", FileClickHandler.class);
 
+  /**
+   * Custom screen background (wallpaper) renderers. Consulted by every {@code ViewChilder} before
+   * the built-in image/gif/video detection, so a plugin can back the IDE wallpaper with a video,
+   * a GLSL/shader scene, a live canvas animation or any custom view. A renderer claims the paths
+   * or URI schemes it owns via {@link PluginBackgroundRenderer#supports}; consulted in descending
+   * priority order and the first match wins.
+   */
+  public static final ExtensionPoint<PluginBackgroundRenderer> BACKGROUND_RENDERER =
+      new ExtensionPoint<>(
+          "ir.hanzodev1375.ghostide.ui.backgroundRenderer", PluginBackgroundRenderer.class);
+
   private PluginUiExtensionPoints() {}
 }

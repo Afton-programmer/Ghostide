@@ -239,6 +239,10 @@ public class ViewChilder extends FrameLayout {
       throw new IllegalArgumentException("ViewChilder: context must not be null");
     }
     LifecycleOwner resolved = owner != null ? owner : findOwnerFrom(context);
+    IChild custom = BackgroundChildRegistry.resolve(context, path, resolved, blurSize);
+    if (custom != null) {
+      return custom;
+    }
     switch (typeOf(context, path)) {
       case TYPE_IMAGE:
         return new ImageChild(context, path, blurSize);

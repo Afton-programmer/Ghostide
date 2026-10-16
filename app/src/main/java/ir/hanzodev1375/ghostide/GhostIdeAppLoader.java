@@ -22,6 +22,7 @@ import ir.hanzodev1375.ghostide.ide.ui.api.FileIconContributor;
 import ir.hanzodev1375.ghostide.ide.ui.api.IdeHostServices;
 import ir.hanzodev1375.ghostide.ide.ui.api.PluginUiExtensionPoints;
 import ir.hanzodev1375.ghostide.materialfileicon.core.JsonFileIconHelper;
+import ir.hanzodev1375.ghostide.plugin.BackgroundRendererBridge;
 import ir.hanzodev1375.ghostide.plugin.api.ExtensionRegistration;
 import ir.hanzodev1375.ghostide.plugin.api.GlobalRegistry;
 import ir.hanzodev1375.ghostide.plugin.gpl.GplInstalledPlugins;
@@ -91,6 +92,7 @@ public class GhostIdeAppLoader extends Application {
           }
           return null;
         });
+    BackgroundRendererBridge.install();
     GplInstalledPlugins.loadAll(this, GplPluginLoader.getInstance(this));
 
     PluginNotifier.schedule(this);
