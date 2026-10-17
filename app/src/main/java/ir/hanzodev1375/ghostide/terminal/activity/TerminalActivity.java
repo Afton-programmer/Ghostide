@@ -36,8 +36,11 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.termux.terminal.TerminalSession;
+import ir.hanzodev1375.components.glsl.GLSLShaderView;
+import ir.hanzodev1375.components.glsl.GlslPalette;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.LiquidGlassDialogBuilderJava;
+import ir.hanzodev1375.components.utils.ComponentsPrefs;
 import ir.hanzodev1375.components.views.GhostToast;
 import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.activity.BaseCompat;
@@ -674,6 +677,15 @@ public class TerminalActivity extends BaseCompat implements TerminalViewModel.Se
     initOverlay = b.getRoot().findViewById(R.id.initOverlay);
     initOverlayStatus = b.getRoot().findViewById(R.id.initOverlayStatus);
     TextView versionText = b.getRoot().findViewById(R.id.initOverlayVersion);
+    GLSLShaderView shader = b.getRoot().findViewById(R.id.initOverlayShader);
+    if (shader != null) {
+      if (new ComponentsPrefs(this).isGlslEnabled()) {
+        int[] colors = GlslPalette.accent();
+        shader.setColors(colors[0], colors[1], colors[2]);
+      } else {
+        shader.setVisibility(View.GONE);
+      }
+    }
     try {
       String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
       versionText.setText("v" + version);

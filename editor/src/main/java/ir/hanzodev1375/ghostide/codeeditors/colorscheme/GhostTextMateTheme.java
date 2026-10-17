@@ -16,13 +16,13 @@ import org.eclipse.tm4e.core.registry.IThemeSource;
  * ساخت تم TextMate فقط از روی تم شخصی (GhostTheme) بدون base theme.
  *
  * <p>ساختار JSON مطابق قالب VS Code است: کلید ریشه {@code tokenColors} برای موتور اسکوپ
- * (Theme.parseTheme) و کلید {@code colors} برای {@code TextMateColorScheme.applyVSCTheme} تا همه‌ی
- * رنگ‌های خوانده‌شده از آن فایل (پس‌زمینه، selection، خط جاری، شماره خط، راهنمای تورفتگی،
+ * (Theme.parseTheme) و کلید {@code colors} برای {@code TextMateColorScheme.applyVSCTheme} تا همهی
+ * رنگهای خواندهشده از آن فایل (پسزمینه، selection، خط جاری، شماره خط، راهنمای تورفتگی،
  * پیشنهادها، tooltip، find-match و ...) اعمال شوند.
  *
  * <p>قاعده ها قبل از نوشتن بر اساس عمق اسکوپ مرتب می شوند (والد قبل از فرزند). چون موتور tm4e رنگ
- * والد را هنگام ساختن node فرزند clone می کند، اگر فرزند زودتر ثبت شود رنگش پیش‌فرض می ماند و
- * توکن‌هایی مثل {@code punctuation.section.begin} بی‌رنگ می‌شوند.
+ * والد را هنگام ساختن node فرزند clone می کند، اگر فرزند زودتر ثبت شود رنگش پیشفرض می ماند و
+ * توکنهایی مثل {@code punctuation.section.begin} بیرنگ میشوند.
  */
 public final class GhostTextMateTheme {
 
@@ -158,7 +158,7 @@ public final class GhostTextMateTheme {
     addFont(rules, "markup.underline", "underline");
     addFont(rules, "markup.strikethrough", "strikethrough");
 
-    // والد قبل از فرزند؛ وگرنه رنگ clone شده پیش‌فرض می ماند (باگ رنگی نشدن punctuation).
+    // والد قبل از فرزند؛ وگرنه رنگ clone شده پیشفرض می ماند (باگ رنگی نشدن punctuation).
     rules.sort(Comparator.comparingInt(rule -> rule.depth));
     for (Rule rule : rules) {
       tokenColors.add(rule.toJson());
@@ -172,7 +172,7 @@ public final class GhostTextMateTheme {
     return root.toString().getBytes(StandardCharsets.UTF_8);
   }
 
-  /** ورودی اولِ tokenColors؛ بدون scope تا رنگ پیش‌فرض و رنگ‌های سراسری TextMate را بدهد. */
+  /** ورودی اولِ tokenColors؛ بدون scope تا رنگ پیشفرض و رنگهای سراسری TextMate را بدهد. */
   private static JsonObject globalEntry(EditorTheme theme) {
     JsonObject entry = new JsonObject();
     JsonObject settings = new JsonObject();

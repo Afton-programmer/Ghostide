@@ -892,6 +892,12 @@ Directory structure:
     │           │   │           │   ├── ChipGroupCompat.java
     │           │   │           │   ├── Glass.java
     │           │   │           │   └── TabBarCompat.java
+    │           │   │           ├── glsl/
+    │           │   │           │   ├── GLSLShaderView.java
+    │           │   │           │   ├── GlslBackgroundChild.java
+    │           │   │           │   ├── GlslBackgroundFactory.java
+    │           │   │           │   ├── GlslEffects.java
+    │           │   │           │   └── GlslPalette.java
     │           │   │           ├── image/
     │           │   │           │   └── ZoomableImageView.kt
     │           │   │           ├── searchdata/

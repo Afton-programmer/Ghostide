@@ -11,6 +11,7 @@ public class ComponentsPrefs {
   public static final String KEY_PARALLAX = "app_parallax";
   public static final String KEY_EXCLUDED_FILES_SEARCH = "search_excluded_files";
   public static final String KEY_GLASS_ENABLED = "app_glass_enabled";
+  public static final String KEY_GLSL_ENABLED = "app_glsl_enabled";
 
   private final SharedPreferences prefs;
 
@@ -25,6 +26,15 @@ public class ComponentsPrefs {
 
   public void setGlassEnabled(boolean enabled) {
     prefs.edit().putBoolean(KEY_GLASS_ENABLED, enabled).apply();
+  }
+
+  /**
+   * Whether the experimental GLSL shader effects (GPU star particles, spectrum, glass caustics,
+   * powder delete, live status bar, ...) are allowed. Enabled by default; a device/theme can turn
+   * them off to fall back to the original CPU/AGSL paths.
+   */
+  public boolean isGlslEnabled() {
+    return prefs.getBoolean(KEY_GLSL_ENABLED, true);
   }
 
   public boolean isGlassMaterialColor() {

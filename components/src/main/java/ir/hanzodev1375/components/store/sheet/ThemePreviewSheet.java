@@ -28,11 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import ir.hanzodev1375.components.R;
+import ir.hanzodev1375.components.glsl.GLSLShaderView;
+import ir.hanzodev1375.components.glsl.GlslPalette;
 import ir.hanzodev1375.components.sheet.BaseBlurBottomSheet;
 import ir.hanzodev1375.components.store.adapter.ThemeImageAdapter;
 import ir.hanzodev1375.components.store.api.ThemesApi;
 import ir.hanzodev1375.components.store.model.ThemeItem;
 import ir.hanzodev1375.components.store.event.ThemeInstalledEvent;
+import ir.hanzodev1375.components.utils.ComponentsPrefs;
 import ir.theme.M3Theme;
 import ir.theme.ThemeManager;
 import okhttp3.OkHttpClient;
@@ -91,6 +94,15 @@ public class ThemePreviewSheet extends BaseBlurBottomSheet {
     TextView descriptionLabel = v.findViewById(R.id.previewDescriptionLabel);
     TextView description = v.findViewById(R.id.previewDescription);
     ViewPager2 pager = v.findViewById(R.id.previewPager);
+    GLSLShaderView shader = v.findViewById(R.id.previewShader);
+    if (shader != null) {
+      if (new ComponentsPrefs(context).isGlslEnabled()) {
+        int[] colors = GlslPalette.accent();
+        shader.setColors(colors[0], colors[1], colors[2]);
+      } else {
+        shader.setVisibility(View.GONE);
+      }
+    }
     View prev = v.findViewById(R.id.previewPrev);
     View next = v.findViewById(R.id.previewNext);
     FloatingActionButton install = v.findViewById(R.id.previewInstall);

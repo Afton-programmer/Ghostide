@@ -24,9 +24,15 @@
         android:textSize="13sp" />
 
     <FrameLayout
+        android:id="@+id/previewPagerHost"
         android:layout_width="match_parent"
         android:layout_height="260dp"
         android:layout_marginTop="14dp">
+
+        <ir.hanzodev1375.components.glsl.GLSLShaderView
+            android:id="@+id/previewShader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/previewPager"

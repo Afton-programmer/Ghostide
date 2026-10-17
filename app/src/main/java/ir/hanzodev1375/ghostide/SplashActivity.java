@@ -3,6 +3,8 @@ package ir.hanzodev1375.ghostide;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import ir.hanzodev1375.components.glsl.GLSLShaderView;
+import ir.hanzodev1375.components.glsl.GlslPalette;
 import ir.hanzodev1375.ghostide.activity.BaseCompat;
 import ir.hanzodev1375.ghostide.activity.FileManagerActivity;
 import ir.hanzodev1375.ghostide.onboarding.OnboardingActivity;
@@ -18,6 +20,10 @@ public class SplashActivity extends BaseCompat {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_splash);
+
+    GLSLShaderView shader = findViewById(R.id.splash_shader);
+    int[] colors = GlslPalette.background();
+    shader.setColors(colors[0], colors[1], colors[2]);
 
     ImageView logo = findViewById(R.id.logo);
     logo.setAlpha(0f);

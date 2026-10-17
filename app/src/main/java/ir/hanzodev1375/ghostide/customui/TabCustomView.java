@@ -53,6 +53,7 @@ public class TabCustomView extends LinearLayout
   public void bind(TabModel tabModel) {
     this.currentModel = tabModel;
     this.hasStar = tabModel.getHasStar();
+    lastShownTitle = null;
     binding.tabTitle.setText(tabModel.getFileName());
     updateTitleText();
     binding.tabPinIcon.setVisibility(tabModel.isPinned() ? View.VISIBLE : View.GONE);
@@ -115,20 +116,9 @@ public class TabCustomView extends LinearLayout
   }
 
   private void updateTitleText() {
-    applyErrorSpan();
-  }
-
-  public void setHasErrors(boolean hasError) {
-    if (currentModel != null) {
-      currentModel.setHasError(hasError);
-    }
-    applyErrorSpan();
-  }
-
-  private void applyErrorSpan() {
     if (binding == null || binding.tabTitle == null || currentModel == null) return;
     boolean hasError = currentModel.getHasError();
-    String text = currentModel.getFileName();
+    String text = (hasStar ? "*" : "") + currentModel.getFileName();
     if (hasError == lastShownHasError && text.equals(lastShownTitle)) return;
     lastShownHasError = hasError;
     lastShownTitle = text;
@@ -143,5 +133,12 @@ public class TabCustomView extends LinearLayout
     SpannableString spannable = new SpannableString(text);
     spannable.setSpan(errorSpan, 0, text.length(), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
     binding.tabTitle.setText(spannable);
+  }
+
+  public void setHasErrors(boolean hasError) {
+    if (currentModel != null) {
+      currentModel.setHasError(hasError);
+    }
+    updateTitleText();
   }
 }
