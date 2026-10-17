@@ -580,8 +580,10 @@
     <string name="runner_custom_desc">Define your own runner: a file extension and the command to run it.</string>
     <string name="runner_custom_hint">Format: ext:command — one per line, e.g. rb:ruby "{file}". Placeholders: {file}, {dir}, {file_name}, {base}</string>
     <string name="icon_pack_title">Icon pack</string>
+    <string name="background_plugin_title">Background plugin</string>
     <string name="plugin_settings_title">Plugin settings</string>
     <string name="icon_pack_default">Default (built-in icons)</string>
+    <string name="background_plugin_default">Default (theme background)</string>
     <string name="icon_atomicghost"> Atom Ghost</string>
     <string name="icon_neonpurple"> Icon Neon</string>
     <string name="icon_devilishpurple">Devilish Purple</string>

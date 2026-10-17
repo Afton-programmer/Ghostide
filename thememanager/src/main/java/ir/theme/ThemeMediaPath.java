@@ -35,6 +35,7 @@ public final class ThemeMediaPath {
   private static final String PREFIX_CONTENT = "content:";
   private static final String PREFIX_RELATIVE_DOT = "./";
   private static final String PREFIX_RELATIVE_PARENT = "../";
+  private static final String SCHEME_SEPARATOR = "://";
 
   private ThemeMediaPath() {}
 
@@ -56,6 +57,12 @@ public final class ThemeMediaPath {
     }
     if (storedPath.startsWith(PREFIX_CONTENT) || storedPath.startsWith("http")
         || storedPath.startsWith("file:") || storedPath.startsWith("/")) {
+      return storedPath;
+    }
+    // Plugin-contributed backgrounds use their own URI scheme (e.g. myplayer://clip.mp4). Such a
+    // path is already absolute and must reach ViewChilder untouched, so the registered
+    // PluginBackgroundRenderer can claim it instead of it being resolved as a relative file.
+    if (hasScheme(storedPath)) {
       return storedPath;
     }
     File themeDir = themeDirOf(themeFilePath);
@@ -107,6 +114,23 @@ public final class ThemeMediaPath {
       }
     }
     return realPath;
+  }
+
+  /** True for {@code scheme://...} paths (RFC 3986 scheme) that are not relative file paths. */
+  private static boolean hasScheme(@NonNull String path) {
+    int schemeEnd = path.indexOf(SCHEME_SEPARATOR);
+    if (schemeEnd <= 0) {
+      return false;
+    }
+    for (int i = 0; i < schemeEnd; i++) {
+      char c = path.charAt(i);
+      boolean letter = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+      boolean tail = i > 0 && ((c >= '0' && c <= '9') || c == '+' || c == '-' || c == '.');
+      if (!letter && !tail) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Nullable

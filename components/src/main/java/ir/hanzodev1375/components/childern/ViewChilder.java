@@ -37,6 +37,12 @@ public class ViewChilder extends FrameLayout {
   private IChild current;
   private String currentPath;
   private float currentBlur = Float.NaN;
+  private int currentGeneration = -1;
+
+  /** True once load/reload ran, even when nothing is displayed (empty path and no plugin). */
+  private boolean requested;
+
+  private float requestedBlur;
 
   private WallpaperParallaxEffect parallaxEffect;
   private boolean parallaxPrefEnabled;
@@ -46,6 +52,13 @@ public class ViewChilder extends FrameLayout {
       (prefs, key) -> {
         if (ComponentsPrefs.KEY_PARALLAX.equals(key)) {
           setParallaxPrefEnabled(prefs.getBoolean(ComponentsPrefs.KEY_PARALLAX, true));
+        }
+      };
+
+  private final BackgroundChildRegistry.GenerationListener generationListener =
+      () -> {
+        if (requested) {
+          load(currentPath, requestedBlur);
         }
       };
 
@@ -92,19 +105,32 @@ public class ViewChilder extends FrameLayout {
 
   public void reload(@Nullable String path, @Nullable LifecycleOwner owner, float blurSize) {
     clearCurrent();
-    if (path == null || path.trim().isEmpty()) {
-      setVisibility(INVISIBLE);
-      return;
+    requested = true;
+    requestedBlur = blurSize;
+    currentGeneration = BackgroundChildRegistry.generation();
+    boolean empty = path == null || path.trim().isEmpty();
+    IChild child;
+    if (empty) {
+      // No theme wallpaper: the selected background plugin may still own the background.
+      LifecycleOwner resolved = owner != null ? owner : findOwnerFrom(getContext());
+      child = BackgroundChildRegistry.resolve(getContext(), "", resolved, blurSize);
+      if (child == null) {
+        setVisibility(INVISIBLE);
+        return;
+      }
+    } else {
+      child = create(getContext(), path, owner, blurSize);
+      currentPath = path;
     }
     setVisibility(VISIBLE);
-    current = create(getContext(), path, owner, blurSize);
-    currentPath = path;
+    current = child;
     currentBlur = blurSize;
     addView(current.view());
     startParallax();
   }
 
   public void clear() {
+    requested = false;
     clearCurrent();
     setVisibility(INVISIBLE);
     stopParallax();
@@ -121,6 +147,7 @@ public class ViewChilder extends FrameLayout {
     SharedPreferences prefs =
         PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
     prefs.registerOnSharedPreferenceChangeListener(parallaxPrefListener);
+    BackgroundChildRegistry.addGenerationListener(generationListener);
     startParallax();
   }
 
@@ -130,6 +157,7 @@ public class ViewChilder extends FrameLayout {
     SharedPreferences prefs =
         PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
     prefs.unregisterOnSharedPreferenceChangeListener(parallaxPrefListener);
+    BackgroundChildRegistry.removeGenerationListener(generationListener);
     stopParallax();
   }
 
@@ -212,7 +240,11 @@ public class ViewChilder extends FrameLayout {
   }
 
   private boolean isShowing(@Nullable String path, float blurSize) {
-    return current != null && path != null && path.equals(currentPath) && blurSize == currentBlur;
+    boolean empty = path == null || path.trim().isEmpty();
+    return current != null
+        && (empty ? currentPath == null : path.equals(currentPath))
+        && blurSize == currentBlur
+        && BackgroundChildRegistry.generation() == currentGeneration;
   }
 
   private void clearCurrent() {
@@ -220,6 +252,7 @@ public class ViewChilder extends FrameLayout {
     current = null;
     currentPath = null;
     currentBlur = Float.NaN;
+    currentGeneration = -1;
     removeAllViews();
     if (old != null) {
       old.release();

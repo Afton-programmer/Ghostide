@@ -337,6 +337,7 @@ Directory structure:
     │           │       │       ├── paged/
     │           │       │       │   └── PagedEditSession.java
     │           │       │       ├── plugin/
+    │           │       │       │   ├── BackgroundPluginManager.java
     │           │       │       │   ├── BackgroundRendererBridge.java
     │           │       │       │   ├── FloatingPanelWindow.java
     │           │       │       │   ├── Plugin.java
@@ -469,6 +470,7 @@ Directory structure:
     │           │       │       ├── settings/
     │           │       │       │   ├── AiSettingSection.java
     │           │       │       │   ├── AppSettingSection.java
+    │           │       │       │   ├── BackgroundPluginSettingSection.java
     │           │       │       │   ├── CodeRunnerSetting.java
     │           │       │       │   ├── EditorSettingSection.java
     │           │       │       │   ├── IconPackSettingSection.java

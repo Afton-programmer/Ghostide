@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Static hook that lets host code contribute custom {@link BackgroundChildFactory} renderers to
@@ -32,12 +33,55 @@ public final class BackgroundChildRegistry {
     IChild resolve(Context context, String path, @Nullable LifecycleOwner owner, float blurSize);
   }
 
+  /** Notified when the active custom-background configuration changes. */
+  public interface GenerationListener {
+
+    void onGenerationChanged();
+  }
+
   private static final CopyOnWriteArrayList<BackgroundChildFactory> FACTORIES =
+      new CopyOnWriteArrayList<>();
+
+  private static final CopyOnWriteArrayList<GenerationListener> LISTENERS =
       new CopyOnWriteArrayList<>();
 
   @Nullable private static volatile Resolver resolver;
 
+  private static final AtomicInteger GENERATION = new AtomicInteger();
+
   private BackgroundChildRegistry() {}
+
+  /**
+   * Monotonic version of the custom-background configuration. A {@link ViewChilder} records it when
+   * it loads content and reloads when it changes, so switching the active background plugin (or
+   * installing/removing one) takes effect without recreating the view.
+   */
+  public static int generation() {
+    return GENERATION.get();
+  }
+
+  /** Signals that custom background renderers changed and every view should re-resolve. */
+  public static void bumpGeneration() {
+    GENERATION.incrementAndGet();
+    for (GenerationListener listener : LISTENERS) {
+      try {
+        listener.onGenerationChanged();
+      } catch (RuntimeException e) {
+        Log.e(TAG, "Background generation listener failed", e);
+      }
+    }
+  }
+
+  /** Registers a listener notified whenever {@link #bumpGeneration()} runs. */
+  public static void addGenerationListener(GenerationListener listener) {
+    if (listener != null && !LISTENERS.contains(listener)) {
+      LISTENERS.add(listener);
+    }
+  }
+
+  public static void removeGenerationListener(GenerationListener listener) {
+    LISTENERS.remove(listener);
+  }
 
   /** Registers a host factory. Re-registering the same instance is a no-op. */
   public static void register(BackgroundChildFactory factory) {

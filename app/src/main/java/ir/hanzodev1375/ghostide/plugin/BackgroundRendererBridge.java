@@ -26,10 +26,15 @@ public final class BackgroundRendererBridge {
 
   private static final BackgroundChildRegistry.Resolver RESOLVER =
       (context, path, owner, blurSize) -> {
-        if (path == null) return null;
+        if (path == null || context == null) return null;
+        // Only the single selected background plugin is consulted, so installing further plugins
+        // never overrides the active one (same model as the icon packs).
+        String selected = BackgroundPluginManager.selected(context);
+        if (selected == null || selected.isEmpty()) return null;
         for (ExtensionRegistration<PluginBackgroundRenderer> registration :
             GlobalRegistry.extensions()
                 .registrations(PluginUiExtensionPoints.BACKGROUND_RENDERER)) {
+          if (!selected.equals(registration.ownerPluginId())) continue;
           PluginBackgroundRenderer renderer = registration.extension();
           boolean supports;
           try {

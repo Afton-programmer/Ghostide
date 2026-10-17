@@ -578,8 +578,10 @@
   <string name="runner_custom_desc">اجراکننده دلخواه خودت رو تعریف کن: یک پسوند فایل و دستوری که اجرا بشه.</string>
   <string name="runner_custom_hint">فرمت: ext:command — هر خط یکی، مثل rb:ruby "{file}". جایگزین‌ها: {file}، {dir}، {file_name}، {base}</string>
   <string name="icon_pack_title">آیکون‌پک</string>
+  <string name="background_plugin_title">پلاگین بک‌گراند</string>
   <string name="plugin_settings_title">تنظیمات پلاگین‌ها</string>
   <string name="icon_pack_default">پیش‌فرض (آیکون‌های داخلی)</string>
+  <string name="background_plugin_default">پیش‌فرض (بک‌گراند تم)</string>
   <string name="icon_atomicghost">اتم گوست</string>
   <string name="icon_neonpurple">نماد نئون</string>
   <string name="icon_devilishpurple">بنفش شیطانی</string>

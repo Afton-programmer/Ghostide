@@ -22,6 +22,7 @@ import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.customui.ExpandableLayout;
 import ir.hanzodev1375.ghostide.settings.AiSettingSection;
 import ir.hanzodev1375.ghostide.settings.AppSettingSection;
+import ir.hanzodev1375.ghostide.settings.BackgroundPluginSettingSection;
 import ir.hanzodev1375.ghostide.settings.CodeRunnerSetting;
 import ir.hanzodev1375.ghostide.settings.EditorSettingSection;
 import ir.hanzodev1375.ghostide.settings.IconPackSettingSection;
@@ -46,10 +47,12 @@ public class SettingActivity extends BaseCompat {
   private LspSettingSection lspSection;
   private CodeRunnerSetting runnerSection;
   private IconPackSettingSection iconPackSection;
+  private BackgroundPluginSettingSection backgroundPluginSection;
   private PluginSettingSection pluginSection;
   private ExpandableLayout expandEditor, expandApp, LspView, expandAi, expandRunner, expandIconPack,
-      expandPlugins;
-  private RecyclerView rvEditor, rvApp, rvLsp, rvAi, rvRunner, rvIconPack, rvPlugins;
+      expandBackgroundPlugin, expandPlugins;
+  private RecyclerView rvEditor, rvApp, rvLsp, rvAi, rvRunner, rvIconPack, rvBackgroundPlugin,
+      rvPlugins;
   private SearchLayout ser;
   private boolean isSearchActive = false;
   private Runnable filterRunnable;
@@ -81,6 +84,7 @@ public class SettingActivity extends BaseCompat {
     LspView = findViewById(R.id.lspsetting);
     expandRunner = findViewById(R.id.expandRunner);
     expandIconPack = findViewById(R.id.expandIconPack);
+    expandBackgroundPlugin = findViewById(R.id.expandBackgroundPlugin);
     expandPlugins = findViewById(R.id.expandPlugins);
 
     expandEditor.setTitle(getString(R.string.section_editor));
@@ -89,6 +93,7 @@ public class SettingActivity extends BaseCompat {
     LspView.setTitle(getString(R.string.lsptitles));
     expandRunner.setTitle(getString(R.string.runner_section_title));
     expandIconPack.setTitle(getString(R.string.icon_pack_title));
+    expandBackgroundPlugin.setTitle(getString(R.string.background_plugin_title));
     expandPlugins.setTitle(getString(R.string.plugin_settings_title));
 
     rvEditor = expandEditor.getRecyclerView();
@@ -97,6 +102,7 @@ public class SettingActivity extends BaseCompat {
     rvLsp = LspView.getRecyclerView();
     rvRunner = expandRunner.getRecyclerView();
     rvIconPack = expandIconPack.getRecyclerView();
+    rvBackgroundPlugin = expandBackgroundPlugin.getRecyclerView();
     rvPlugins = expandPlugins.getRecyclerView();
     rvEditor.setLayoutManager(new LinearLayoutManager(this));
     rvApp.setLayoutManager(new LinearLayoutManager(this));
@@ -104,6 +110,7 @@ public class SettingActivity extends BaseCompat {
     rvLsp.setLayoutManager(new LinearLayoutManager(this));
     rvRunner.setLayoutManager(new LinearLayoutManager(this));
     rvIconPack.setLayoutManager(new LinearLayoutManager(this));
+    rvBackgroundPlugin.setLayoutManager(new LinearLayoutManager(this));
     rvPlugins.setLayoutManager(new LinearLayoutManager(this));
 
     editorSection = new EditorSettingSection(this, prefs);
@@ -112,6 +119,7 @@ public class SettingActivity extends BaseCompat {
     lspSection = new LspSettingSection(this, prefs);
     runnerSection = new CodeRunnerSetting(this, prefs);
     iconPackSection = new IconPackSettingSection(this, prefs);
+    backgroundPluginSection = new BackgroundPluginSettingSection(this);
     pluginSection = new PluginSettingSection(this);
 
     rvEditor.setAdapter(editorSection.createAdapter());
@@ -120,6 +128,7 @@ public class SettingActivity extends BaseCompat {
     rvLsp.setAdapter(lspSection.createAdapter());
     rvRunner.setAdapter(runnerSection.createAdapter());
     rvIconPack.setAdapter(iconPackSection.createAdapter());
+    rvBackgroundPlugin.setAdapter(backgroundPluginSection.createAdapter());
     rvPlugins.setAdapter(pluginSection.createAdapter());
     hideSectionIfEmpty(expandEditor, editorSection);
     hideSectionIfEmpty(expandApp, appSection);
@@ -127,6 +136,7 @@ public class SettingActivity extends BaseCompat {
     hideSectionIfEmpty(LspView, lspSection);
     hideSectionIfEmpty(expandRunner, runnerSection);
     hideSectionIfEmpty(expandIconPack, iconPackSection);
+    hideSectionIfEmpty(expandBackgroundPlugin, backgroundPluginSection);
     hideSectionIfEmpty(expandPlugins, pluginSection);
 
     ser.show();
@@ -157,6 +167,7 @@ public class SettingActivity extends BaseCompat {
     rvLsp.setItemAnimator(null);
     rvRunner.setItemAnimator(null);
     rvIconPack.setItemAnimator(null);
+    rvBackgroundPlugin.setItemAnimator(null);
     rvPlugins.setItemAnimator(null);
 
     ser.setOnTextChangedListener(
@@ -174,6 +185,7 @@ public class SettingActivity extends BaseCompat {
                   if (!LspView.isExpanded()) LspView.expand();
                   if (!expandRunner.isExpanded()) expandRunner.expand();
                   if (!expandIconPack.isExpanded()) expandIconPack.expand();
+                  if (!expandBackgroundPlugin.isExpanded()) expandBackgroundPlugin.expand();
                   if (expandPlugins.getVisibility() == View.VISIBLE
                       && !expandPlugins.isExpanded()) {
                     expandPlugins.expand();
@@ -195,6 +207,7 @@ public class SettingActivity extends BaseCompat {
                   if (LspView.isExpanded()) LspView.collapse();
                   if (expandRunner.isExpanded()) expandRunner.collapse();
                   if (expandIconPack.isExpanded()) expandIconPack.collapse();
+                  if (expandBackgroundPlugin.isExpanded()) expandBackgroundPlugin.collapse();
                   if (expandPlugins.isExpanded()) expandPlugins.collapse();
                   isSearchActive = false;
                   ser.removeCallbacks(expandRunnable);
@@ -222,6 +235,7 @@ public class SettingActivity extends BaseCompat {
     aiSection.filter(query);
     runnerSection.filter(query);
     iconPackSection.filter(query);
+    backgroundPluginSection.filter(query);
     pluginSection.filter(query);
   }
 
@@ -234,6 +248,7 @@ public class SettingActivity extends BaseCompat {
           aiSection,
           runnerSection,
           iconPackSection,
+          backgroundPluginSection,
           pluginSection
         }) {
       section.resetToFull();

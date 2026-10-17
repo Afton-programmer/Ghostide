@@ -880,6 +880,19 @@ public class PreferencesUtils {
     getDefaultPreferences().edit().putString(KEY_ICON_PACK, id == null ? "" : id).apply();
   }
 
+  // ========== Background Plugin Settings ==========
+
+  /** Empty string means "no background plugin" (the theme's own imagepath is used). */
+  public static final String KEY_BACKGROUND_PLUGIN = "background_plugin_selected";
+
+  public String getBackgroundPlugin() {
+    return getDefaultPreferences().getString(KEY_BACKGROUND_PLUGIN, "");
+  }
+
+  public void setBackgroundPlugin(String id) {
+    getDefaultPreferences().edit().putString(KEY_BACKGROUND_PLUGIN, id == null ? "" : id).apply();
+  }
+
   public boolean isBackgroundZoomMod() {
     return getDefaultPreferences().getBoolean(Constants.SharedPreferenceKeys.KEY_CONSTZOOM, false);
   }
