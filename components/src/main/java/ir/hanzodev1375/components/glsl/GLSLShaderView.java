@@ -48,7 +48,7 @@ public class GLSLShaderView extends GLSurfaceView {
     super(context, attrs);
     setEGLContextClientVersion(2);
     setPreserveEGLContextOnPause(false);
-    renderer = new ShaderRenderer(GlslEffects.fragmentShader(GlslEffects.AURA));
+    renderer = new ShaderRenderer(GlslEffects.fragmentShader(GlslEffects.LIQUID));
     setRenderer(renderer);
     setRenderMode(RENDERMODE_CONTINUOUSLY);
   }

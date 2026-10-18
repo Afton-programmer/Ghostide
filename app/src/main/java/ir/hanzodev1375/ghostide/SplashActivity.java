@@ -2,6 +2,8 @@ package ir.hanzodev1375.ghostide;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ImageView;
 import ir.hanzodev1375.components.glsl.GLSLShaderView;
 import ir.hanzodev1375.components.glsl.GlslPalette;
@@ -14,6 +16,11 @@ import ir.theme.M3Theme;
 
 public class SplashActivity extends BaseCompat {
 
+  private static final long LOGO_FADE_MS = 800L;
+  private static final long SPLASH_HOLD_MS = 3000L;
+
+  private final Handler handler = new Handler(Looper.getMainLooper());
+  private final Runnable proceedRunnable = this::startFileManager;
   private boolean started = false;
 
   @Override
@@ -27,18 +34,15 @@ public class SplashActivity extends BaseCompat {
 
     ImageView logo = findViewById(R.id.logo);
     logo.setAlpha(0f);
-    logo
-        .animate()
-        .alpha(1f)
-        .setDuration(800)
-        .withEndAction(() -> logo.postDelayed(this::startFileManager, 1200))
-        .start();
+    logo.animate().alpha(1f).setDuration(LOGO_FADE_MS).start();
+
+    handler.postDelayed(proceedRunnable, LOGO_FADE_MS + SPLASH_HOLD_MS);
 
     M3Theme.apply(findViewById(android.R.id.content));
   }
 
   private void startFileManager() {
-    if (started) return;
+    if (started || isFinishing()) return;
     started = true;
     ImageView logo = findViewById(R.id.logo);
     Intent intent;
@@ -52,8 +56,8 @@ public class SplashActivity extends BaseCompat {
   }
 
   @Override
-  protected void onResume() {
-    super.onResume();
-    startFileManager();
+  protected void onDestroy() {
+    handler.removeCallbacks(proceedRunnable);
+    super.onDestroy();
   }
 }

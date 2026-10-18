@@ -13,7 +13,7 @@ import ir.hanzodev1375.components.childern.IChild;
  *
  * <p>Registering it is enough to make every {@code ViewChilder} (Editor, FileManager, Terminal,
  * Settings, About, ...) able to show a live GPU background: a theme only has to store a
- * {@code glsl://nebula} (or aurora/plasma/grid) path as its background media.
+ * {@code glsl://liquid} (or silk/galaxy) path as its background media.
  */
 public final class GlslBackgroundFactory implements BackgroundChildFactory {
 

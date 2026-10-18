@@ -36,6 +36,10 @@ public class ComponentsPrefs {
   public boolean isGlslEnabled() {
     return prefs.getBoolean(KEY_GLSL_ENABLED, true);
   }
+  
+  public void setGlslEnabled(boolean mod){
+    prefs.edit().putBoolean(KEY_GLSL_ENABLED,mod).apply();
+  }
 
   public boolean isGlassMaterialColor() {
     return prefs.getBoolean("m3glassColor", true);

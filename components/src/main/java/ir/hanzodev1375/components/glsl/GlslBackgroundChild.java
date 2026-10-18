@@ -53,7 +53,7 @@ public final class GlslBackgroundChild implements IChild {
   /** Extracts the effect name from a {@code glsl://name} path. */
   private static String effectOf(String path) {
     if (path == null) {
-      return GlslEffects.AURORA;
+      return GlslEffects.LIQUID;
     }
     int separator = path.indexOf("://");
     String name = separator >= 0 ? path.substring(separator + 3) : path;
@@ -61,6 +61,6 @@ public final class GlslBackgroundChild implements IChild {
     if (cut >= 0) {
       name = name.substring(0, cut);
     }
-    return name.trim().isEmpty() ? GlslEffects.AURORA : name;
+    return name.trim().isEmpty() ? GlslEffects.LIQUID : name;
   }
 }

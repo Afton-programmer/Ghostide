@@ -96,6 +96,8 @@ public class SettingActivity extends BaseCompat {
     expandBackgroundPlugin.setTitle(getString(R.string.background_plugin_title));
     expandPlugins.setTitle(getString(R.string.plugin_settings_title));
 
+    setExpandableBackdrop(findViewById(R.id.backgroundIconSetting));
+
     rvEditor = expandEditor.getRecyclerView();
     rvApp = expandApp.getRecyclerView();
     rvAi = expandAi.getRecyclerView();
@@ -259,6 +261,24 @@ public class SettingActivity extends BaseCompat {
   private void hideSectionIfEmpty(ExpandableLayout layout, SettingSection section) {
     if (section.getAdapter().getItemCount() == 0) {
       layout.setVisibility(View.GONE);
+    }
+  }
+
+  /** Points every expandable glass card at the settings background so it has a backdrop to sample. */
+  private void setExpandableBackdrop(View backdrop) {
+    if (backdrop == null) return;
+    for (ExpandableLayout layout :
+        new ExpandableLayout[] {
+          expandEditor,
+          expandApp,
+          expandAi,
+          LspView,
+          expandRunner,
+          expandIconPack,
+          expandBackgroundPlugin,
+          expandPlugins
+        }) {
+      layout.setBackdropSource(backdrop);
     }
   }
 

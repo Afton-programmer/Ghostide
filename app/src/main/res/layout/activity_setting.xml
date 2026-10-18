@@ -50,49 +50,57 @@
                 android:id="@+id/expandEditor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
 
             <ir.hanzodev1375.ghostide.customui.ExpandableLayout
                 android:id="@+id/expandApp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
 
             <ir.hanzodev1375.ghostide.customui.ExpandableLayout
                 android:id="@+id/expandAi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
 
             <ir.hanzodev1375.ghostide.customui.ExpandableLayout
                 android:id="@+id/lspsetting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
 
             <ir.hanzodev1375.ghostide.customui.ExpandableLayout
                 android:id="@+id/expandRunner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
 
             <ir.hanzodev1375.ghostide.customui.ExpandableLayout
                 android:id="@+id/expandIconPack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
 
             <ir.hanzodev1375.ghostide.customui.ExpandableLayout
                 android:id="@+id/expandBackgroundPlugin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
 
             <ir.hanzodev1375.ghostide.customui.ExpandableLayout
                 android:id="@+id/expandPlugins"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="8dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -50,7 +50,7 @@ public class AppSettingSection extends SettingSection {
   private static final int POS_ANIMATION_THRESHOLD = 9;
   private static final int POS_GRID_COUNT = 10;
   private static final int POS_GLASS_TINT = 14;
-
+ private ComponentsPrefs componentsprefs;
   private static final String THEMES_DIRECTORY = "ghostide/themes";
 
   private final PreferencesUtils prefs;
@@ -58,6 +58,7 @@ public class AppSettingSection extends SettingSection {
   public AppSettingSection(SettingActivity activity, PreferencesUtils prefs) {
     super(activity);
     this.prefs = prefs;
+    componentsprefs = new ComponentsPrefs(activity.getApplicationContext());
   }
 
   public void openGitHubAccount() {
@@ -143,9 +144,9 @@ public class AppSettingSection extends SettingSection {
         switchItem(
             R.string.pref_glass_mode,
             R.string.pref_glass_mode_desc,
-            new ComponentsPrefs(activity).isGlassEnabled(),
+            componentsprefs.isGlassEnabled(),
             isChecked -> {
-              new ComponentsPrefs(activity).setGlassEnabled(isChecked);
+              componentsprefs.setGlassEnabled(isChecked);
               activity.recreate();
             }));
     items.add(
@@ -156,6 +157,12 @@ public class AppSettingSection extends SettingSection {
                 + String.format(
                     getString(R.string.current_value),
                     String.format(Locale.US, "%.2f", getGlassTint()))));
+      items.add(
+        switchItem(
+            R.string.terfrtitle,
+            R.string.terfrsubtitle,
+            componentsprefs.isGlslEnabled(),
+            componentsprefs::setGlslEnabled));
     return items;
   }
 
@@ -314,7 +321,7 @@ public class AppSettingSection extends SettingSection {
   }
 
   private float getGlassTint() {
-    return new ComponentsPrefs(activity).getGlassTint();
+    return componentsprefs.getGlassTint();
   }
 
   private void showGlassTintDialog() {

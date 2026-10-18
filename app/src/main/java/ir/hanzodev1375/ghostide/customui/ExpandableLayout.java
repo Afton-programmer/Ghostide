@@ -13,24 +13,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.card.MaterialCardView;
+import com.example.liquidglass.GlassMaterial;
 import ir.hanzodev1375.components.animators.AnimationManager;
-import ir.hanzodev1375.ghostide.GhostIdeAppLoader;
+import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
 import ir.hanzodev1375.ghostide.R;
-import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.theme.M3Theme;
 
-public class ExpandableLayout extends LinearLayout {
+/**
+ * Collapsible settings card rendered as a {@link GlassCompat} surface.
+ *
+ * <p>The class is itself the glass card: {@code GlassCompat} is a {@code LiquidGlassView} (i.e. a
+ * {@link android.widget.FrameLayout}), so the header and the section list live inside a vertical
+ * container inflated from {@code layout_expandable}. The glass samples a backdrop, so the host must
+ * call {@link #setBackdropSource(View)} with the view painted behind this card.
+ */
+public class ExpandableLayout extends GlassCompat {
+
   private static final int ANIM_DURATION = 200;
+  private static final float CORNER_RADIUS_DP = 12f;
 
   private TextView titleView;
   private ImageView arrowIcon;
   private RecyclerView recyclerView;
   private boolean isExpanded = false;
-  private PreferencesUtils appsetting;
-  private MaterialCardView card;
   private ValueAnimator heightAnimator;
 
   public ExpandableLayout(@NonNull Context context) {
@@ -50,16 +56,26 @@ public class ExpandableLayout extends LinearLayout {
   }
 
   private void init(Context context) {
-    setOrientation(VERTICAL);
+    float density = getResources().getDisplayMetrics().density;
+    setCornerRadius(CORNER_RADIUS_DP * density);
+    setRefractionHeight(40f * density);
+    setBevelWidth(8f * density);
+    setDispersionStrength(0.1f);
+    setMaterial(GlassMaterial.REGULAR);
+    setEnableDynamicBackground(true);
+    setEnableSensorHighlight(false);
+    setEnableAdaptiveTint(true);
+    refresh();
+
     LayoutInflater.from(context).inflate(R.layout.layout_expandable, this, true);
     titleView = findViewById(R.id.expandable_title);
     arrowIcon = findViewById(R.id.expandable_arrow);
     recyclerView = findViewById(R.id.expandable_recycler);
-    card = findViewById(R.id.cardEx);
     findViewById(R.id.expandable_header).setOnClickListener(v -> toggle());
     recyclerView.setVisibility(GONE);
-    appsetting = new PreferencesUtils(context);
-    stepCard();
+
+    M3Theme.textView(titleView);
+    M3Theme.imageView(arrowIcon);
   }
 
   public void setTitle(String title) {
@@ -68,16 +84,6 @@ public class ExpandableLayout extends LinearLayout {
 
   public RecyclerView getRecyclerView() {
     return recyclerView;
-  }
-
-  void stepCard() {
-    var isBack = GhostIdeAppLoader.getInstance().getSetting().isShowBackground();
-    var color = M3Theme.surface();
-    var stroke = M3Theme.outline();
-    card.setCardBackgroundColor(isBack ? ColorUtils.setAlphaComponent(color, 128) : color);
-    card.setStrokeColor(isBack ? ColorUtils.setAlphaComponent(stroke, 128) : stroke);
-    M3Theme.textView(titleView);
-    M3Theme.imageView(arrowIcon);
   }
 
   public void toggle() {
