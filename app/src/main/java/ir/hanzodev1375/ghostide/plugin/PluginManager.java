@@ -13,8 +13,6 @@ public class PluginManager {
   private static PluginManager instance;
   private PluginLoader loader;
   private final Map<String, PluginConfigModel> configs = new HashMap<>();
-  private EditorActivity currentEditorActivity;
-  private FileManagerActivity currentFileManagerActivity;
 
   private PluginManager(Context context) {
     loader = new PluginLoader(context);
@@ -42,7 +40,6 @@ public class PluginManager {
 
   public void setCurrentEditorActivity(
       EditorActivity activity, IdeEditor editor, String filePath, String fileExtension) {
-    this.currentEditorActivity = activity;
     for (Plugin p : getPluginsForFileType(fileExtension)) {
       p.setEditorActivity(activity);
       p.onEditorReady(editor);
@@ -57,6 +54,28 @@ public class PluginManager {
     for (Plugin p : loader.getAllPlugins().values()) {
       try {
         p.setFileManagerActivity(activity);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /** Clears cached editor activity references so destroyed activities are not retained. */
+  public void clearEditorActivityReferences() {
+    for (Plugin p : loader.getAllPlugins().values()) {
+      try {
+        p.setEditorActivity(null);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /** Clears cached file manager references so destroyed activities are not retained. */
+  public void clearFileManagerActivityReferences() {
+    for (Plugin p : loader.getAllPlugins().values()) {
+      try {
+        p.setFileManagerActivity(null);
       } catch (Exception e) {
         e.printStackTrace();
       }
