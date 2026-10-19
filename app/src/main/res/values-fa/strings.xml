@@ -609,6 +609,7 @@
   <string name="onboarding_perm_install_desc">نصب بسته های برنامه را مجاز کنید</string>
   <string name="onboarding_perm_grant">گرانت</string>
   <string name="onboarding_perm_granted">داده شده است</string>
+  <string name="onboarding_perm_unavailable">این تنظیم روی دستگاه شما در دسترس نیست</string>
   <string name="onboarding_terminal_desc">یک ترمینال واقعی لینوکس در جیب شما به شما امکان می دهد بسته ها را نصب کرده و ابزارها را اجرا کنید. بدون آن برخی از ویژگی ها و دستورات LSP کار نمی کنند.</string>
   <string name="onboarding_terminal_warning">برخی از LSP ها بدون ترمینال کار نمی کنند</string>
   <string name="onboarding_terminal_install">برای نصب کلیک کنید</string>

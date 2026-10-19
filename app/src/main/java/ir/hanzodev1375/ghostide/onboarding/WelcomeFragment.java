@@ -1,6 +1,7 @@
 package ir.hanzodev1375.ghostide.onboarding;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -19,21 +20,20 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.material.card.MaterialCardView;
+import ir.hanzodev1375.components.views.GhostToast;
 import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.databinding.FragmentWelcomeBinding;
 import ir.hanzodev1375.ghostide.databinding.ItemOnboardingPermissionBinding;
 import ir.hanzodev1375.ghostide.utils.PermissionUtils;
 import ir.theme.M3Theme;
-import java.util.ArrayList;
-import java.util.List;
 
 public class WelcomeFragment extends Fragment {
 
   private static final int REQ_NOTIFICATION = 2030;
-  private static final int REQ_RUNTIME = 1001;
 
   private FragmentWelcomeBinding binding;
   private ActivityResultLauncher<Intent> storageLauncher;
+  private ActivityResultLauncher<String[]> mediaLauncher;
 
   @Nullable
   @Override
@@ -72,29 +72,11 @@ public class WelcomeFragment extends Fragment {
     storageLauncher =
         registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> refreshGranted());
+    mediaLauncher =
+        registerForActivityResult(
+            new ActivityResultContracts.RequestMultiplePermissions(),
+            result -> refreshGranted());
     refreshGranted();
-    autoRequestMissing();
-  }
-
-  /** اولین باری که این صفحه باز می‌شود، هر مجوزِ نگرفته را خودکار درخواست می‌کند؛ دکمه‌های
-   * پایینش برای گرفتن دستی/دوباره باقی می‌مانند. */
-  private void autoRequestMissing() {
-    if (!PermissionUtils.hasManageStoragePermission(requireContext())) {
-      requestFiles();
-    }
-    if (!PermissionUtils.hasPermissions(requireContext())) {
-      List<String> missing = new ArrayList<>();
-      for (String perm : PermissionUtils.getRequiredPermissions()) {
-        if (ContextCompat.checkSelfPermission(requireContext(), perm)
-            != PackageManager.PERMISSION_GRANTED) {
-          missing.add(perm);
-        }
-      }
-      if (!missing.isEmpty()) {
-        requestPermissions(missing.toArray(new String[0]), REQ_RUNTIME);
-      }
-    }
-    requestNotifications();
   }
 
   @Override
@@ -104,6 +86,12 @@ public class WelcomeFragment extends Fragment {
       refreshGranted();
       animateIn();
     }
+  }
+
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    binding = null;
   }
 
   private void animateIn() {
@@ -143,6 +131,7 @@ public class WelcomeFragment extends Fragment {
   }
 
   private void refreshGranted() {
+    if (binding == null) return;
     int fallback = 0xFF202020;
     setGranted(binding.rowFiles, PermissionUtils.hasManageStoragePermission(requireContext()));
     boolean notified =
@@ -166,9 +155,17 @@ public class WelcomeFragment extends Fragment {
 
   private void requestFiles() {
     if (PermissionUtils.hasManageStoragePermission(requireContext())) return;
-    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-    intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
-    storageLauncher.launch(intent);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+      intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
+      try {
+        storageLauncher.launch(intent);
+      } catch (ActivityNotFoundException e) {
+        showPermissionSettingsMissing();
+      }
+    } else {
+      mediaLauncher.launch(PermissionUtils.getRequiredPermissions());
+    }
   }
 
   private void requestNotifications() {
@@ -181,15 +178,26 @@ public class WelcomeFragment extends Fragment {
   private void requestInstallApps() {
     Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
     intent.setData(Uri.parse("package:" + requireContext().getPackageName()));
-    startActivity(intent);
+    try {
+      startActivity(intent);
+    } catch (ActivityNotFoundException e) {
+      showPermissionSettingsMissing();
+    }
+  }
+
+  private void showPermissionSettingsMissing() {
+    GhostToast.makeText(
+            requireContext(),
+            getString(R.string.onboarding_perm_unavailable),
+            GhostToast.LENGTH_SHORT)
+        .show();
   }
 
   @Override
   public void onRequestPermissionsResult(
       int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if ((requestCode == REQ_NOTIFICATION || requestCode == REQ_RUNTIME) && binding != null)
-      refreshGranted();
+    if (requestCode == REQ_NOTIFICATION && binding != null) refreshGranted();
   }
 
   private static void tintCard(MaterialCardView card, int color) {
