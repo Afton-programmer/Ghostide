@@ -100,11 +100,19 @@ public class ExpandableLayout extends GlassCompat {
   }
 
   public void expand() {
+    expand(true);
+  }
+
+  /**
+   * @param animate pass {@code false} to skip the height animation; use when several sections
+   *     expand at once (e.g. search) so the glass cards are not re-rendered many times per frame.
+   */
+  public void expand(boolean animate) {
     if (isExpanded) return;
     isExpanded = true;
     stopRunningAnimation();
 
-    if (!AnimationManager.getInstance(getContext()).areAnimationsEnabled()) {
+    if (!animate || !AnimationManager.getInstance(getContext()).areAnimationsEnabled()) {
       resetRecyclerViewHeight();
       recyclerView.setVisibility(View.VISIBLE);
       arrowIcon.setRotation(90f);
@@ -116,7 +124,18 @@ public class ExpandableLayout extends GlassCompat {
         () -> {
           if (!isExpanded) return;
           int targetHeight = recyclerView.getHeight();
-          if (targetHeight <= 0) return;
+          if (targetHeight <= 0) {
+            // The list was never laid out (e.g. it became visible this frame); measure it
+            // instead of silently skipping the expansion.
+            recyclerView.measure(
+                View.MeasureSpec.makeMeasureSpec(recyclerView.getWidth(), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.UNSPECIFIED);
+            targetHeight = recyclerView.getMeasuredHeight();
+          }
+          if (targetHeight <= 0) {
+            resetRecyclerViewHeight();
+            return;
+          }
           LinearLayout.LayoutParams lp =
               (LinearLayout.LayoutParams) recyclerView.getLayoutParams();
           lp.height = 0;
@@ -130,17 +149,31 @@ public class ExpandableLayout extends GlassCompat {
                 lp.height = (int) a.getAnimatedValue();
                 recyclerView.setLayoutParams(lp);
               });
+          heightAnimator.addListener(
+              new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                  // Back to wrap_content so later content changes (filtering, adding rows)
+                  // are never clipped by a stale fixed height.
+                  if (isExpanded) resetRecyclerViewHeight();
+                }
+              });
           heightAnimator.start();
         });
     arrowIcon.animate().rotation(90f).setDuration(ANIM_DURATION).start();
   }
 
   public void collapse() {
+    collapse(true);
+  }
+
+  /** @param animate pass {@code false} to skip the height animation (see {@link #expand(boolean)}). */
+  public void collapse(boolean animate) {
     if (!isExpanded) return;
     isExpanded = false;
     stopRunningAnimation();
 
-    if (!AnimationManager.getInstance(getContext()).areAnimationsEnabled()) {
+    if (!animate || !AnimationManager.getInstance(getContext()).areAnimationsEnabled()) {
       recyclerView.setVisibility(View.GONE);
       resetRecyclerViewHeight();
       arrowIcon.setRotation(0f);

@@ -19,7 +19,12 @@ public class BackgroundPluginSettingSection extends SettingSection {
   @Override
   protected List<SettingItem> buildItems() {
     List<SettingItem> items = new ArrayList<>();
-    items.add(textItem(R.string.background_plugin_title, currentPluginDescription()));
+    List<BackgroundPluginManager.BackgroundPluginEntry> plugins =
+        BackgroundPluginManager.listInstalled(activity);
+    // With no background plugin installed there is nothing to pick; leave the list empty so the
+    // host hides the whole section instead of showing a dead row.
+    if (plugins.isEmpty()) return items;
+    items.add(textItem(R.string.background_plugin_title, describeSelected(plugins)));
     return items;
   }
 
@@ -29,12 +34,15 @@ public class BackgroundPluginSettingSection extends SettingSection {
   }
 
   private String currentPluginDescription() {
+    return describeSelected(BackgroundPluginManager.listInstalled(activity));
+  }
+
+  private String describeSelected(List<BackgroundPluginManager.BackgroundPluginEntry> plugins) {
     String selected = BackgroundPluginManager.selected(activity);
     if (selected == null || selected.isEmpty()) {
       return getString(R.string.background_plugin_default);
     }
-    for (BackgroundPluginManager.BackgroundPluginEntry entry :
-        BackgroundPluginManager.listInstalled(activity)) {
+    for (BackgroundPluginManager.BackgroundPluginEntry entry : plugins) {
       if (entry.id().equals(selected)) {
         if (entry.version() == null || entry.version().isEmpty()) {
           return entry.name();

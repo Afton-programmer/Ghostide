@@ -23,7 +23,11 @@ public class IconPackSettingSection extends SettingSection {
   @Override
   protected List<SettingItem> buildItems() {
     List<SettingItem> items = new ArrayList<>();
-    items.add(textItem(R.string.icon_pack_title, currentPackDescription()));
+    List<IconPackManager.IconPackEntry> packs = IconPackManager.listInstalled(activity);
+    // With no icon pack plugin installed there is nothing to pick; leave the list empty so the
+    // host hides the whole section instead of showing a dead row.
+    if (packs.isEmpty()) return items;
+    items.add(textItem(R.string.icon_pack_title, describeSelected(packs)));
     return items;
   }
 
@@ -33,11 +37,15 @@ public class IconPackSettingSection extends SettingSection {
   }
 
   private String currentPackDescription() {
+    return describeSelected(IconPackManager.listInstalled(activity));
+  }
+
+  private String describeSelected(List<IconPackManager.IconPackEntry> packs) {
     String selected = prefs.getIconPack();
     if (selected == null || selected.isEmpty()) {
       return getString(R.string.icon_pack_default);
     }
-    for (IconPackManager.IconPackEntry entry : IconPackManager.listInstalled(activity)) {
+    for (IconPackManager.IconPackEntry entry : packs) {
       if (entry.id().equals(selected)) {
         if (entry.version() == null || entry.version().isEmpty()) {
           return entry.name();

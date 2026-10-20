@@ -181,16 +181,24 @@ public class SettingActivity extends BaseCompat {
             ser.removeCallbacks(expandRunnable);
             expandRunnable =
                 () -> {
-                  if (!expandAi.isExpanded()) expandAi.expand();
-                  if (!expandApp.isExpanded()) expandApp.expand();
-                  if (!expandEditor.isExpanded()) expandEditor.expand();
-                  if (!LspView.isExpanded()) LspView.expand();
-                  if (!expandRunner.isExpanded()) expandRunner.expand();
-                  if (!expandIconPack.isExpanded()) expandIconPack.expand();
-                  if (!expandBackgroundPlugin.isExpanded()) expandBackgroundPlugin.expand();
+                  // Instant expansion: animating eight glass cards at once re-renders them
+                  // several times per frame and visibly freezes the screen.
+                  if (!expandAi.isExpanded()) expandAi.expand(false);
+                  if (!expandApp.isExpanded()) expandApp.expand(false);
+                  if (!expandEditor.isExpanded()) expandEditor.expand(false);
+                  if (!LspView.isExpanded()) LspView.expand(false);
+                  if (!expandRunner.isExpanded()) expandRunner.expand(false);
+                  if (expandIconPack.getVisibility() == View.VISIBLE
+                      && !expandIconPack.isExpanded()) {
+                    expandIconPack.expand(false);
+                  }
+                  if (expandBackgroundPlugin.getVisibility() == View.VISIBLE
+                      && !expandBackgroundPlugin.isExpanded()) {
+                    expandBackgroundPlugin.expand(false);
+                  }
                   if (expandPlugins.getVisibility() == View.VISIBLE
                       && !expandPlugins.isExpanded()) {
-                    expandPlugins.expand();
+                    expandPlugins.expand(false);
                   }
                 };
             ser.postDelayed(expandRunnable, 50);
@@ -203,14 +211,14 @@ public class SettingActivity extends BaseCompat {
                   filterAll(item);
                 } else {
                   resetAll();
-                  if (expandAi.isExpanded()) expandAi.collapse();
-                  if (expandApp.isExpanded()) expandApp.collapse();
-                  if (expandEditor.isExpanded()) expandEditor.collapse();
-                  if (LspView.isExpanded()) LspView.collapse();
-                  if (expandRunner.isExpanded()) expandRunner.collapse();
-                  if (expandIconPack.isExpanded()) expandIconPack.collapse();
-                  if (expandBackgroundPlugin.isExpanded()) expandBackgroundPlugin.collapse();
-                  if (expandPlugins.isExpanded()) expandPlugins.collapse();
+                  if (expandAi.isExpanded()) expandAi.collapse(false);
+                  if (expandApp.isExpanded()) expandApp.collapse(false);
+                  if (expandEditor.isExpanded()) expandEditor.collapse(false);
+                  if (LspView.isExpanded()) LspView.collapse(false);
+                  if (expandRunner.isExpanded()) expandRunner.collapse(false);
+                  if (expandIconPack.isExpanded()) expandIconPack.collapse(false);
+                  if (expandBackgroundPlugin.isExpanded()) expandBackgroundPlugin.collapse(false);
+                  if (expandPlugins.isExpanded()) expandPlugins.collapse(false);
                   isSearchActive = false;
                   ser.removeCallbacks(expandRunnable);
                 }
