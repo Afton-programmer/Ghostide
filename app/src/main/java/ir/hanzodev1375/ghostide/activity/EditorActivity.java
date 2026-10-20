@@ -404,7 +404,12 @@ public class EditorActivity extends BaseCompat
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    EventBus.getDefault().unregister(this);
+    if (EventBus.getDefault().isRegistered(this)) {
+      EventBus.getDefault().unregister(this);
+    }
+    if (PluginManager.getInstance() != null) {
+      PluginManager.getInstance().clearEditorActivityReferences();
+    }
     lspStatusHandler.removeCallbacks(lspStatusPollRunnable);
     if (keyboardLayoutListener != null) {
       getWindow()

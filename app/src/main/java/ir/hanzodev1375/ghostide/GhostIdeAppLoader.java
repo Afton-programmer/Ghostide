@@ -26,6 +26,7 @@ import ir.hanzodev1375.ghostide.materialfileicon.core.JsonFileIconHelper;
 import ir.hanzodev1375.ghostide.plugin.BackgroundRendererBridge;
 import ir.hanzodev1375.ghostide.plugin.api.ExtensionRegistration;
 import ir.hanzodev1375.ghostide.plugin.api.GlobalRegistry;
+import ir.hanzodev1375.ghostide.plugin.PluginManager;
 import ir.hanzodev1375.ghostide.plugin.gpl.GplInstalledPlugins;
 import ir.hanzodev1375.ghostide.plugin.gpl.GplPluginLoader;
 import ir.hanzodev1375.ghostide.shizuku.ShizukuManager;
@@ -41,6 +42,7 @@ import java.util.zip.ZipInputStream;
 
 public class GhostIdeAppLoader extends Application {
 
+  private static final String TAG = "GhostIdeAppLoader";
   private static Context mApplicationContext;
   private static GhostIdeAppLoader loader;
   private final StringBuilder softwareInfo = new StringBuilder();
@@ -95,6 +97,8 @@ public class GhostIdeAppLoader extends Application {
         });
     BackgroundRendererBridge.install();
     GlslBackgroundFactory.register();
+    // Initialize the plugin host at app start so the file manager can reach it on first launch.
+    PluginManager.init(this);
     GplInstalledPlugins.loadAll(this, GplPluginLoader.getInstance(this));
 
     PluginNotifier.schedule(this);
@@ -154,32 +158,45 @@ public class GhostIdeAppLoader extends Application {
   }
 
   private void extractCursorZip() {
-    try {
-      File cursorDir = new File("/storage/emulated/0/ghostide/cursor");
-      File jsonMarker = new File(cursorDir, "cursor.json");
-      if (cursorDir.exists() && jsonMarker.exists()) {
-        return;
-      }
-      cursorDir.mkdirs();
-      InputStream is = getAssets().open("cursor.zip");
-      ZipInputStream zis = new ZipInputStream(is);
-      ZipEntry entry;
-      byte[] buffer = new byte[4096];
-      while ((entry = zis.getNextEntry()) != null) {
-        if (entry.isDirectory()) continue;
-        String name = entry.getName();
-        File outFile = new File(cursorDir, name);
-        FileOutputStream fos = new FileOutputStream(outFile);
-        int len;
-        while ((len = zis.read(buffer)) > 0) {
-          fos.write(buffer, 0, len);
-        }
-        fos.close();
-        zis.closeEntry();
-      }
-      zis.close();
-      is.close();
-    } catch (Exception ignored) {
-    }
+    // Zip extraction is blocking I/O; editor settings read these files lazily,
+    // so keep it off the main thread and log failures instead of ignoring them.
+    new Thread(
+            () -> {
+              File cursorDir = new File("/storage/emulated/0/ghostide/cursor");
+              File jsonMarker = new File(cursorDir, "cursor.json");
+              if (cursorDir.exists() && jsonMarker.exists()) {
+                return;
+              }
+              if (!cursorDir.exists() && !cursorDir.mkdirs()) {
+                Log.w(TAG, "Cannot create cursor directory: " + cursorDir.getAbsolutePath());
+                return;
+              }
+              try (InputStream is = getAssets().open("cursor.zip");
+                  ZipInputStream zis = new ZipInputStream(is)) {
+                String canonicalDir = cursorDir.getCanonicalPath() + File.separator;
+                byte[] buffer = new byte[4096];
+                ZipEntry entry;
+                while ((entry = zis.getNextEntry()) != null) {
+                  if (entry.isDirectory()) continue;
+                  File outFile = new File(cursorDir, entry.getName());
+                  // Reject entries that would escape the target directory (zip path traversal).
+                  if (!outFile.getCanonicalPath().startsWith(canonicalDir)) {
+                    Log.w(TAG, "Skipped cursor.zip entry outside target dir: " + entry.getName());
+                    continue;
+                  }
+                  try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                    int len;
+                    while ((len = zis.read(buffer)) > 0) {
+                      fos.write(buffer, 0, len);
+                    }
+                  }
+                  zis.closeEntry();
+                }
+              } catch (Exception e) {
+                Log.w(TAG, "Failed to extract cursor.zip", e);
+              }
+            },
+            "CursorZipExtractor")
+        .start();
   }
 }

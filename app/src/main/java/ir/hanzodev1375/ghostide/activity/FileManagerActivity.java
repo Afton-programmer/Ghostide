@@ -149,6 +149,8 @@ public class FileManagerActivity extends BaseCompat
   private PreferencesUtils appsetting;
   private ProfileView profileview;
   private NetworkChangeReceiver networkChangeReceiver;
+  private Handler pluginHostHandler;
+  private Runnable pluginHostRunnable;
   private CopyProgressDialog copyProgressDialog;
   private DeleteProgressDialog deleteProgressDialog;
   private HistoryViewModel historyViewModel;
@@ -214,16 +216,16 @@ public class FileManagerActivity extends BaseCompat
     } else {
       this.registerReceiver(networkChangeReceiver, filter);
     }
-    new Handler(Looper.getMainLooper())
-        .postDelayed(
-            () -> {
-              try {
-                PluginManager.getInstance().setCurrentFileManagerActivity(this);
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-            },
-            100);
+    pluginHostHandler = new Handler(Looper.getMainLooper());
+    pluginHostRunnable =
+        () -> {
+          try {
+            PluginManager.getInstance().setCurrentFileManagerActivity(this);
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        };
+    pluginHostHandler.postDelayed(pluginHostRunnable, 100);
 
     viewModel = new ViewModelProvider(this).get(FileViewModel.class);
     fileManagerHostRegistration =
@@ -1179,14 +1181,29 @@ public class FileManagerActivity extends BaseCompat
       thanosEffect.kill();
       thanosEffect = null;
     }
-    bind.musicPreview.release();
-    bind = null;
-    this.unregisterReceiver(networkChangeReceiver);
-    gitHelper.shutdown();
-    ftpExecutor.shutdownNow();
+    if (pluginHostHandler != null) {
+      pluginHostHandler.removeCallbacks(pluginHostRunnable);
+      pluginHostHandler = null;
+    }
+    if (PluginManager.getInstance() != null) {
+      PluginManager.getInstance().clearFileManagerActivityReferences();
+    }
     if (fileManagerHostRegistration != null) {
       fileManagerHostRegistration.dispose();
       fileManagerHostRegistration = null;
+    }
+    gitHelper.shutdown();
+    ftpExecutor.shutdownNow();
+    if (bind != null) {
+      bind.musicPreview.release();
+      bind = null;
+    }
+    if (networkChangeReceiver != null) {
+      try {
+        this.unregisterReceiver(networkChangeReceiver);
+      } catch (IllegalArgumentException e) {
+        // Receiver was not registered; onCreate aborted before registration.
+      }
     }
   }
 
