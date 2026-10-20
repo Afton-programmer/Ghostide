@@ -621,6 +621,7 @@
     <string name="onboarding_perm_install_desc">Allow installing app packages</string>
     <string name="onboarding_perm_grant">Grant</string>
     <string name="onboarding_perm_granted">Granted</string>
+    <string name="onboarding_perm_unavailable">This setting is not available on your device</string>
     <string name="onboarding_terminal_desc">A real Linux terminal in your pocket lets you install packages and run tools. Without it some LSP features and commands will not work.</string>
     <string name="onboarding_terminal_warning">Some LSPs won\'t work without the terminal</string>
     <string name="onboarding_terminal_install">Click to install</string>

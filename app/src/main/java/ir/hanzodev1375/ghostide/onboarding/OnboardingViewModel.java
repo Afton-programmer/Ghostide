@@ -274,6 +274,7 @@ public class OnboardingViewModel extends AndroidViewModel {
   @Override
   protected void onCleared() {
     super.onCleared();
+    DebianInstaller.detach(installListener);
     mainHandler.removeCallbacksAndMessages(null);
   }
 }

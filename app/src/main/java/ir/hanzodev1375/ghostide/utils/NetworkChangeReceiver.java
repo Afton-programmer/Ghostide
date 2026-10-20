@@ -16,6 +16,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
   @Override
   public void onReceive(Context context, Intent intent) {
+    // Manifest-instantiated receivers get no callback; ignore those deliveries.
+    if (callback == null) return;
     if (isOnline(context)) {
       callback.ConnectionIS();
     } else {
