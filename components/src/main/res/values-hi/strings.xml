@@ -125,4 +125,10 @@
   <string name="webstore_download_done">प्रोजेक्ट ghostide/projects में डाउनलोड हुआ</string>
   <string name="webstore_download_failed">डाउनलोड विफल</string>
   <string name="webstore_images">%1$d छवियाँ</string>
+  <string name="search_replace_hint">इससे बदलें…</string>
+  <string name="search_replace_all">सभी बदलें</string>
+  <string name="search_replace_confirm_title">सभी मिलान बदलें?</string>
+  <string name="search_replace_confirm_message">%1$d फ़ाइलों में मिलान बदले जाएंगे। इसे वापस नहीं किया जा सकता।</string>
+  <string name="search_replace_done">%1$d मिलान बदले गए</string>
+  <string name="search_replace_none">बदलने के लिए कोई मिलान नहीं</string>
 </resources>

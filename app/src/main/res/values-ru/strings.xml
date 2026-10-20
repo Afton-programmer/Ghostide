@@ -317,12 +317,21 @@
   <string name="module_dependencies_title">Добавить в существующие модули</string>
   <string name="module_dependencies_helper">Выберите, какие модули должны зависеть от нового</string>
   <string name="translator_title">Перевод strings.xml</string>
+  <string name="translator_languages">Языки</string>
   <string name="translator_select_all">Все</string>
   <string name="translator_deselect_all">Никто</string>
   <string name="translator_start">Начать перевод</string>
   <string name="translator_cancel">Отмена</string>
   <string name="translator_done">Перевод завершен</string>
   <string name="translator_cancelled">Перевод отменен</string>
+  <string name="translator_path_missing">Папка проекта не найдена</string>
+  <string name="translator_path_found">✓ %1$s</string>
+  <string name="translator_path_not_found">✗ strings.xml не найден: %1$s</string>
+  <string name="translator_error">Ошибка: %1$s</string>
+  <string name="translator_progress">%1$d%% — %2$s / %3$s</string>
+  <string name="translator_completed">✓ %1$s</string>
+  <string name="translator_chip_complete">%1$s ✓</string>
+  <string name="translator_chip_progress">%1$s (%2$d/%3$d)</string>
   <string name="setting_lineinfopaneltitle">Показать панель строки товара</string>
   <string name="setting_lineinfopanelsubtitle">С помощью этой опции вы можете выбрать панель выбора строк и столбцов.</string>
   <string name="serachdata">Поиск файла или каталога</string>
@@ -564,4 +573,8 @@
   <string name="terminal_close_tab_confirm">Вы хотите закрыть этот терминальный сеанс?</string>
   <string name="terminal_action_close">Закрывать</string>
   <string name="terminal_service_lost">Терминальная служба отключена.</string>
+  <string name="runner_java_version_title">Версия Java</string>
+  <string name="runner_java_version_message">Какой JDK использовать для запуска этого файла Java? Если Java уже установлена, будет использована она; иначе установится выбранная версия (Temurin).</string>
+  <string name="runner_java_version_17">Java 17</string>
+  <string name="runner_java_version_25">Java 25</string>
 </resources>

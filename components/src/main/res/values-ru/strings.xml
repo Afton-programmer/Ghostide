@@ -125,4 +125,10 @@
   <string name="webstore_download_done">Проект скачан в ghostide/projects</string>
   <string name="webstore_download_failed">Ошибка загрузки</string>
   <string name="webstore_images">%1$d изображений</string>
+  <string name="search_replace_hint">Заменить на…</string>
+  <string name="search_replace_all">Заменить всё</string>
+  <string name="search_replace_confirm_title">Заменить все совпадения?</string>
+  <string name="search_replace_confirm_message">Совпадения будут заменены в %1$d файл(ах). Это необратимо.</string>
+  <string name="search_replace_done">Заменено совпадений: %1$d</string>
+  <string name="search_replace_none">Нет совпадений для замены</string>
 </resources>

@@ -125,4 +125,10 @@
   <string name="webstore_download_done">项目已下载到 ghostide/projects</string>
   <string name="webstore_download_failed">下载失败</string>
   <string name="webstore_images">%1$d 张图片</string>
+  <string name="search_replace_hint">替换为…</string>
+  <string name="search_replace_all">全部替换</string>
+  <string name="search_replace_confirm_title">替换所有匹配项？</string>
+  <string name="search_replace_confirm_message">将在 %1$d 个文件中替换匹配项。此操作无法撤销。</string>
+  <string name="search_replace_done">已替换 %1$d 个匹配项</string>
+  <string name="search_replace_none">没有可替换的匹配项</string>
 </resources>

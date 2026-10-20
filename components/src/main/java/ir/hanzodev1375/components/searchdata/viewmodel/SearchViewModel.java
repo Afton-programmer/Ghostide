@@ -29,6 +29,8 @@ public class SearchViewModel extends AndroidViewModel {
   private final MutableLiveData<State> state = new MutableLiveData<>(State.IDLE);
   private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
   private final MutableLiveData<Integer> resultCount = new MutableLiveData<>(0);
+  /** Replaced-match count of the last replace run; -1 means it failed. */
+  private final MutableLiveData<Integer> replaceCount = new MutableLiveData<>();
   private final FileSearchEngine engine = new FileSearchEngine();
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
   private AtomicBoolean cancelled = new AtomicBoolean(false);
@@ -51,6 +53,38 @@ public class SearchViewModel extends AndroidViewModel {
 
   public LiveData<Integer> getResultCount() {
     return resultCount;
+  }
+
+  public LiveData<Integer> getReplaceCount() {
+    return replaceCount;
+  }
+
+  public void clearReplaceCount() {
+    replaceCount.postValue(null);
+  }
+
+  public void replace(SearchQuery query, String replacement) {
+    if (query == null) return;
+    executor.execute(
+        () ->
+            engine.replace(
+                query,
+                replacement,
+                new GlobExcluder(
+                    new ComponentsPrefs(getApplication()).getExcludedFilesText()),
+                cancelled,
+                new FileSearchEngine.ReplaceCallback() {
+                  @Override
+                  public void onComplete(int replacedCount, int changedFiles) {
+                    if (!cancelled.get()) replaceCount.postValue(replacedCount);
+                  }
+
+                  @Override
+                  public void onError(String message) {
+                    errorMessage.postValue(message);
+                    replaceCount.postValue(-1);
+                  }
+                }));
   }
 
   public void startSearch(SearchQuery query) {

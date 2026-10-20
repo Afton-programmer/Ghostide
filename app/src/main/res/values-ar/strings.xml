@@ -317,12 +317,21 @@
   <string name="module_dependencies_title">إضافة إلى الوحدات الموجودة</string>
   <string name="module_dependencies_helper">اختر الوحدات التي يجب أن تعتمد على الوحدة الجديدة</string>
   <string name="translator_title">سلاسل الترجمة.xml</string>
+  <string name="translator_languages">اللغات</string>
   <string name="translator_select_all">الجميع</string>
   <string name="translator_deselect_all">لا أحد</string>
   <string name="translator_start">ابدأ الترجمة</string>
   <string name="translator_cancel">يلغي</string>
   <string name="translator_done">اكتملت الترجمة</string>
   <string name="translator_cancelled">تم إلغاء الترجمة</string>
+  <string name="translator_path_missing">لم يتم العثور على مجلد المشروع</string>
+  <string name="translator_path_found">✓ %1$s</string>
+  <string name="translator_path_not_found">✗ لم يتم العثور على strings.xml: %1$s</string>
+  <string name="translator_error">خطأ: %1$s</string>
+  <string name="translator_progress">%1$d%% — %2$s / %3$s</string>
+  <string name="translator_completed">✓ %1$s</string>
+  <string name="translator_chip_complete">%1$s ✓</string>
+  <string name="translator_chip_progress">%1$s (%2$d/%3$d)</string>
   <string name="setting_lineinfopaneltitle">إظهار لوحة سطر العنصر</string>
   <string name="setting_lineinfopanelsubtitle">باستخدام هذا الخيار، يمكنك تحديد لوحة تحديد الخط والعمود.</string>
   <string name="serachdata">Serach File أو Dir</string>
@@ -564,4 +573,8 @@
   <string name="terminal_close_tab_confirm">هل تريد إغلاق هذه الجلسة الطرفية؟</string>
   <string name="terminal_action_close">يغلق</string>
   <string name="terminal_service_lost">تم قطع الخدمة الطرفية.</string>
+  <string name="runner_java_version_title">إصدار Java</string>
+  <string name="runner_java_version_message">أي JDK يُستخدم لتشغيل ملف Java هذا؟ إذا كان Java مثبتًا فسيُستخدم كما هو، وإلا سيُثبَّت الإصدار المحدد (Temurin).</string>
+  <string name="runner_java_version_17">Java 17</string>
+  <string name="runner_java_version_25">Java 25</string>
 </resources>

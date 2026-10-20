@@ -850,6 +850,25 @@ public class PreferencesUtils {
     getDefaultPreferences().edit().putBoolean(key, enabled).apply();
   }
 
+  public static final String KEY_JAVA_RUNNER_VERSION = "runner_java_version";
+  public static final int JAVA_VERSION_17 = 17;
+  public static final int JAVA_VERSION_25 = 25;
+
+  public boolean hasJavaRunnerVersion() {
+    int version = getDefaultPreferences().getInt(KEY_JAVA_RUNNER_VERSION, 0);
+    return version == JAVA_VERSION_17 || version == JAVA_VERSION_25;
+  }
+
+  public int getJavaRunnerVersion() {
+    int version = getDefaultPreferences().getInt(KEY_JAVA_RUNNER_VERSION, 0);
+    return version == JAVA_VERSION_25 ? JAVA_VERSION_25 : JAVA_VERSION_17;
+  }
+
+  public void setJavaRunnerVersion(int version) {
+    if (version != JAVA_VERSION_17 && version != JAVA_VERSION_25) return;
+    getDefaultPreferences().edit().putInt(KEY_JAVA_RUNNER_VERSION, version).apply();
+  }
+
   /** Toggle for a built-in LSP server identified by its tag (default is ON). */
   public boolean isLspServerEnabled(String tag) {
     return getDefaultPreferences().getBoolean(LSP_SERVER_PREFIX + tag, true);

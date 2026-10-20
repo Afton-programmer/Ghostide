@@ -125,4 +125,10 @@
   <string name="webstore_download_done">تم تنزيل المشروع إلى ghostide/projects</string>
   <string name="webstore_download_failed">فشل التنزيل</string>
   <string name="webstore_images">%1$d صورة</string>
+  <string name="search_replace_hint">استبدال بـ…</string>
+  <string name="search_replace_all">استبدال الكل</string>
+  <string name="search_replace_confirm_title">استبدال كل التطابقات؟</string>
+  <string name="search_replace_confirm_message">سيتم استبدال التطابقات في %1$d ملف. لا يمكن التراجع عن هذا.</string>
+  <string name="search_replace_done">تم استبدال %1$d تطابقًا</string>
+  <string name="search_replace_none">لا توجد تطابقات للاستبدال</string>
 </resources>

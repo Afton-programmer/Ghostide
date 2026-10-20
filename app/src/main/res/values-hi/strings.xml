@@ -317,12 +317,21 @@
   <string name="module_dependencies_title">मौजूदा मॉड्यूल में जोड़ें</string>
   <string name="module_dependencies_helper">चुनें कि कौन से मॉड्यूल नए मॉड्यूल पर निर्भर हों</string>
   <string name="translator_title">अनुवाद strings.xml</string>
+  <string name="translator_languages">भाषाएँ</string>
   <string name="translator_select_all">सभी</string>
   <string name="translator_deselect_all">कोई नहीं</string>
   <string name="translator_start">अनुवाद प्रारंभ करें</string>
   <string name="translator_cancel">रद्द करना</string>
   <string name="translator_done">अनुवाद पूरा हुआ</string>
   <string name="translator_cancelled">अनुवाद रद्द कर दिया गया</string>
+  <string name="translator_path_missing">प्रोजेक्ट फ़ोल्डर नहीं मिला</string>
+  <string name="translator_path_found">✓ %1$s</string>
+  <string name="translator_path_not_found">✗ strings.xml नहीं मिला: %1$s</string>
+  <string name="translator_error">त्रुटि: %1$s</string>
+  <string name="translator_progress">%1$d%% — %2$s / %3$s</string>
+  <string name="translator_completed">✓ %1$s</string>
+  <string name="translator_chip_complete">%1$s ✓</string>
+  <string name="translator_chip_progress">%1$s (%2$d/%3$d)</string>
   <string name="setting_lineinfopaneltitle">आइटम पंक्ति पैनल दिखाएँ</string>
   <string name="setting_lineinfopanelsubtitle">इस विकल्प से आप लाइन और कॉलम चयन पैनल का चयन कर सकते हैं।</string>
   <string name="serachdata">सेराच फ़ाइल या डिर</string>
@@ -564,4 +573,8 @@
   <string name="terminal_close_tab_confirm">क्या आप इस टर्मिनल सत्र को बंद करना चाहते हैं?</string>
   <string name="terminal_action_close">बंद करना</string>
   <string name="terminal_service_lost">टर्मिनल सेवा काट दी गई.</string>
+  <string name="runner_java_version_title">Java संस्करण</string>
+  <string name="runner_java_version_message">इस Java फ़ाइल को चलाने के लिए कौन-सा JDK इस्तेमाल हो? अगर Java पहले से इंस्टॉल है तो वही चलेगा, वरना चुना गया संस्करण (Temurin) इंस्टॉल होगा।</string>
+  <string name="runner_java_version_17">Java 17</string>
+  <string name="runner_java_version_25">Java 25</string>
 </resources>

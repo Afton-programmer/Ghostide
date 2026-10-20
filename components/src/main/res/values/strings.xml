@@ -143,4 +143,10 @@
   <string name="webstore_download_done">Project downloaded to ghostide/projects</string>
   <string name="webstore_download_failed">Download failed</string>
   <string name="webstore_images">%1$d images</string>
+  <string name="search_replace_hint">Replace with…</string>
+  <string name="search_replace_all">Replace All</string>
+  <string name="search_replace_confirm_title">Replace all matches?</string>
+  <string name="search_replace_confirm_message">Replace matches in %1$d file(s). This cannot be undone.</string>
+  <string name="search_replace_done">%1$d matches replaced</string>
+  <string name="search_replace_none">No matches to replace</string>
 </resources>

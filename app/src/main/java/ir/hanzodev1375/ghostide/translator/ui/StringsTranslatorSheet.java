@@ -1,6 +1,5 @@
 package ir.hanzodev1375.ghostide.translator.ui;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,30 +46,38 @@ public class StringsTranslatorSheet extends BaseBlurBottomSheet {
     viewModel = new ViewModelProvider(this).get(TranslatorViewModel.class);
     setupButtons();
     observeViewModel();
-    checkAndShowPath();
     M3Theme.apply(binding.getRoot());
+    checkAndShowPath();
   }
 
   private void checkAndShowPath() {
     String root = getArguments() != null ? getArguments().getString(ARG_ROOT) : null;
     if (root == null) {
-      binding.tvStringsPath.setText("Project dir not found");
-      binding.tvStringsPath.setTextColor(Color.parseColor("#F44336"));
+      binding.tvStringsPath.setText(R.string.translator_path_missing);
+      setPathColor(M3Theme.error());
       buildLanguageChips();
       return;
     }
     foundStringsXml = findStringsXml(new File(root));
     if (foundStringsXml != null) {
-      binding.tvStringsPath.setText("✓ " + foundStringsXml.getAbsolutePath());
-      binding.tvStringsPath.setTextColor(Color.parseColor("#4CAF50"));
+      binding.tvStringsPath.setText(
+          getString(R.string.translator_path_found, foundStringsXml.getAbsolutePath()));
+      setPathColor(M3Theme.primary());
       loadSourceEntries();
       buildLanguageChips();
       binding.btnTranslate.setEnabled(!selectedLanguages.isEmpty());
     } else {
-      binding.tvStringsPath.setText("✗ strings.xml not found: " + root);
-      binding.tvStringsPath.setTextColor(Color.parseColor("#F44336"));
+      binding.tvStringsPath.setText(getString(R.string.translator_path_not_found, root));
+      setPathColor(M3Theme.error());
       buildLanguageChips();
       binding.btnTranslate.setEnabled(false);
+    }
+  }
+
+  /** Applies an M3 colour when the active theme provides one, otherwise leaves the XML default. */
+  private void setPathColor(Integer color) {
+    if (color != null) {
+      binding.tvStringsPath.setTextColor(color);
     }
   }
 
@@ -121,8 +128,8 @@ public class StringsTranslatorSheet extends BaseBlurBottomSheet {
     if (resDir == null || total == 0) return lang.displayName;
     int existing = countExistingTranslations(resDir, lang);
     if (existing <= 0) return lang.displayName;
-    if (existing >= total) return lang.displayName + "  ✓";
-    return lang.displayName + "  (" + existing + "/" + total + ")";
+    if (existing >= total) return getString(R.string.translator_chip_complete, lang.displayName);
+    return getString(R.string.translator_chip_progress, lang.displayName, existing, total);
   }
 
   private int countExistingTranslations(String resDir, AndroidLanguage lang) {
@@ -239,7 +246,11 @@ public class StringsTranslatorSheet extends BaseBlurBottomSheet {
               if (p == null) return;
               binding.progressBar.setProgress(p.getPercent());
               binding.tvProgressLabel.setText(
-                  p.getPercent() + "% — " + p.languageFolder + " / " + p.currentKey);
+                  getString(
+                      R.string.translator_progress,
+                      p.getPercent(),
+                      p.languageFolder,
+                      p.currentKey));
             });
     viewModel
         .getLastCompletedFolder()
@@ -247,7 +258,10 @@ public class StringsTranslatorSheet extends BaseBlurBottomSheet {
             getViewLifecycleOwner(),
             folder -> {
               if (folder == null) return;
-              binding.tvLog.setText(binding.tvLog.getText() + "✓ " + folder + "\n");
+              binding.tvLog.setText(
+                  binding.tvLog.getText()
+                      + getString(R.string.translator_completed, folder)
+                      + "\n");
               binding.scrollLog.post(() -> binding.scrollLog.fullScroll(View.FOCUS_DOWN));
             });
     viewModel
@@ -255,7 +269,9 @@ public class StringsTranslatorSheet extends BaseBlurBottomSheet {
         .observe(
             getViewLifecycleOwner(),
             msg -> {
-              if (msg != null && !msg.isEmpty()) showSnackbar("Error: " + msg);
+              if (msg != null && !msg.isEmpty()) {
+                showSnackbar(getString(R.string.translator_error, msg));
+              }
             });
   }
 

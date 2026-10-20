@@ -44,7 +44,11 @@ public class ButtonCompat extends LiquidGlassButton {
 
   private static final float ERROR_TINT_STRENGTH = 0.35f;
 
+  private static final int MATERIAL_LABEL_LARGE =
+      com.google.android.material.R.style.TextAppearance_Material3_LabelLarge;
+
   private Tone tone = Tone.DEFAULT;
+  private boolean autoBackdrop = true;
   private LinearLayout contentRow;
   private TextView label;
   private ImageView iconView;
@@ -77,12 +81,51 @@ public class ButtonCompat extends LiquidGlassButton {
   /** Re-applies the glass material, or the Material 3 button when glass is turned off. */
   public void refresh() {
     Glass.applyButton(this);
+    applyMaterialLabelStyle();
+  }
+
+  /**
+   * Gives the glass label Google Material's own button text: {@code TextAppearance.Material3
+   * .LabelLarge} (14sp, medium weight, 0.1 letter spacing). Only size/weight/spacing come from the
+   * appearance — the label colour stays whatever the theme tint set, so error and accent tones keep
+   * working. The Material fallback button already carries this appearance through its default style.
+   */
+  private void applyMaterialLabelStyle() {
+    TextView labelView = getTextView();
+    if (labelView == null) {
+      return;
+    }
+    labelView.setTextAppearance(MATERIAL_LABEL_LARGE);
   }
 
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    Glass.autoBackdrop(this);
+    if (autoBackdrop) {
+      Glass.autoBackdrop(this);
+    }
+  }
+
+  /**
+   * Turns the automatic backdrop wiring on or off.
+   *
+   * <p>On by default: the host Activity's content view is captured as soon as the button is attached,
+   * which is what keeps the glass working inside dialogs and bottom sheets. Passing {@code false}
+   * stops that wiring (and any live backdrop capture already running); passing {@code true} re-applies
+   * it immediately when the button is already attached.
+   *
+   * @return this button, for chaining.
+   */
+  public ButtonCompat setAutoBackdrop(boolean autoBackdrop) {
+    this.autoBackdrop = autoBackdrop;
+    if (!autoBackdrop) {
+      setEnableDynamicBackground(false);
+      return this;
+    }
+    if (isAttachedToWindow()) {
+      Glass.autoBackdrop(this);
+    }
+    return this;
   }
 
   /**

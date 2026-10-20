@@ -7,6 +7,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
+import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.codeeditors.langs.lsp.AndroidClasspathResolver;
 import ir.hanzodev1375.ghostide.codeeditors.langs.formatHelp.DebianBootstrap;
 import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
@@ -32,6 +34,14 @@ public class CodeRuner {
     }
 
     public void bindof(String path, boolean asBottomSheet) {
+        if (path != null
+                && path.toLowerCase(Locale.ROOT).endsWith(".java")
+                && prefs.isCodeRunnerEnabled()
+                && prefs.isRunnerEnabled(PreferencesUtils.KEY_RUNNER_JAVA)
+                && !prefs.hasJavaRunnerVersion()) {
+            askJavaVersion(path, asBottomSheet);
+            return;
+        }
         String command = buildCommand(path);
         if (command == null) return;
 
@@ -40,6 +50,30 @@ public class CodeRuner {
         } else {
             runInActivity(command);
         }
+    }
+
+    private void askJavaVersion(String path, boolean asBottomSheet) {
+        if (!(context instanceof Activity)) {
+            prefs.setJavaRunnerVersion(PreferencesUtils.JAVA_VERSION_17);
+            bindof(path, asBottomSheet);
+            return;
+        }
+        new DialogCompat(context)
+                .setTitle(R.string.runner_java_version_title)
+                .setMessage(R.string.runner_java_version_message)
+                .setNegativeButton(
+                        R.string.runner_java_version_17,
+                        (dialog, which) -> {
+                            prefs.setJavaRunnerVersion(PreferencesUtils.JAVA_VERSION_17);
+                            bindof(path, asBottomSheet);
+                        })
+                .setPositiveButton(
+                        R.string.runner_java_version_25,
+                        (dialog, which) -> {
+                            prefs.setJavaRunnerVersion(PreferencesUtils.JAVA_VERSION_25);
+                            bindof(path, asBottomSheet);
+                        })
+                .show();
     }
 
     /** Runs a raw shell command, without building one from a file. */
@@ -329,36 +363,37 @@ public class CodeRuner {
         File dir = file.getParentFile();
         if (dir == null) dir = new File(".");
 
-        String androidHomeExport = androidHomeExport();
+        if (isAndroidProject(dir)) {
+            String androidHomeExport = androidHomeExport();
 
-        File gradleWrapper = findGradleWrapper(dir);
-        if (gradleWrapper != null) {
-            File projectRoot = gradleWrapper.getParentFile();
-            return "clear; "
-                    + androidHomeExport
-                    + "if [ ! -x \"" + gradleWrapper.getAbsolutePath() + "\" ]; then chmod +x \"" + gradleWrapper.getAbsolutePath() + "\"; fi; "
-                    + "cd \"" + projectRoot.getAbsolutePath() + "\" && sh gradlew build";
+            File gradleWrapper = findGradleWrapper(dir);
+            if (gradleWrapper != null) {
+                File projectRoot = gradleWrapper.getParentFile();
+                return "clear; "
+                        + androidHomeExport
+                        + "if [ ! -x \"" + gradleWrapper.getAbsolutePath() + "\" ]; then chmod +x \"" + gradleWrapper.getAbsolutePath() + "\"; fi; "
+                        + "cd \"" + projectRoot.getAbsolutePath() + "\" && sh gradlew build";
+            }
+
+            File gradleFile = findGradleBuildFile(dir);
+            if (gradleFile != null) {
+                File projectRoot = gradleFile.getParentFile();
+                return "clear; "
+                        + androidHomeExport
+                        + "if ! command -v gradle >/dev/null 2>&1; then apt update && apt install gradle -y; fi; "
+                        + "cd \"" + projectRoot.getAbsolutePath() + "\" && gradle build";
+            }
         }
 
         File pomFile = findPomXml(dir);
         if (pomFile != null) {
             File projectRoot = pomFile.getParentFile();
             return "clear; "
-                    + androidHomeExport
                     + "if ! command -v mvn >/dev/null 2>&1; then apt update && apt install maven -y; fi; "
                     + "cd \"" + projectRoot.getAbsolutePath() + "\" && mvn package";
         }
 
-        File gradleFile = findGradleBuildFile(dir);
-        if (gradleFile != null) {
-            File projectRoot = gradleFile.getParentFile();
-            return "clear; "
-                    + androidHomeExport
-                    + "if ! command -v gradle >/dev/null 2>&1; then apt update && apt install gradle -y; fi; "
-                    + "cd \"" + projectRoot.getAbsolutePath() + "\" && gradle build";
-        }
-
-        // بدون build file: کامپایل با classpath واقعی (android.jar + کش گریدل + libs) و اجرا
+        // پروژه‌ی اندرویدی یا Maven نیست: فایل جاوای معمولی مستقیم کامپایل و اجرا می‌شه
         // (فقط اگه public static void main(String[]) داشته باشه؛ کلاس‌های اندرویدی مثل
         // Activity/Fragment رو نمی‌شه با java خالص اجرا کرد، فقط کامپایلشون می‌کنیم).
         String className = file.getName();
@@ -376,19 +411,30 @@ public class CodeRuner {
         String fullClasspath =
                 outDir.getAbsolutePath() + (libClasspath.isEmpty() ? "" : ":" + libClasspath);
 
-        String compileTargets;
-        if (sourceRoot.equals(dir)) {
-            compileTargets = "\"" + dir.getAbsolutePath() + "\"/*.java";
-        } else {
-            compileTargets = "\"" + path + "\"";
-        }
+        String compileTargets = "\"" + dir.getAbsolutePath() + "\"/*.java";
 
         String compile =
                 "mkdir -p \"" + outDir.getAbsolutePath() + "\" && javac -d \"" + outDir.getAbsolutePath()
                         + "\" -cp \"" + fullClasspath + "\" -sourcepath \"" + sourceRoot.getAbsolutePath()
                         + "\" " + compileTargets;
 
-        String setup = "if ! command -v javac >/dev/null 2>&1; then apt update && apt install default-jdk -y; fi; ";
+        int javaVersion = prefs.getJavaRunnerVersion();
+        String setup =
+                "GHOST_VER=" + javaVersion + "; "
+                        + "GHOST_JDK=$(ls -d /usr/lib/jvm/temurin-$GHOST_VER-jdk-* 2>/dev/null | head -n 1); "
+                        + "if [ -n \"$GHOST_JDK\" ] && [ -x \"$GHOST_JDK/bin/javac\" ]; then export JAVA_HOME=\"$GHOST_JDK\"; export PATH=\"$JAVA_HOME/bin:$PATH\"; "
+                        + "elif command -v javac >/dev/null 2>&1; then :; "
+                        + "else "
+                        + "export DEBIAN_FRONTEND=noninteractive; "
+                        + "apt-get update && apt-get install -y gnupg wget gpg ca-certificates; "
+                        + "mkdir -p /etc/apt/keyrings; "
+                        + "wget -qO- https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor --yes -o /etc/apt/keyrings/adoptium.gpg; "
+                        + "GHOST_CODENAME=$(. /etc/os-release; echo \"${VERSION_CODENAME:-bookworm}\"); "
+                        + "echo \"deb [signed-by=/etc/apt/keyrings/adoptium.gpg] https://packages.adoptium.net/artifactory/deb $GHOST_CODENAME main\" > /etc/apt/sources.list.d/adoptium.list; "
+                        + "apt-get update && apt-get install -y temurin-$GHOST_VER-jdk; "
+                        + "GHOST_JDK=$(ls -d /usr/lib/jvm/temurin-$GHOST_VER-jdk-* 2>/dev/null | head -n 1); "
+                        + "[ -n \"$GHOST_JDK\" ] && export JAVA_HOME=\"$GHOST_JDK\" && export PATH=\"$JAVA_HOME/bin:$PATH\"; "
+                        + "fi; ";
 
         if (hasMainMethod(file)) {
             return "clear; "
@@ -403,6 +449,30 @@ public class CodeRuner {
                 + " && echo '✅ کامپایل شد. متد main پیدا نشد (کلاس اندرویدی/کتابخونه‌ای)، پس اجرا نمی‌شه.'";
     }
 
+    /** پروژه‌ی اندروید یعنی AndroidManifest یا پلاگین android در نزدیک‌ترین فایل‌های Gradle. */
+    private boolean isAndroidProject(File dir) {
+        File current = dir;
+        while (current != null) {
+            if (new File(current, "AndroidManifest.xml").isFile()) return true;
+            if (hasAndroidPlugin(new File(current, "build.gradle"))) return true;
+            if (hasAndroidPlugin(new File(current, "build.gradle.kts"))) return true;
+            current = current.getParentFile();
+        }
+        return false;
+    }
+
+    private boolean hasAndroidPlugin(File buildFile) {
+        if (buildFile == null || !buildFile.isFile()) return false;
+        try {
+            String content = new String(Files.readAllBytes(buildFile.toPath()));
+            return content.contains("com.android.application")
+                    || content.contains("com.android.library")
+                    || content.contains("android {");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /** export ANDROID_HOME/ANDROID_SDK_ROOT اگه SDK نصب‌شده پیدا بشه، وگرنه رشته‌ی خالی. */
     private String androidHomeExport() {
         File rootfs = DebianBootstrap.getRootfsDir(context);
@@ -411,13 +481,18 @@ public class CodeRuner {
         return "export ANDROID_HOME=\"" + sdkGuestPath + "\" ANDROID_SDK_ROOT=\"" + sdkGuestPath + "\"; ";
     }
 
+    private static final Pattern COMMENT_PATTERN =
+            Pattern.compile("(?s)/\\*.*?\\*/|//[^\\n]*");
+
     private static final Pattern MAIN_METHOD_PATTERN =
-            Pattern.compile("(?s).*\\bvoid\\s+main\\s*\\(\\s*String");
+            Pattern.compile(
+                    "\\bvoid\\s+main\\s*\\([^)]*String\\s*(?:\\[\\s*\\]|\\.\\.\\.|\\w+\\s*\\[\\s*\\])");
 
     private boolean hasMainMethod(File javaFile) {
         try {
             String content = new String(Files.readAllBytes(javaFile.toPath()));
-            return MAIN_METHOD_PATTERN.matcher(content).matches();
+            String code = COMMENT_PATTERN.matcher(content).replaceAll(" ");
+            return MAIN_METHOD_PATTERN.matcher(code).find();
         } catch (Exception e) {
             return false;
         }

@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.termux.terminal.TerminalSession;
 import ir.hanzodev1375.ghostide.R;
+import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.terminal.DebianBootstrap;
 import ir.hanzodev1375.ghostide.terminal.DebianInstaller;
 import ir.hanzodev1375.ghostide.terminal.GhostTerminalSessionClient;
@@ -214,6 +215,8 @@ public class OnboardingViewModel extends AndroidViewModel {
   private void runInitScript() {
     String script = readAsset(INIT_SCRIPT);
     if (script == null || script.isEmpty()) return;
+    int javaVersion = new PreferencesUtils(getApplication()).getJavaRunnerVersion();
+    script = script.replace("__GHOSTIDE_JAVA_VERSION__", String.valueOf(javaVersion));
     script = script.replace("clear", "");
     TerminalSession session = activeSession.getValue();
     if (session != null) session.write(script.trim() + "\n", true);

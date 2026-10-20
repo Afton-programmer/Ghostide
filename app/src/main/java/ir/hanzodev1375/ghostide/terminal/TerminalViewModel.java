@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.ResourceUtils;
 import com.termux.terminal.TerminalSession;
+import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -361,6 +362,7 @@ public class TerminalViewModel extends AndroidViewModel {
           String initScript = ResourceUtils.readAssets2String(ASSET_INIT_SH);
           String weblspScript = ResourceUtils.readAssets2String("shell/weblsp.sh");
           if (initScript != null && !initScript.isEmpty()) {
+            initScript = applyJavaVersion(initScript);
             StringBuilder combined = new StringBuilder(initScript);
             if (weblspScript != null && !weblspScript.isEmpty()) {
               combined.append("\n");
@@ -376,6 +378,11 @@ public class TerminalViewModel extends AndroidViewModel {
           }
         },
         2000);
+  }
+
+  private String applyJavaVersion(String script) {
+    int version = new PreferencesUtils(getApplication()).getJavaRunnerVersion();
+    return script.replace("__GHOSTIDE_JAVA_VERSION__", String.valueOf(version));
   }
 
   private void installHelperCommands(File rootfs) {

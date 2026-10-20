@@ -242,6 +242,7 @@ Directory structure:
     │           │       │       │   ├── GhostIdeEditorSearch.java
     │           │       │       │   ├── LayoutSymbolbar.java
     │           │       │       │   ├── MaterialGradientCard.java
+    │           │       │       │   ├── MaxHeightRecyclerView.java
     │           │       │       │   ├── NavModelPanel.java
     │           │       │       │   ├── PreferenceSwitchGroup.java
     │           │       │       │   ├── ScrollPreserveRecyclerView.java

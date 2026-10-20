@@ -327,12 +327,21 @@
     <string name="module_dependencies_title">Add to existing modules</string>
     <string name="module_dependencies_helper">Pick which modules should depend on the new one</string>
     <string name="translator_title">Translation strings.xml</string>
+    <string name="translator_languages">Languages</string>
     <string name="translator_select_all">All</string>
     <string name="translator_deselect_all">None</string>
     <string name="translator_start">Start translation</string>
     <string name="translator_cancel">Cancel</string>
     <string name="translator_done">Translation completed</string>
     <string name="translator_cancelled">Translation canceled</string>
+    <string name="translator_path_missing">Project directory not found</string>
+    <string name="translator_path_found">✓ %1$s</string>
+    <string name="translator_path_not_found">✗ strings.xml not found: %1$s</string>
+    <string name="translator_error">Error: %1$s</string>
+    <string name="translator_progress">%1$d%% — %2$s / %3$s</string>
+    <string name="translator_completed">✓ %1$s</string>
+    <string name="translator_chip_complete">%1$s ✓</string>
+    <string name="translator_chip_progress">%1$s (%2$d/%3$d)</string>
     <string name="setting_lineinfopaneltitle">Show item line panel</string>
     <string name="setting_lineinfopanelsubtitle">With this option, you can select the line and column selection panel.</string>
     <string name="serachdata">Search File or Dir</string>
@@ -653,4 +662,8 @@
     <string name="open_files_title">Open files</string>
     <string name="open_files_search_hint">Search open files</string>
     <string name="open_files_empty">No open files</string>
+    <string name="runner_java_version_title">Java version</string>
+    <string name="runner_java_version_message">Which JDK should Ghost IDE use for this Java file? If Java is already installed it will be used; otherwise the selected version (Temurin) is installed.</string>
+    <string name="runner_java_version_17">Java 17</string>
+    <string name="runner_java_version_25">Java 25</string>
 </resources>

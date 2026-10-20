@@ -317,12 +317,21 @@
   <string name="module_dependencies_title">添加到现有模块</string>
   <string name="module_dependencies_helper">选择哪些模块应依赖新模块</string>
   <string name="translator_title">翻译字符串.xml</string>
+  <string name="translator_languages">语言</string>
   <string name="translator_select_all">全部</string>
   <string name="translator_deselect_all">没有任何</string>
   <string name="translator_start">开始翻译</string>
   <string name="translator_cancel">取消</string>
   <string name="translator_done">翻译完成</string>
   <string name="translator_cancelled">翻译取消</string>
+  <string name="translator_path_missing">未找到项目文件夹</string>
+  <string name="translator_path_found">✓ %1$s</string>
+  <string name="translator_path_not_found">✗ 未找到 strings.xml：%1$s</string>
+  <string name="translator_error">错误：%1$s</string>
+  <string name="translator_progress">%1$d%% — %2$s / %3$s</string>
+  <string name="translator_completed">✓ %1$s</string>
+  <string name="translator_chip_complete">%1$s ✓</string>
+  <string name="translator_chip_progress">%1$s (%2$d/%3$d)</string>
   <string name="setting_lineinfopaneltitle">显示项目行面板</string>
   <string name="setting_lineinfopanelsubtitle">使用此选项，您可以选择行和列选择面板。</string>
   <string name="serachdata">搜索文件或目录</string>
@@ -564,4 +573,8 @@
   <string name="terminal_close_tab_confirm">您想关闭此终端会话吗？</string>
   <string name="terminal_action_close">关闭</string>
   <string name="terminal_service_lost">终端服务已断开。</string>
+  <string name="runner_java_version_title">Java 版本</string>
+  <string name="runner_java_version_message">使用哪个 JDK 运行此 Java 文件？如果已安装 Java 将直接使用，否则会安装所选版本（Temurin）。</string>
+  <string name="runner_java_version_17">Java 17</string>
+  <string name="runner_java_version_25">Java 25</string>
 </resources>

@@ -125,4 +125,10 @@
   <string name="webstore_download_done">Projeto baixado para ghostide/projects</string>
   <string name="webstore_download_failed">Falha no download</string>
   <string name="webstore_images">%1$d imagens</string>
+  <string name="search_replace_hint">Substituir por…</string>
+  <string name="search_replace_all">Substituir tudo</string>
+  <string name="search_replace_confirm_title">Substituir todas as ocorrências?</string>
+  <string name="search_replace_confirm_message">Substituir ocorrências em %1$d arquivo(s). Isto não pode ser desfeito.</string>
+  <string name="search_replace_done">%1$d ocorrências substituídas</string>
+  <string name="search_replace_none">Nenhuma ocorrência para substituir</string>
 </resources>

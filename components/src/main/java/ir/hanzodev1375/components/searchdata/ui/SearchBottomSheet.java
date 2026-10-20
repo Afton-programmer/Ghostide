@@ -20,7 +20,9 @@ import ir.hanzodev1375.components.searchdata.model.SearchQuery;
 import ir.hanzodev1375.components.searchdata.model.SearchType;
 import ir.hanzodev1375.components.searchdata.viewmodel.SearchViewModel;
 import ir.hanzodev1375.components.sheet.BaseBlurBottomSheet;
+import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
 import ir.theme.M3Theme;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class SearchBottomSheet extends BaseBlurBottomSheet {
@@ -105,6 +107,7 @@ public class SearchBottomSheet extends BaseBlurBottomSheet {
         });
     binding.btnClear.setOnClickListener(v -> binding.etSearch.setText(""));
     binding.btnSearch.setOnClickListener(v -> triggerSearch());
+    binding.btnReplaceAll.setOnClickListener(v -> confirmReplace());
     binding.btnExclude.setOnClickListener(
         v -> new ExcludedSearchSheet().show(getChildFragmentManager(), ExcludedSearchSheet.TAG));
     binding.etSearch.setOnEditorActionListener(
@@ -132,22 +135,54 @@ public class SearchBottomSheet extends BaseBlurBottomSheet {
               isChecked
                   ? getString(R.string.search_type_content)
                   : getString(R.string.search_type_filename));
+          binding.cardReplace.setVisibility(isChecked ? View.VISIBLE : View.GONE);
           if (!binding.etSearch.getText().toString().isEmpty()) triggerSearch();
         });
+    binding.cardReplace.setVisibility(
+        binding.switchContentSearch.isChecked() ? View.VISIBLE : View.GONE);
   }
 
-  private void triggerSearch() {
+  private SearchQuery buildQuery() {
     String query = binding.etSearch.getText().toString().trim();
     String rootPath = getArguments() != null ? getArguments().getString(ARG_ROOT_PATH) : null;
-    if (query.isEmpty() || rootPath == null) return;
+    if (query.isEmpty() || rootPath == null) return null;
     SearchMode mode = getSelectedMode();
     if (mode == SearchMode.REGEX && !isValidRegex(query)) {
       showSnackbar(getString(R.string.search_error_invalid_regex));
-      return;
+      return null;
     }
     SearchType type =
         binding.switchContentSearch.isChecked() ? SearchType.FILE_CONTENT : SearchType.FILE_NAME;
-    viewModel.startSearch(new SearchQuery(query, rootPath, mode, type));
+    return new SearchQuery(query, rootPath, mode, type);
+  }
+
+  private void triggerSearch() {
+    SearchQuery query = buildQuery();
+    if (query == null) return;
+    viewModel.startSearch(query);
+  }
+
+  private void confirmReplace() {
+    SearchQuery query = buildQuery();
+    if (query == null) return;
+    if (query.getType() != SearchType.FILE_CONTENT) {
+      showSnackbar(getString(R.string.search_replace_none));
+      return;
+    }
+    List<FileSearchResult> results = viewModel.getResults().getValue();
+    int fileCount = results != null ? results.size() : 0;
+    if (fileCount == 0) {
+      showSnackbar(getString(R.string.search_replace_none));
+      return;
+    }
+    String replacement = binding.etReplace.getText().toString();
+    new DialogCompat(requireContext())
+        .setTitle(R.string.search_replace_confirm_title)
+        .setMessage(getString(R.string.search_replace_confirm_message, fileCount))
+        .setNegativeButton(android.R.string.cancel, null)
+        .setPositiveButton(
+            R.string.search_replace_all, (dialog, which) -> viewModel.replace(query, replacement))
+        .show();
   }
 
   private SearchMode getSelectedMode() {
@@ -202,6 +237,23 @@ public class SearchBottomSheet extends BaseBlurBottomSheet {
             msg -> {
               if (msg != null && !msg.isEmpty()) showSnackbar(msg);
             });
+    viewModel
+        .getReplaceCount()
+        .observe(
+            getViewLifecycleOwner(),
+            count -> {
+              if (count == null) return;
+              if (count < 0) {
+                viewModel.clearReplaceCount();
+                return;
+              }
+              showSnackbar(
+                  count == 0
+                      ? getString(R.string.search_replace_none)
+                      : getString(R.string.search_replace_done, count));
+              if (count > 0) triggerSearch();
+              viewModel.clearReplaceCount();
+            });
   }
 
   private void showSnackbar(String message) {
@@ -214,6 +266,7 @@ public class SearchBottomSheet extends BaseBlurBottomSheet {
   public void onDestroyView() {
     super.onDestroyView();
     viewModel.cancelSearch();
+    viewModel.clearReplaceCount();
     binding = null;
   }
 }

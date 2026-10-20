@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import ir.hanzodev1375.components.R;
@@ -58,6 +60,9 @@ public class PluginNotifier {
           .connectTimeout(10, TimeUnit.SECONDS)
           .readTimeout(20, TimeUnit.SECONDS)
           .build();
+
+  private static final ExecutorService NOTIFY_EXECUTOR =
+      Executors.newSingleThreadExecutor(runnable -> new Thread(runnable, "plugin-notify"));
 
   private PluginNotifier() {}
 
@@ -100,15 +105,18 @@ public class PluginNotifier {
         new PluginStoreApi.ListCallback() {
           @Override
           public void onSuccess(List<PluginItem> plugins) {
-            try {
-              if (plugins != null) {
-                handlePlugins(app, plugins);
-              }
-            } catch (Exception e) {
-              Log.e(TAG, "check failed", e);
-            } finally {
-              finish(onDone);
-            }
+            NOTIFY_EXECUTOR.execute(
+                () -> {
+                  try {
+                    if (plugins != null) {
+                      handlePlugins(app, plugins);
+                    }
+                  } catch (Exception e) {
+                    Log.e(TAG, "check failed", e);
+                  } finally {
+                    finish(onDone);
+                  }
+                });
           }
 
           @Override

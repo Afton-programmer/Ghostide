@@ -317,12 +317,21 @@
   <string name="module_dependencies_title">Adicionar aos módulos existentes</string>
   <string name="module_dependencies_helper">Escolha quais módulos devem depender do novo</string>
   <string name="translator_title">Strings de tradução.xml</string>
+  <string name="translator_languages">Idiomas</string>
   <string name="translator_select_all">Todos</string>
   <string name="translator_deselect_all">Nenhum</string>
   <string name="translator_start">Iniciar tradução</string>
   <string name="translator_cancel">Cancelar</string>
   <string name="translator_done">Tradução concluída</string>
   <string name="translator_cancelled">Tradução cancelada</string>
+  <string name="translator_path_missing">Pasta do projeto não encontrada</string>
+  <string name="translator_path_found">✓ %1$s</string>
+  <string name="translator_path_not_found">✗ strings.xml não encontrado: %1$s</string>
+  <string name="translator_error">Erro: %1$s</string>
+  <string name="translator_progress">%1$d%% — %2$s / %3$s</string>
+  <string name="translator_completed">✓ %1$s</string>
+  <string name="translator_chip_complete">%1$s ✓</string>
+  <string name="translator_chip_progress">%1$s (%2$d/%3$d)</string>
   <string name="setting_lineinfopaneltitle">Mostrar painel de linha de item</string>
   <string name="setting_lineinfopanelsubtitle">Com esta opção, você pode selecionar o painel de seleção de linhas e colunas.</string>
   <string name="serachdata">Serach arquivo ou diretório</string>
@@ -585,4 +594,8 @@
   <string name="terminal_close_tab_confirm">Deseja fechar esta sessão de terminal?</string>
   <string name="terminal_action_close">Fechar</string>
   <string name="terminal_service_lost">Serviço de terminal desconectado.</string>
+  <string name="runner_java_version_title">Versão do Java</string>
+  <string name="runner_java_version_message">Qual JDK usar para executar este arquivo Java? Se o Java já estiver instalado, ele será usado; caso contrário, a versão escolhida (Temurin) será instalada.</string>
+  <string name="runner_java_version_17">Java 17</string>
+  <string name="runner_java_version_25">Java 25</string>
 </resources>

@@ -9,7 +9,8 @@
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="6dp"
         android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
@@ -17,62 +18,71 @@
         android:layout_width="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="4dp"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="10dp">
+        android:paddingBottom="12dp"
+        android:paddingHorizontal="20dp">
+
+        <View
+            android:layout_height="32dp"
+            android:layout_width="4dp"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_drag_handle"
+            android:backgroundTint="?attr/colorPrimary"/>
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textColor="?attr/colorOnSurface"
             android:layout_weight="1"
             android:text="@string/translator_title"
             android:textStyle="bold"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textSize="12sp"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:id="@+id/btnDeselectAll"
-            android:text="@string/translator_deselect_all"/>
+    </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_code_input"
+        android:padding="12dp">
+
+        <ImageView
+            android:layout_height="16dp"
+            android:layout_width="16dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_fileicon"
+            android:tint="?attr/colorOnSurfaceVariant"
+            android:importantForAccessibility="no"/>
+
+        <TextView
+            android:id="@+id/tvStringsPath"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:textSize="12sp"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:id="@+id/btnSelectAll"
-            android:text="@string/translator_select_all"/>
+            android:fontFamily="monospace"
+            android:maxLines="2"
+            android:ellipsize="start"/>
 
     </LinearLayout>
 
-    <View
-        android:layout_height="1dp"
-        android:layout_width="match_parent"
-        android:background="?attr/colorOutlineVariant"/>
-
     <TextView
-        android:id="@+id/tvStringsPath"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="10dp"
-        android:textSize="12sp"
-        android:fontFamily="monospace"
-        android:maxLines="2"
-        android:ellipsize="start"/>
-
-    <View
-        android:layout_height="1dp"
         android:layout_width="match_parent"
-        android:layout_marginBottom="8dp"
-        android:background="?attr/colorOutlineVariant"/>
+        android:layout_marginTop="18dp"
+        android:text="@string/translator_languages"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:letterSpacing="0.08"
+        android:paddingHorizontal="20dp"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_height="0dp"
         android:layout_width="match_parent"
+        android:layout_marginTop="6dp"
         android:layout_weight="1">
 
         <LinearLayout
@@ -80,13 +90,13 @@
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:paddingBottom="16dp"
-            android:paddingHorizontal="12dp">
+            android:paddingHorizontal="16dp">
 
             <ir.hanzodev1375.components.glass.ChipGroupCompat
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                app:glassChipSpacingVertical="4dp"
-                app:glassChipSpacingHorizontal="6dp"
+                app:glassChipSpacingVertical="6dp"
+                app:glassChipSpacingHorizontal="8dp"
                 android:id="@+id/chipGroupLanguages"/>
 
             <LinearLayout
@@ -94,27 +104,19 @@
                 android:layout_width="match_parent"
                 android:visibility="gone"
                 android:orientation="vertical"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:id="@+id/layoutProgress">
 
-                <LinearLayout
+                <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="6dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="0dp"
-                        android:ellipsize="middle"
-                        android:textSize="12sp"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:maxLines="1"
-                        android:layout_weight="1"
-                        android:id="@+id/tvProgressLabel"/>
-
-                </LinearLayout>
+                    android:ellipsize="middle"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:paddingHorizontal="4dp"
+                    android:paddingBottom="8dp"
+                    android:maxLines="1"
+                    android:id="@+id/tvProgressLabel"/>
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:layout_height="wrap_content"
@@ -122,6 +124,7 @@
                     android:max="100"
                     android:indeterminate="false"
                     app:trackCornerRadius="4dp"
+                    app:trackThickness="6dp"
                     android:progress="0"
                     android:id="@+id/progressBar"/>
 
@@ -131,8 +134,8 @@
                     app:strokeColor="?attr/colorOutlineVariant"
                     app:cardElevation="0dp"
                     app:strokeWidth="1dp"
-                    android:layout_marginTop="12dp"
-                    app:cardCornerRadius="12dp">
+                    android:layout_marginTop="14dp"
+                    app:cardCornerRadius="14dp">
 
                     <ScrollView
                         android:layout_height="160dp"
@@ -168,26 +171,43 @@
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:gravity="end"
-        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:padding="16dp"
         android:orientation="horizontal">
 
-        <com.google.android.material.button.MaterialButton
+        <ir.hanzodev1375.components.glass.ButtonCompat
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:visibility="gone"
-            android:layout_marginEnd="8dp"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:id="@+id/btnCancel"
-            android:text="@string/translator_cancel"/>
+            android:textSize="12sp"
+            android:id="@+id/btnDeselectAll"
+            android:text="@string/translator_deselect_all"/>
 
-        <com.google.android.material.button.MaterialButton
+        <ir.hanzodev1375.components.glass.ButtonCompat
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            style="@style/Widget.Material3.Button"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:id="@+id/btnSelectAll"
+            android:text="@string/translator_select_all"/>
+
+        <Space
+            android:layout_height="1dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"/>
+
+        <ir.hanzodev1375.components.glass.ButtonCompat
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:enabled="false"
             android:id="@+id/btnTranslate"
             android:text="@string/translator_start"/>
+
+        <ir.hanzodev1375.components.glass.ButtonCompat
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/btnCancel"
+            android:text="@string/translator_cancel"/>
 
     </LinearLayout>
 

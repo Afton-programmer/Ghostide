@@ -43,6 +43,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     view.setLayoutParams(
         new ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+    M3Theme.listCard(view);
     return new ViewHolder(view);
   }
 
@@ -114,11 +115,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
               holder.switchGroup.setDescription(highlightedDesc);
             }
           });
-    } else {
-      holder.switchGroup.setTitle(item.getTitle());
-      if (item.getDescription() != null && !item.getDescription().isEmpty()) {
-        holder.switchGroup.setDescription(item.getDescription());
-      }
     }
 
     if (item.getIconRes() != 0) {
@@ -144,7 +140,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
             }
           });
     }
-    M3Theme.listCard(holder.itemView);
   }
 
   private SpannableString highlightText(String text, String query, ViewHolder holder) {

@@ -54,9 +54,7 @@ public class SettingActivity extends BaseCompat {
   private RecyclerView rvEditor, rvApp, rvLsp, rvAi, rvRunner, rvIconPack, rvBackgroundPlugin,
       rvPlugins;
   private SearchLayout ser;
-  private boolean isSearchActive = false;
   private Runnable filterRunnable;
-  private Runnable expandRunnable;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -174,46 +172,16 @@ public class SettingActivity extends BaseCompat {
 
     ser.setOnTextChangedListener(
         (item) -> {
-          boolean hasText = item.length() > 0;
-
-          if (hasText && !isSearchActive) {
-            isSearchActive = true;
-            ser.removeCallbacks(expandRunnable);
-            expandRunnable =
-                () -> {
-                  if (!expandAi.isExpanded()) expandAi.expand();
-                  if (!expandApp.isExpanded()) expandApp.expand();
-                  if (!expandEditor.isExpanded()) expandEditor.expand();
-                  if (!LspView.isExpanded()) LspView.expand();
-                  if (!expandRunner.isExpanded()) expandRunner.expand();
-                  if (!expandIconPack.isExpanded()) expandIconPack.expand();
-                  if (!expandBackgroundPlugin.isExpanded()) expandBackgroundPlugin.expand();
-                  if (expandPlugins.getVisibility() == View.VISIBLE
-                      && !expandPlugins.isExpanded()) {
-                    expandPlugins.expand();
-                  }
-                };
-            ser.postDelayed(expandRunnable, 50);
-          }
-
           ser.removeCallbacks(filterRunnable);
           filterRunnable =
               () -> {
-                if (hasText) {
-                  filterAll(item);
-                } else {
+                if (item.isEmpty()) {
                   resetAll();
-                  if (expandAi.isExpanded()) expandAi.collapse();
-                  if (expandApp.isExpanded()) expandApp.collapse();
-                  if (expandEditor.isExpanded()) expandEditor.collapse();
-                  if (LspView.isExpanded()) LspView.collapse();
-                  if (expandRunner.isExpanded()) expandRunner.collapse();
-                  if (expandIconPack.isExpanded()) expandIconPack.collapse();
-                  if (expandBackgroundPlugin.isExpanded()) expandBackgroundPlugin.collapse();
-                  if (expandPlugins.isExpanded()) expandPlugins.collapse();
-                  isSearchActive = false;
-                  ser.removeCallbacks(expandRunnable);
+                  collapseAll();
+                  return;
                 }
+                filterAll(item);
+                expandMatching();
               };
           ser.postDelayed(filterRunnable, 50);
         });
@@ -254,6 +222,44 @@ public class SettingActivity extends BaseCompat {
           pluginSection
         }) {
       section.resetToFull();
+    }
+  }
+
+  private void expandMatching() {
+    expandIfMatching(expandEditor, editorSection);
+    expandIfMatching(expandApp, appSection);
+    expandIfMatching(expandAi, aiSection);
+    expandIfMatching(LspView, lspSection);
+    expandIfMatching(expandRunner, runnerSection);
+    expandIfMatching(expandIconPack, iconPackSection);
+    expandIfMatching(expandBackgroundPlugin, backgroundPluginSection);
+    expandIfMatching(expandPlugins, pluginSection);
+  }
+
+  /** Opens a section only when the current filter left rows in it, so search never expands empties. */
+  private void expandIfMatching(ExpandableLayout layout, SettingSection section) {
+    if (layout.getVisibility() != View.VISIBLE) return;
+    boolean hasMatches = section.getAdapter() != null && section.getAdapter().getItemCount() > 0;
+    if (hasMatches) {
+      if (!layout.isExpanded()) layout.expand();
+    } else if (layout.isExpanded()) {
+      layout.collapse();
+    }
+  }
+
+  private void collapseAll() {
+    for (ExpandableLayout layout :
+        new ExpandableLayout[] {
+          expandEditor,
+          expandApp,
+          expandAi,
+          LspView,
+          expandRunner,
+          expandIconPack,
+          expandBackgroundPlugin,
+          expandPlugins
+        }) {
+      if (layout.isExpanded()) layout.collapse();
     }
   }
 
