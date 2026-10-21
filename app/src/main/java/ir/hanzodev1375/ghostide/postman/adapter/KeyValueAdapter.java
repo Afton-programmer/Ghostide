@@ -1,13 +1,10 @@
 package ir.hanzodev1375.ghostide.postman.adapter;
 
-import android.graphics.Color;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import ir.hanzodev1375.ghostide.R;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import ir.hanzodev1375.ghostide.GhostIdeAppLoader;
 import java.util.List;
 import ir.hanzodev1375.ghostide.databinding.ItemKeyValueBinding;
 import ir.hanzodev1375.ghostide.postman.model.KeyValueItem;
@@ -98,16 +95,6 @@ public class KeyValueAdapter extends RecyclerView.Adapter<KeyValueAdapter.ViewHo
       binding.keyInput.setText(item.getKey());
       binding.valueInput.setText(item.getValue());
       binding.enabledCheckbox.setChecked(item.isEnabled());
-
-      var setting = GhostIdeAppLoader.getInstance().getSetting();
-      if (setting.isShowBackground()) {
-        binding.keyInput.setBackgroundColor(Color.TRANSPARENT);
-        binding.valueInput.setBackgroundColor(Color.TRANSPARENT);
-      } else {
-        binding.keyInput.setBackgroundResource(R.drawable.bg_input_row);
-        binding.valueInput.setBackgroundResource(R.drawable.bg_input_row);
-      }
-      
 
       keyWatcher =
           new SimpleTextWatcher(

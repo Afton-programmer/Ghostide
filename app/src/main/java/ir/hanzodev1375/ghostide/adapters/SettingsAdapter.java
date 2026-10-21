@@ -40,19 +40,16 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
   @Override
   public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     PreferenceSwitchGroup view = new PreferenceSwitchGroup(parent.getContext());
-    view.setLayoutParams(
-        new ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-    M3Theme.listCard(view);
+    ViewGroup.MarginLayoutParams layoutParams =
+        new ViewGroup.MarginLayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    layoutParams.bottomMargin =
+        (int) (4 * parent.getResources().getDisplayMetrics().density);
+    view.setLayoutParams(layoutParams);
     return new ViewHolder(view);
   }
 
-  /**
-   * آیتم را در موقعیت اصلی (پیش از فیلتر) جایگزین می‌کند. چون `items` هنگام جستجو فیلتر می‌شود ممکن
-   * است اندیس داده‌شده از اندازه‌ی آن خارج باشد؛ پس هم‌چنان `backupList` آپدیت می‌شود و ردیف دیده‌شده
-   * در `items` با مقایسه‌ی هویتی پیدا و تازه‌سازی می‌شود.
-   */
-  public void updateItem(int originalPosition, SettingItem newItem) {
+ public void updateItem(int originalPosition, SettingItem newItem) {
     if (newItem == null) return;
     if (originalPosition < 0 || originalPosition >= backupList.size()) return;
     SettingItem oldItem = backupList.get(originalPosition);
@@ -64,13 +61,12 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     }
   }
 
-  /** آیتم را در موقعیت اصلی (پیش از فیلتر) برمی‌گرداند؛ اگر بعد از جستجو دیده نمی‌شود null است. */
   public SettingItem getItemAtPosition(int originalPosition) {
     if (originalPosition < 0 || originalPosition >= backupList.size()) return null;
     return backupList.get(originalPosition);
   }
 
-  /** ردیف دیده‌شده‌ی متناظر با موقعیت اصلی را تازه‌سازی می‌کند (برای بعد از فیلتر هم امن است). */
+  
   public void notifyItemChangedByOriginalPosition(int originalPosition) {
     if (originalPosition < 0 || originalPosition >= backupList.size()) return;
     SettingItem item = backupList.get(originalPosition);

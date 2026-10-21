@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,11 +11,14 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="0dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="?attr/colorOutlineVariant"
-    app:cardBackgroundColor="?attr/colorSurfaceContainerLow">
+    app:cornerRadius="24dp"
+    app:glassMaterial="regular"
+    app:refractionHeight="66dp"
+    app:bevelWidth="14dp"
+    app:dispersionStrength="0.12"
+    app:sensorHighlight="false"
+    app:adaptiveTint="true"
+    app:backdropSourceId="@id/contentFrame">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,4 +73,4 @@
             android:contentDescription="@string/action_delete" />
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat>

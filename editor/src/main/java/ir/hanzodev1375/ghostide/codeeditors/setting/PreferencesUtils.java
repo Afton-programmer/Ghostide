@@ -112,7 +112,7 @@ public class PreferencesUtils {
 
   public boolean enableAutoComplete() {
     return getDefaultPreferences()
-        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_AUTO_COMPLETE, false);
+        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_AUTO_COMPLETE, true);
   }
 
   public boolean enableGhostTextCompletion() {
@@ -134,7 +134,7 @@ public class PreferencesUtils {
 
   public boolean enableBracketAutoClosing() {
     return getDefaultPreferences()
-        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_AUTO_CLOSE_BRACKET, false);
+        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_AUTO_CLOSE_BRACKET, true);
   }
 
   public boolean enableBracketHighlight() {
@@ -166,7 +166,7 @@ public class PreferencesUtils {
 
   public boolean enableHardWareAcceleration() {
     return getDefaultPreferences()
-        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_HARDWARE_ACCELERATION, false);
+        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_HARDWARE_ACCELERATION, true);
   }
 
   public String getTranslateTargetLang() {
@@ -347,12 +347,12 @@ public class PreferencesUtils {
 
   public boolean useFontLigatures() {
     return getDefaultPreferences()
-        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_FONT_LIAGTURES, false);
+        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_FONT_LIAGTURES, true);
   }
 
   public boolean useICULibrary() {
     return getDefaultPreferences()
-        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_ICU, false);
+        .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_ICU, true);
   }
 
   public boolean useTabIndentation() {
@@ -591,10 +591,15 @@ public class PreferencesUtils {
   }
 
   public void setGitHubToken(String token) {
-    getDefaultPreferences()
-        .edit()
-        .putString(Constants.SharedPreferenceKeys.KEY_GITHUB_TOKEN, token)
-        .apply();
+    boolean accountChanged = !Objects.equals(getGitHubToken(), token);
+    SharedPreferences.Editor editor =
+        getDefaultPreferences()
+            .edit()
+            .putString(Constants.SharedPreferenceKeys.KEY_GITHUB_TOKEN, token);
+    if (accountChanged) {
+      editor.remove(Constants.SharedPreferenceKeys.KEY_GITHUB_STAR_PROMPT_SHOWN);
+    }
+    editor.apply();
   }
 
   public String getGitHubUsername() {
@@ -634,6 +639,18 @@ public class PreferencesUtils {
 
   public boolean isGitHubLoggedIn() {
     return !getGitHubToken().isEmpty();
+  }
+
+  public boolean isGitHubStarPromptShown() {
+    return getDefaultPreferences()
+        .getBoolean(Constants.SharedPreferenceKeys.KEY_GITHUB_STAR_PROMPT_SHOWN, false);
+  }
+
+  public void setGitHubStarPromptShown() {
+    getDefaultPreferences()
+        .edit()
+        .putBoolean(Constants.SharedPreferenceKeys.KEY_GITHUB_STAR_PROMPT_SHOWN, true)
+        .apply();
   }
 
   public String getGitCommitName() {
@@ -684,6 +701,7 @@ public class PreferencesUtils {
         .remove(Constants.SharedPreferenceKeys.KEY_GITHUB_USERNAME)
         .remove(Constants.SharedPreferenceKeys.KEY_GITHUB_NAME)
         .remove(Constants.SharedPreferenceKeys.KEY_GITHUB_AVATAR_URL)
+        .remove(Constants.SharedPreferenceKeys.KEY_GITHUB_STAR_PROMPT_SHOWN)
         .apply();
   }
 

@@ -8,7 +8,10 @@ import ir.hanzodev1375.ghostide.models.SettingItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Pick which installed icon pack (plugin) applies; "Default" means built-in icons. */
+/**
+ * Pick which installed icon pack (plugin) applies; "Default" means built-in icons. The section
+ * exposes no rows when no icon pack plugin is installed, so its card is hidden entirely.
+ */
 public class IconPackSettingSection extends SettingSection {
 
   private static final int POS_PACK = 0;
@@ -23,6 +26,9 @@ public class IconPackSettingSection extends SettingSection {
   @Override
   protected List<SettingItem> buildItems() {
     List<SettingItem> items = new ArrayList<>();
+    if (IconPackManager.listInstalled(activity).isEmpty()) {
+      return items;
+    }
     items.add(textItem(R.string.icon_pack_title, currentPackDescription()));
     return items;
   }

@@ -200,6 +200,7 @@ Directory structure:
     │           │       │       │   ├── BreadcrumbAdapter.java
     │           │       │       │   ├── CodeRunnerHostAdapter.java
     │           │       │       │   ├── CommandAdapter.java
+    │           │       │       │   ├── ContributorAdapter.java
     │           │       │       │   ├── DiagnosticsAdapter.java
     │           │       │       │   ├── EditorHostAdapter.java
     │           │       │       │   ├── EditorPagerAdapter.java
@@ -242,7 +243,6 @@ Directory structure:
     │           │       │       │   ├── GhostIdeEditorSearch.java
     │           │       │       │   ├── LayoutSymbolbar.java
     │           │       │       │   ├── MaterialGradientCard.java
-    │           │       │       │   ├── MaxHeightRecyclerView.java
     │           │       │       │   ├── NavModelPanel.java
     │           │       │       │   ├── PreferenceSwitchGroup.java
     │           │       │       │   ├── ScrollPreserveRecyclerView.java
@@ -312,6 +312,7 @@ Directory structure:
     │           │       │       │   └── LspDiagnosticsEventListener.java
     │           │       │       ├── models/
     │           │       │       │   ├── CommandItem.java
+    │           │       │       │   ├── Contributor.java
     │           │       │       │   ├── CursorPack.java
     │           │       │       │   ├── FileManagerModel.java
     │           │       │       │   ├── InstalledPluginInfo.java
@@ -324,8 +325,10 @@ Directory structure:
     │           │       │       │   └── ZipInfo.java
     │           │       │       ├── mvvm/
     │           │       │       │   └── viewmodel/
+    │           │       │       │       ├── AboutViewModel.java
     │           │       │       │       ├── EditorViewModel.java
     │           │       │       │       ├── FileViewModel.java
+    │           │       │       │       ├── GitHubStarViewModel.java
     │           │       │       │       └── LspViewModel.java
     │           │       │       ├── onboarding/
     │           │       │       │   ├── FeaturesFragment.java
@@ -523,6 +526,7 @@ Directory structure:
     │           │       │       ├── themeengine/
     │           │       │       │   ├── CircleImageView.java
     │           │       │       │   ├── ColorAdapter.java
+    │           │       │       │   ├── GthCanvasDrawable.java
     │           │       │       │   ├── Theme.java
     │           │       │       │   ├── ThemeChooserDialogBuilder.java
     │           │       │       │   ├── ThemeEngine.java
@@ -640,6 +644,7 @@ Directory structure:
     │               │   ├── ic_single_pane.xml
     │               │   ├── ic_split_column.xml
     │               │   ├── ic_split_row.xml
+    │               │   ├── ic_star.xml
     │               │   ├── ic_zoom.xml
     │               │   ├── icon_more_vert_round.xml
     │               │   ├── menucustom.xml
@@ -739,6 +744,7 @@ Directory structure:
     │               │   ├── item_color_row.xml
     │               │   ├── item_command.xml
     │               │   ├── item_diag.xml
+    │               │   ├── item_contributor.xml
     │               │   ├── item_diag_row_double.xml
     │               │   ├── item_diag_row_single.xml
     │               │   ├── item_file_manager.xml
@@ -777,6 +783,7 @@ Directory structure:
     │               │   ├── bottom_nav_preview.xml
     │               │   ├── menu_history.xml
     │               │   ├── menu_main.xml
+    │               │   ├── menu_settings.xml
     │               │   ├── menu_webview.xml
     │               │   ├── tab_menu.xml
     │               │   └── theme_editor_menu.xml
@@ -901,6 +908,9 @@ Directory structure:
     │           │   │           │   └── GlslPalette.java
     │           │   │           ├── image/
     │           │   │           │   └── ZoomableImageView.kt
+    │           │   │           ├── input/
+    │           │   │           │   ├── TextInputEditTextGlass.java
+    │           │   │           │   └── TextInputGlass.java
     │           │   │           ├── searchdata/
     │           │   │           │   ├── FileSearchEngine.java
     │           │   │           │   ├── adapter/
@@ -2498,6 +2508,7 @@ Directory structure:
     │                       ├── ActivityTheme.java
     │                       ├── EditorTheme.java
     │                       ├── GhostTheme.java
+    │                       ├── GthDecoder.java
     │                       ├── M3Theme.java
     │                       ├── MaterialTheme.java
     │                       ├── ThemeBus.java

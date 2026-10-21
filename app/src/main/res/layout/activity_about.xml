@@ -50,15 +50,121 @@
                  android:gravity="center" />
 
             <TextView
+                 android:id="@+id/tv_about_version"
                  android:layout_height="wrap_content"
                  android:layout_width="match_parent"
                  android:layout_marginBottom="20dp"
                  android:gravity="center"
                  android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                 android:textColor="?attr/colorOnSurface"
-                 android:text="@string/diag_title" />
+                 android:textColor="?attr/colorOnSurface" />
 
         </LinearLayout>
+
+        <ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat
+             android:id="@+id/card_contributors"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+             android:layout_marginBottom="12dp"
+             app:cornerRadius="24dp"
+             app:aberrationIntensity="2"
+             app:saturation="140"
+             app:blurAmount="0.0625" >
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:padding="16dp"
+                 android:orientation="vertical">
+
+                <LinearLayout
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:gravity="center_vertical"
+                     android:orientation="horizontal">
+
+                    <ImageView
+                         android:layout_height="28dp"
+                         android:layout_width="28dp"
+                         android:src="@drawable/outline_person"
+                         android:scaleType="centerInside"
+                         android:contentDescription="@null" />
+
+                    <TextView
+                         android:layout_height="wrap_content"
+                         android:layout_width="0dp"
+                         android:layout_marginStart="10dp"
+                         android:layout_weight="1"
+                         android:text="@string/about_contributors"
+                         android:textAppearance="?attr/textAppearanceTitleMedium"
+                         android:textColor="?attr/colorOnSurfaceVariant" />
+
+                    <TextView
+                         android:id="@+id/tv_contributors_status"
+                         android:layout_height="wrap_content"
+                         android:layout_width="wrap_content"
+                         android:text="@string/about_loading"
+                         android:textAppearance="?attr/textAppearanceLabelMedium"
+                         android:textColor="?attr/colorOnSurfaceVariant" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                     android:id="@+id/rv_contributors"
+                     android:layout_height="wrap_content"
+                     android:layout_width="match_parent"
+                     android:layout_marginTop="12dp"
+                     android:clipToPadding="false"
+                     android:overScrollMode="never"
+                     android:visibility="gone" />
+
+            </LinearLayout>
+
+        </ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat>
+
+        <ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat
+             android:id="@+id/card_stars"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent"
+             android:layout_marginBottom="12dp"
+             app:cornerRadius="24dp"
+             app:aberrationIntensity="2"
+             app:saturation="140"
+             app:blurAmount="0.0625" >
+
+            <LinearLayout
+                 android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:padding="16dp"
+                 android:gravity="center_vertical"
+                 android:orientation="horizontal">
+
+                <ImageView
+                     android:layout_height="28dp"
+                     android:layout_width="28dp"
+                     android:src="@drawable/ic_star"
+                     android:scaleType="centerInside"
+                     android:contentDescription="@null" />
+
+                <TextView
+                     android:layout_height="wrap_content"
+                     android:layout_width="0dp"
+                     android:layout_marginStart="10dp"
+                     android:layout_weight="1"
+                     android:text="@string/about_stars"
+                     android:textAppearance="?attr/textAppearanceTitleMedium"
+                     android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <TextView
+                     android:id="@+id/tv_stars_value"
+                     android:layout_height="wrap_content"
+                     android:layout_width="wrap_content"
+                     android:text="@string/about_loading"
+                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                     android:textColor="?attr/colorOnSurface" />
+
+            </LinearLayout>
+
+        </ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat>
 
         <ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat
              android:layout_height="wrap_content"
@@ -100,6 +206,7 @@
                          android:scaleType="centerInside"
                          android:clickable="false"
                          android:padding="0dp"
+                         android:rotation="-90"
                          android:id="@+id/arrow_device_info" />
 
                 </LinearLayout>
@@ -108,6 +215,7 @@
                      android:layout_height="wrap_content"
                      android:layout_width="match_parent"
                      android:orientation="vertical"
+                     android:visibility="gone"
                      android:clipChildren="true"
                      android:id="@+id/body_device_info">
 
@@ -211,6 +319,7 @@
                          android:scaleType="centerInside"
                          android:clickable="false"
                          android:padding="0dp"
+                         android:rotation="-90"
                          android:id="@+id/arrow_display" />
 
                 </LinearLayout>
@@ -219,6 +328,7 @@
                      android:layout_height="wrap_content"
                      android:layout_width="match_parent"
                      android:orientation="vertical"
+                     android:visibility="gone"
                      android:id="@+id/body_display">
 
                     <include
@@ -297,6 +407,7 @@
                          android:scaleType="centerInside"
                          android:clickable="false"
                          android:padding="0dp"
+                         android:rotation="-90"
                          android:id="@+id/arrow_memory" />
 
                 </LinearLayout>
@@ -305,6 +416,7 @@
                      android:layout_height="wrap_content"
                      android:layout_width="match_parent"
                      android:orientation="vertical"
+                     android:visibility="gone"
                      android:id="@+id/body_memory">
 
                     <include
@@ -377,6 +489,7 @@
                          android:scaleType="centerInside"
                          android:clickable="false"
                          android:padding="0dp"
+                         android:rotation="-90"
                          android:id="@+id/arrow_storage" />
 
                 </LinearLayout>
@@ -385,6 +498,7 @@
                      android:layout_height="wrap_content"
                      android:layout_width="match_parent"
                      android:orientation="vertical"
+                     android:visibility="gone"
                      android:id="@+id/body_storage">
 
                     <include

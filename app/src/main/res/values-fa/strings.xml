@@ -6,6 +6,7 @@
     <string name="closeall">بستن همه</string>
     <string name="pin">سنجاق کردن</string>
     <string name="settings_title">تنظیمات</string>
+    <string name="menu_search">جستجو</string>
     <string name="section_editor">ویرایشگر کد</string>
     <string name="section_app">ظاهر و رفتار</string>
     <string name="pref_auto_save">ذخیره خودکار</string>
@@ -146,6 +147,13 @@
     <string name="github_welcome">%s، خوش آمدید!</string>
     <string name="github_tokenerrortitle">هنوز توکنی وارد نکردهاید!</string>
     <string name="github_tokenerrormsg">اگر میخواهید به GitHub وارد شوید، به تنظیمات بروید و وارد شوید.</string>
+    <string name="github_star_title">حمایت از Ghost IDE</string>
+    <string name="github_star_message">شما وارد GitHub شده‌اید اما هنوز به Ghost IDE ستاره نداده‌اید. می‌خواهید به مخزن ما ستاره بدهید؟</string>
+    <string name="github_star_action">ستاره دادن به مخزن</string>
+    <string name="github_star_later">بعداً</string>
+    <string name="github_star_success">از ستاره‌ای که به Ghost IDE دادید متشکریم!</string>
+    <string name="github_star_open_fallback">صفحه مخزن GitHub باز می‌شود تا بتوانید به آن ستاره بدهید.</string>
+    <string name="github_star_no_browser">برنامه‌ای برای باز کردن مخزن GitHub پیدا نشد.</string>
     <string name="editorac_savefile">فایل ذخیره شد</string>
     <string name="editorac_notopenfile">هیچ فایلی باز نیست</string>
     <string name="editorac_wassaved">فایل فعلی ذخیره شد.</string>
@@ -271,6 +279,11 @@
     <string name="yes">بله</string>
     <string name="no">خیر</string>
     <string name="diag_title">تشخیص سیستم</string>
+    <string name="about_version_title">Ghost IDE برای %1$s</string>
+    <string name="about_contributors">مشارکت‌کنندگان</string>
+    <string name="about_stars">ستاره‌های GitHub</string>
+    <string name="about_loading">در حال بارگذاری…</string>
+    <string name="about_unavailable">در دسترس نیست</string>
     <string name="diag_device_info">اطلاعات دستگاه</string>
     <string name="diag_display">نمایش و رندر</string>
     <string name="diag_memory">زمان اجرا و حافظه</string>
@@ -616,8 +629,8 @@
     <string name="onboarding_perm_notifications_desc">هشدارهای پیشرفت ساخت و پس زمینه</string>
     <string name="onboarding_perm_install_title">برنامه ها را نصب کنید</string>
     <string name="onboarding_perm_install_desc">نصب بسته های برنامه را مجاز کنید</string>
-    <string name="onboarding_perm_grant">تسلیم مجوز</string>
-    <string name="onboarding_perm_granted">داده شده است</string>
+    <string name="onboarding_perm_grant">اعطای مجوز</string>
+    <string name="onboarding_perm_granted">اعطا شده</string>
     <string name="onboarding_terminal_warning">برخی از سرور زبان ها بدون ترمینال کار نمی کنند</string>
     <string name="onboarding_perm_unavailable">این تنظیم روی دستگاه شما در دسترس نیست</string>
     <string name="onboarding_terminal_desc">یک ترمینال واقعی لینوکس در جیب شما به شما امکان می دهد بسته ها را نصب کرده و ابزارها را اجرا کنید. بدون آن برخی از ویژگی ها و دستورات LSP کار نمی کنند.</string>

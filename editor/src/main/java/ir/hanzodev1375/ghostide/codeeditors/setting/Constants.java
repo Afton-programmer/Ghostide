@@ -50,6 +50,7 @@ public class Constants {
     public static final String KEY_GITHUB_USERNAME = "pref_github_username";
     public static final String KEY_GITHUB_NAME = "pref_github_name";
     public static final String KEY_GITHUB_AVATAR_URL = "pref_github_avatar_url";
+    public static final String KEY_GITHUB_STAR_PROMPT_SHOWN = "pref_github_star_prompt_shown";
     public static final String KEY_SHOWTAB_ICON = "pref_showicon_tab";
     public static final String KEY_TRANSLATE_TARGET_LANG = "pref_translate_target_lang";
     public static final String KEY_GIT_LOCAL_USER_NAME = "git_local_user_name";

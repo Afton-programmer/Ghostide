@@ -10,11 +10,11 @@
      android:paddingStart="16dp"
      android:paddingTop="8dp">
 
-    <com.google.android.material.textfield.TextInputLayout
+    <ir.hanzodev1375.components.input.TextInputGlass
          android:layout_height="wrap_content"
          android:layout_width="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
              android:layout_height="wrap_content"
              android:layout_width="match_parent"
              tools:text="@tools:sample/full_names"
@@ -22,6 +22,6 @@
              android:inputType="text"
              android:id="@+id/rename" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </ir.hanzodev1375.components.input.TextInputGlass>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -6,6 +6,7 @@
     <string name="closeall">close all</string>
     <string name="pin">pin</string>
     <string name="settings_title">Settings</string>
+    <string name="menu_search">Search</string>
     <string name="section_editor">Code Editor</string>
     <string name="section_app">Appearance &amp; Behavior</string>
     <string name="pref_auto_save">Auto save</string>
@@ -148,6 +149,13 @@
     <string name="github_welcome">Welcome, %s!</string>
     <string name="github_tokenerrortitle">You havent entered a token yet!</string>
     <string name="github_tokenerrormsg">If you want to log in to GitHub, go to settings and login.</string>
+    <string name="github_star_title">Support Ghost IDE</string>
+    <string name="github_star_message">You are signed in to GitHub, but you have not starred Ghost IDE yet. Would you like to star our repository?</string>
+    <string name="github_star_action">Star repository</string>
+    <string name="github_star_later">Later</string>
+    <string name="github_star_success">Thanks for starring Ghost IDE!</string>
+    <string name="github_star_open_fallback">Opening the GitHub repository so you can star it.</string>
+    <string name="github_star_no_browser">No app found to open the GitHub repository.</string>
     <string name="editorac_savefile">File saved</string>
     <string name="editorac_notopenfile">No files are open</string>
     <string name="editorac_wassaved">The current file was saved.</string>
@@ -273,6 +281,11 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="diag_title">System Diagnostics</string>
+    <string name="about_version_title">Ghost IDE for %1$s</string>
+    <string name="about_contributors">Contributors</string>
+    <string name="about_stars">GitHub Stars</string>
+    <string name="about_loading">Loading…</string>
+    <string name="about_unavailable">Unavailable</string>
     <string name="diag_device_info">Device Info</string>
     <string name="diag_display">Display &amp; Rendering</string>
     <string name="diag_memory">Runtime &amp; Memory</string>

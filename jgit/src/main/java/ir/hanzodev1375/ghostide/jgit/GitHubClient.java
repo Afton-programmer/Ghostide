@@ -35,10 +35,27 @@ public class GitHubClient {
     void onFailure(String errorMessage);
   }
 
+  public interface GitHubStarStatusCallback {
+    void onStarred();
+
+    void onNotStarred();
+
+    void onFailure(String errorMessage);
+  }
+
+  public interface GitHubActionCallback {
+    void onSuccess();
+
+    void onFailure(String errorMessage);
+  }
+
   /** Upper bound on repo pages walked while summing stars (1000 repos). */
   private static final int MAX_STAR_PAGES = 10;
 
   private static final int REPOS_PER_PAGE = 100;
+  private static final int HTTP_NO_CONTENT = 204;
+  private static final int HTTP_NOT_FOUND = 404;
+  private static final String API_BASE = "https://api.github.com";
 
   private final OkHttpClient client = new OkHttpClient();
   private final PreferencesUtils prefs;
@@ -113,6 +130,81 @@ public class GitHubClient {
     return prefs.getGitHubAvatarUrl();
   }
 
+  /**
+   * Checks whether the signed-in user has starred the given repository.
+   *
+   * <p>GitHub answers 204 when the repository is starred and 404 when it is not. The callback is
+   * invoked on an OkHttp worker thread.
+   */
+  public void isRepositoryStarred(
+      String owner, String repository, GitHubStarStatusCallback callback) {
+    Request request =
+        new Request.Builder()
+            .url(API_BASE + "/user/starred/" + owner + "/" + repository)
+            .addHeader("Authorization", "Bearer " + prefs.getGitHubToken())
+            .addHeader("Accept", "application/vnd.github+json")
+            .get()
+            .build();
+
+    client
+        .newCall(request)
+        .enqueue(
+            new Callback() {
+              @Override
+              public void onFailure(Call call, IOException e) {
+                callback.onFailure("Network error: " + e.getMessage());
+              }
+
+              @Override
+              public void onResponse(Call call, Response response) {
+                try (ResponseBody body = response.body()) {
+                  if (response.code() == HTTP_NO_CONTENT) {
+                    callback.onStarred();
+                  } else if (response.code() == HTTP_NOT_FOUND) {
+                    callback.onNotStarred();
+                  } else {
+                    callback.onFailure("Error: " + response.code());
+                  }
+                }
+              }
+            });
+  }
+
+  /**
+   * Stars the given repository for the signed-in user. The callback is invoked on an OkHttp worker
+   * thread.
+   */
+  public void starRepository(String owner, String repository, GitHubActionCallback callback) {
+    Request request =
+        new Request.Builder()
+            .url(API_BASE + "/user/starred/" + owner + "/" + repository)
+            .addHeader("Authorization", "Bearer " + prefs.getGitHubToken())
+            .addHeader("Accept", "application/vnd.github+json")
+            .put(RequestBody.create(new byte[0], null))
+            .build();
+
+    client
+        .newCall(request)
+        .enqueue(
+            new Callback() {
+              @Override
+              public void onFailure(Call call, IOException e) {
+                callback.onFailure("Network error: " + e.getMessage());
+              }
+
+              @Override
+              public void onResponse(Call call, Response response) {
+                try (ResponseBody body = response.body()) {
+                  if (response.code() == HTTP_NO_CONTENT) {
+                    callback.onSuccess();
+                  } else {
+                    callback.onFailure("Error: " + response.code());
+                  }
+                }
+              }
+            });
+  }
+
   public void get(String url, GitHubRequestCallback callback) {
     enqueue(
         url,
@@ -161,6 +253,56 @@ public class GitHubClient {
         });
   }
 
+  public void getRepositoryInfo(
+      String owner, String repository, GitHubRequestCallback callback) {
+    enqueuePublic(
+        API_BASE + "/repos/" + owner + "/" + repository,
+        new Callback() {
+          @Override
+          public void onFailure(Call call, IOException e) {
+            callback.onFailure("Network error: " + e.getMessage());
+          }
+
+          @Override
+          public void onResponse(Call call, Response response) throws IOException {
+            if (response.isSuccessful()) {
+              try {
+                callback.onSuccess(new JSONObject(response.body().string()));
+              } catch (Exception e) {
+                callback.onFailure("Parse error");
+              }
+            } else {
+              callback.onFailure("Error: " + response.code());
+            }
+          }
+        });
+  }
+
+  public void getContributors(
+      String owner, String repository, GitHubArrayCallback callback) {
+    enqueuePublic(
+        API_BASE + "/repos/" + owner + "/" + repository + "/contributors?per_page=30",
+        new Callback() {
+          @Override
+          public void onFailure(Call call, IOException e) {
+            callback.onFailure("Network error: " + e.getMessage());
+          }
+
+          @Override
+          public void onResponse(Call call, Response response) throws IOException {
+            if (response.isSuccessful()) {
+              try {
+                callback.onSuccess(new JSONArray(response.body().string()));
+              } catch (Exception e) {
+                callback.onFailure("Parse error");
+              }
+            } else {
+              callback.onFailure("Error: " + response.code());
+            }
+          }
+        });
+  }
+
   private void enqueue(String url, Callback callback) {
     enqueue(HttpUrl.parse(url), callback);
   }
@@ -174,6 +316,18 @@ public class GitHubClient {
                 .addHeader("Accept", "application/vnd.github+json")
                 .build())
         .enqueue(callback);
+  }
+
+  private void enqueuePublic(String url, Callback callback) {
+    Request.Builder builder =
+        new Request.Builder()
+            .url(url)
+            .addHeader("Accept", "application/vnd.github+json");
+    String token = prefs.getGitHubToken();
+    if (token != null && !token.isEmpty()) {
+      builder.addHeader("Authorization", "Bearer " + token);
+    }
+    client.newCall(builder.build()).enqueue(callback);
   }
 
   public void getReceivedEvents(String username, GitHubArrayCallback callback) {

@@ -7,7 +7,10 @@ import ir.hanzodev1375.ghostide.models.SettingItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Pick which installed background plugin (renderer) applies; "Default" uses the theme background. */
+/**
+ * Pick which installed background plugin (renderer) applies; "Default" uses the theme background.
+ * The section exposes no rows when no background plugin is installed, so its card is hidden.
+ */
 public class BackgroundPluginSettingSection extends SettingSection {
 
   private static final int POS_PLUGIN = 0;
@@ -19,6 +22,9 @@ public class BackgroundPluginSettingSection extends SettingSection {
   @Override
   protected List<SettingItem> buildItems() {
     List<SettingItem> items = new ArrayList<>();
+    if (BackgroundPluginManager.listInstalled(activity).isEmpty()) {
+      return items;
+    }
     items.add(textItem(R.string.background_plugin_title, currentPluginDescription()));
     return items;
   }

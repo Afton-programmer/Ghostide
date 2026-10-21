@@ -1,11 +1,13 @@
 package ir.hanzodev1375.ghostide.activity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -78,6 +80,7 @@ import ir.hanzodev1375.ghostide.history.HistoryBottomSheet;
 import ir.hanzodev1375.ghostide.history.HistoryViewModel;
 
 import ir.hanzodev1375.ghostide.mvvm.viewmodel.FileViewModel;
+import ir.hanzodev1375.ghostide.mvvm.viewmodel.GitHubStarViewModel;
 import ir.hanzodev1375.ghostide.adapters.FileManagerHostAdapter;
 import ir.hanzodev1375.ghostide.ide.ui.api.FileClickHandlers;
 import ir.hanzodev1375.ghostide.ide.ui.api.IdeHostServices;
@@ -156,6 +159,7 @@ public class FileManagerActivity extends BaseCompat
   private HistoryViewModel historyViewModel;
   private BookmarkViewModel bookmarkViewModel;
   private GitViewModel gitViewModel;
+  private GitHubStarViewModel starViewModel;
   private FileGitHelper gitHelper;
   private PluginPopupHelper pluginPopupHelper;
   private PluginPanelHost pluginPanelHost;
@@ -233,6 +237,8 @@ public class FileManagerActivity extends BaseCompat
             .register(IdeHostServices.FILE_MANAGER_HOST, new FileManagerHostAdapter(this));
     historyViewModel = new ViewModelProvider(this).get(HistoryViewModel.class);
     bookmarkViewModel = new ViewModelProvider(this).get(BookmarkViewModel.class);
+    starViewModel = new ViewModelProvider(this).get(GitHubStarViewModel.class);
+    starViewModel.getPromptEvent().observe(this, this::handleStarPromptEvent);
     gitHelper = new FileGitHelper(this, bind, () -> adapter, () -> viewModel.getCurrentPath().getValue());
     gitViewModel = new ViewModelProvider(this).get(GitViewModel.class);
     gitViewModel.changedFiles.observe(
@@ -1512,6 +1518,46 @@ public class FileManagerActivity extends BaseCompat
         });
   }
 
+  private void handleStarPromptEvent(GitHubStarViewModel.PromptEvent event) {
+    if (event == null) return;
+    GitHubStarViewModel.PromptType type = event.consume();
+    if (type == null) return;
+    switch (type) {
+      case NOT_STARRED -> showStarPrompt();
+      case STAR_SUCCESS ->
+          GhostToast.makeText(
+                  this, getString(R.string.github_star_success), GhostToast.LENGTH_SHORT)
+              .show();
+      case STAR_FAILURE -> openGitHubRepository();
+    }
+  }
+
+  private void showStarPrompt() {
+    if (isFinishing() || isDestroyed()) return;
+    starViewModel.markPromptShown();
+    new DialogCompat(this)
+        .setTitle(R.string.github_star_title)
+        .setMessage(R.string.github_star_message)
+        .setPositiveButton(
+            R.string.github_star_action, (dialog, which) -> starViewModel.starRepository())
+        .setNegativeButton(R.string.github_star_later, null)
+        .show();
+  }
+
+  private void openGitHubRepository() {
+    GhostToast.makeText(
+            this, getString(R.string.github_star_open_fallback), GhostToast.LENGTH_SHORT)
+        .show();
+    try {
+      startActivity(
+          new Intent(Intent.ACTION_VIEW, Uri.parse(GitHubStarViewModel.REPOSITORY_URL)));
+    } catch (ActivityNotFoundException e) {
+      GhostToast.makeText(
+              this, getString(R.string.github_star_no_browser), GhostToast.LENGTH_SHORT)
+          .show();
+    }
+  }
+
   private void setupOpenFilesIndicator() {
     openFilesBadge = BadgeDrawable.create(this);
     openFilesBadge.setBadgeGravity(BadgeDrawable.TOP_END);
@@ -1571,6 +1617,7 @@ public class FileManagerActivity extends BaseCompat
     updateOpenFilesIndicator();
     relaxPulseRoot();
     setupHeader();
+    starViewModel.checkStarStatus();
     if (IconPackManager.shouldRefresh(this)) {
       refreshFileList();
     }
@@ -1814,7 +1861,10 @@ public class FileManagerActivity extends BaseCompat
                     .show();
               }
             }
-            case 3 -> navigateToPath(getCacheDir().getAbsolutePath());
+            case 3 -> {
+                
+                navigateToPath(getCacheDir().getAbsolutePath());
+            }
           }
         });
   }

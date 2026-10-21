@@ -32,12 +32,13 @@
 
     </LinearLayout>
 
-    <ir.hanzodev1375.ghostide.customui.MaxHeightRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
          android:layout_height="wrap_content"
          android:layout_width="match_parent"
          android:layout_marginBottom="8dp"
          android:visibility="gone"
          android:paddingHorizontal="8dp"
+         android:nestedScrollingEnabled="false"
          android:id="@+id/expandable_recycler" />
 
 </LinearLayout>

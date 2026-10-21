@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -24,24 +23,20 @@ import ir.theme.M3Theme;
  * container inflated from {@code layout_expandable}. The glass samples a backdrop, so the host must
  * call {@link #setBackdropSource(View)} with the view painted behind this card.
  *
- * <p>The section list is a {@link MaxHeightRecyclerView} so its viewport stays finite even inside a
- * {@code NestedScrollView}; expanding/collapsing only fades and slides the already laid out list
- * instead of animating its height frame by frame.
+ * <p>The section list is a plain {@link RecyclerView} sized to its whole content, so expanding a
+ * section shows every row and the surrounding {@code NestedScrollView} stays the only scrolling
+ * container. Nested scrolling is disabled on purpose: an inner scroll viewport inside the glass
+ * card caused gesture hand-off jank and hid part of the list behind an invisible scroll area.
  */
 public class ExpandableLayout extends GlassCompat {
 
   private static final int ANIM_DURATION = 200;
   private static final float CORNER_RADIUS_DP = 12f;
-  private static final float CONTENT_OFFSET_DP = 8f;
-  private static final float MAX_CONTENT_MIN_DP = 240f;
-  private static final float MAX_CONTENT_MAX_DP = 420f;
-  private static final float MAX_CONTENT_SCREEN_RATIO = 0.62f;
 
   private TextView titleView;
   private ImageView arrowIcon;
-  private MaxHeightRecyclerView recyclerView;
+  private RecyclerView recyclerView;
   private boolean isExpanded = false;
-  private float contentOffsetPx;
 
   public ExpandableLayout(@NonNull Context context) {
     super(context);
@@ -75,20 +70,13 @@ public class ExpandableLayout extends GlassCompat {
     titleView = findViewById(R.id.expandable_title);
     arrowIcon = findViewById(R.id.expandable_arrow);
     recyclerView = findViewById(R.id.expandable_recycler);
-    contentOffsetPx = CONTENT_OFFSET_DP * density;
-    applyContentHeightCap(density);
+    recyclerView.setNestedScrollingEnabled(false);
+    recyclerView.setOverScrollMode(OVER_SCROLL_NEVER);
     findViewById(R.id.expandable_header).setOnClickListener(v -> toggle());
     recyclerView.setVisibility(GONE);
 
     M3Theme.textView(titleView);
     M3Theme.imageView(arrowIcon);
-  }
-
-  private void applyContentHeightCap(float density) {
-    int screenHeight = getResources().getDisplayMetrics().heightPixels;
-    int cap =
-        (int) Math.min(MAX_CONTENT_MAX_DP * density, screenHeight * MAX_CONTENT_SCREEN_RATIO);
-    recyclerView.setMaxHeight(Math.max(cap, (int) (MAX_CONTENT_MIN_DP * density)));
   }
 
   public void setTitle(String title) {
@@ -108,25 +96,15 @@ public class ExpandableLayout extends GlassCompat {
     if (isExpanded) return;
     isExpanded = true;
     recyclerView.animate().cancel();
+    recyclerView.setAlpha(1f);
+    recyclerView.setTranslationY(0f);
+    recyclerView.setVisibility(View.VISIBLE);
 
     if (!AnimationManager.getInstance(getContext()).areAnimationsEnabled()) {
-      recyclerView.setVisibility(View.VISIBLE);
-      recyclerView.setAlpha(1f);
-      recyclerView.setTranslationY(0f);
       arrowIcon.setRotation(90f);
       return;
     }
 
-    recyclerView.setVisibility(View.VISIBLE);
-    recyclerView.setAlpha(0f);
-    recyclerView.setTranslationY(contentOffsetPx);
-    recyclerView
-        .animate()
-        .alpha(1f)
-        .translationY(0f)
-        .setDuration(ANIM_DURATION)
-        .setInterpolator(new DecelerateInterpolator())
-        .start();
     arrowIcon.animate().rotation(90f).setDuration(ANIM_DURATION).start();
   }
 
@@ -134,29 +112,15 @@ public class ExpandableLayout extends GlassCompat {
     if (!isExpanded) return;
     isExpanded = false;
     recyclerView.animate().cancel();
+    recyclerView.setAlpha(1f);
+    recyclerView.setTranslationY(0f);
+    recyclerView.setVisibility(View.GONE);
 
     if (!AnimationManager.getInstance(getContext()).areAnimationsEnabled()) {
-      recyclerView.setVisibility(View.GONE);
-      recyclerView.setAlpha(1f);
-      recyclerView.setTranslationY(0f);
       arrowIcon.setRotation(0f);
       return;
     }
 
-    recyclerView
-        .animate()
-        .alpha(0f)
-        .translationY(contentOffsetPx)
-        .setDuration(ANIM_DURATION)
-        .setInterpolator(new DecelerateInterpolator())
-        .withEndAction(
-            () -> {
-              if (isExpanded) return;
-              recyclerView.setVisibility(View.GONE);
-              recyclerView.setAlpha(1f);
-              recyclerView.setTranslationY(0f);
-            })
-        .start();
     arrowIcon.animate().rotation(0f).setDuration(ANIM_DURATION).start();
   }
 

@@ -27,6 +27,7 @@ public class ThemeManager {
   private static String cacheKey;
   private static String cachedMergedJson;
   private static GhostTheme cachedThemeObj;
+  private static String cachedSourceJson;
 
   private static volatile String cachedDefaultThemeJson;
 
@@ -101,10 +102,20 @@ public class ThemeManager {
       json = getDefaultThemeJson();
     }
 
+    synchronized (CACHE_LOCK) {
+      if (cachedThemeObj != null && json == cachedSourceJson) {
+        return cachedThemeObj;
+      }
+    }
+
     try {
       String key = "prefs:" + json.length() + "@" + json.hashCode();
       final String json2 = json;
-      return fromCacheOrParse(key, () -> json2);
+      GhostTheme theme = fromCacheOrParse(key, () -> json2);
+      synchronized (CACHE_LOCK) {
+        cachedSourceJson = json;
+      }
+      return theme;
     } catch (Exception e) {
       return gson.fromJson(getDefaultThemeJson(), GhostTheme.class);
     }
@@ -136,6 +147,7 @@ public class ThemeManager {
       cacheKey = null;
       cachedMergedJson = null;
       cachedThemeObj = null;
+      cachedSourceJson = null;
     }
   }
 

@@ -1,6 +1,7 @@
 package ir.hanzodev1375.ghostide.adapters;
 
-import android.graphics.drawable.GradientDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,19 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import ir.hanzodev1375.components.utils.RoundedCornersTransformation;
 import ir.hanzodev1375.ghostide.R;
-import ir.hanzodev1375.ghostide.utils.FileUtil;
-import ir.theme.GhostTheme;
-import ir.theme.M3Theme;
-import ir.theme.ThemeMediaPath;
-import ir.theme.WidgetTheme;
+import ir.hanzodev1375.ghostide.themeengine.GthCanvasDrawable;
+import ir.theme.GthDecoder;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ThemeFilesAdapter extends RecyclerView.Adapter<ThemeFilesAdapter.ViewHolder> {
 
@@ -33,8 +31,17 @@ public class ThemeFilesAdapter extends RecyclerView.Adapter<ThemeFilesAdapter.Vi
     void onFileLongClick(File file, ViewHolder holder);
   }
 
+  private static final ExecutorService DECODE_EXECUTOR =
+      Executors.newSingleThreadExecutor(
+          runnable -> {
+            Thread thread = new Thread(runnable, "gth-decoder");
+            thread.setPriority(Thread.MIN_PRIORITY);
+            return thread;
+          });
+  private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+
   private final List<File> files;
-  private final Map<String, ThemeData> dataCache = new HashMap<>();
+  private final Map<String, GthDecoder.Result> dataCache = new ConcurrentHashMap<>();
   private final OnFileClickListener listener;
   private OnFileLongClickListener longClickListener;
   private String selectedPath = "";
@@ -63,7 +70,8 @@ public class ThemeFilesAdapter extends RecyclerView.Adapter<ThemeFilesAdapter.Vi
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     File file = files.get(position);
-    ThemeData data = getThemeData(file);
+    String path = file.getAbsolutePath();
+    holder.boundPath = path;
 
     String displayName = file.getName();
     if (displayName.toLowerCase().endsWith(".gth")) {
@@ -71,28 +79,19 @@ public class ThemeFilesAdapter extends RecyclerView.Adapter<ThemeFilesAdapter.Vi
     }
     holder.name.setText(displayName);
 
-    boolean selected = file.getAbsolutePath().equals(selectedPath);
+    boolean selected = path.equals(selectedPath);
     holder.checked.setVisibility(selected ? View.VISIBLE : View.GONE);
 
-    if (data.hasImage && data.imagePath != null && !data.imagePath.isEmpty()) {
-      holder.icon.setBackground(null);
-      holder.icon.setColorFilter(null);
-      Glide.with(holder.icon.getContext())
-      .load(data.imagePath)
-      .transform(new RoundedCornersTransformation(26))
-      .override(112,122)
-      .into(holder.icon);
+    holder.icon.setBackground(new GthCanvasDrawable(null, null, null));
+    holder.icon.setColorFilter(null);
+    Glide.with(holder.icon.getContext()).clear(holder.icon);
+    holder.icon.setImageDrawable(null);
+
+    GthDecoder.Result cached = dataCache.get(path);
+    if (cached != null) {
+      applyThemeData(holder, file, cached);
     } else {
-      GradientDrawable gradient =
-          new GradientDrawable(
-              GradientDrawable.Orientation.TL_BR,
-              new int[] {data.primaryColor, data.secondaryColor, data.tertiaryColor});
-      gradient.setCornerRadius(28);
-      gradient.setStroke(2, 0x33FFFFFF);
-      holder.icon.setBackground(gradient);
-      holder.icon.setColorFilter(null);
-      Glide.with(holder.icon.getContext()).clear(holder.icon);
-      holder.icon.setImageDrawable(null);
+      decodeAsync(holder, file);
     }
 
     holder.itemView.setOnClickListener(
@@ -121,74 +120,37 @@ public class ThemeFilesAdapter extends RecyclerView.Adapter<ThemeFilesAdapter.Vi
     notifyDataSetChanged();
   }
 
-  private ThemeData getThemeData(File file) {
-    ThemeData cached = dataCache.get(file.getAbsolutePath());
-    if (cached != null) return cached;
-
-    int primary = 0xFF4C4C4C;
-    int secondary = 0xFF4C4C4C;
-    int tertiary = 0xFF4C4C4C;
-    boolean hasImage = false;
-    String imagePath = null;
-
-    try {
-      String json = new String(FileUtil.readBytesCompat(file), StandardCharsets.UTF_8);
-      GhostTheme theme = new Gson().fromJson(json, GhostTheme.class);
-      if (theme != null) {
-        String accent = theme.getWidget() != null ? theme.getWidget().getAccent() : null;
-
-        Integer m3Primary = null;
-        Integer m3Secondary = null;
-        Integer m3Tertiary = null;
-        if (theme.getMaterial3() != null) {
-          m3Primary = M3Theme.color(theme.getMaterial3().getPrimary());
-          m3Secondary = M3Theme.color(theme.getMaterial3().getSecondary());
-          m3Tertiary = M3Theme.color(theme.getMaterial3().getTertiary());
-        }
-
-        primary = firstColor(m3Primary, M3Theme.color(accent), primary);
-        secondary = firstColor(m3Secondary, m3Primary, M3Theme.color(accent), secondary);
-        tertiary = firstColor(m3Tertiary, m3Secondary, m3Primary, tertiary);
-
-        WidgetTheme w = theme.getWidget();
-        if (w != null && w.getImagepath() != null && !w.getImagepath().isEmpty()) {
-          hasImage = true;
-          imagePath = ThemeMediaPath.resolve(file.getAbsolutePath(), w.getImagepath());
-        }
-      }
-    } catch (Exception ignored) {
-    }
-
-    ThemeData data = new ThemeData(primary, secondary, tertiary, hasImage, imagePath);
-    dataCache.put(file.getAbsolutePath(), data);
-    return data;
+  private void decodeAsync(ViewHolder holder, File file) {
+    String path = file.getAbsolutePath();
+    DECODE_EXECUTOR.execute(
+        () -> {
+          GthDecoder.Result data = GthDecoder.decode(file);
+          dataCache.put(path, data);
+          MAIN_HANDLER.post(
+              () -> {
+                if (path.equals(holder.boundPath)) {
+                  applyThemeData(holder, file, data);
+                }
+              });
+        });
   }
 
-  private static int firstColor(Integer... colors) {
-    for (Integer c : colors) {
-      if (c != null) return c;
-    }
-    return colors.length > 0 ? colors[colors.length - 1] : 0xFF4C4C4C;
-  }
+  private void applyThemeData(ViewHolder holder, File file, GthDecoder.Result data) {
+    if (!file.getAbsolutePath().equals(holder.boundPath)) return;
 
-  static class ThemeData {
-    final int primaryColor;
-    final int secondaryColor;
-    final int tertiaryColor;
-    final boolean hasImage;
-    final String imagePath;
+    holder.icon.setBackground(
+        new GthCanvasDrawable(data.getPrimary(), data.getSecondary(), data.getTertiary()));
+    holder.icon.setColorFilter(null);
 
-    ThemeData(
-        int primaryColor,
-        int secondaryColor,
-        int tertiaryColor,
-        boolean hasImage,
-        String imagePath) {
-      this.primaryColor = primaryColor;
-      this.secondaryColor = secondaryColor;
-      this.tertiaryColor = tertiaryColor;
-      this.hasImage = hasImage;
-      this.imagePath = imagePath;
+    if (data.hasImage()) {
+      Glide.with(holder.icon.getContext())
+          .load(data.getImagePath())
+          .transform(new RoundedCornersTransformation(26))
+          .override(112, 122)
+          .into(holder.icon);
+    } else {
+      Glide.with(holder.icon.getContext()).clear(holder.icon);
+      holder.icon.setImageDrawable(null);
     }
   }
 
@@ -196,6 +158,7 @@ public class ThemeFilesAdapter extends RecyclerView.Adapter<ThemeFilesAdapter.Vi
     final ImageView icon;
     final ImageView checked;
     final TextView name;
+    String boundPath = "";
 
     ViewHolder(@NonNull View itemView) {
       super(itemView);

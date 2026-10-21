@@ -16,44 +16,52 @@
         android:checked="true"
         android:contentDescription="@string/content_desc_enabled_row" />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/keyInput"
+    <ir.hanzodev1375.components.input.TextInputGlass
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/bg_input_row"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:hint="@string/hint_key"
-        android:textSize="14sp"
-        android:maxLines="1"
-        android:inputType="text"
-        android:textColor="?attr/colorOnSurface"
-        android:textColorHint="?attr/colorOnSurfaceVariant"
-        android:importantForAutofill="no" />
+        android:layout_marginEnd="4dp">
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/valueInput"
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
+            android:id="@+id/keyInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:hint="@string/hint_key"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:inputType="text"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOnSurfaceVariant"
+            android:importantForAutofill="no" />
+    </ir.hanzodev1375.components.input.TextInputGlass>
+
+    <ir.hanzodev1375.components.input.TextInputGlass
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/bg_input_row"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:hint="@string/hint_value"
-        android:textSize="14sp"
-        android:maxLines="1"
-        android:inputType="text"
-        android:textColor="?attr/colorOnSurface"
-        android:textColorHint="?attr/colorOnSurfaceVariant"
-        android:importantForAutofill="no" />
+        android:layout_marginEnd="4dp">
+
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
+            android:id="@+id/valueInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:hint="@string/hint_value"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:inputType="text"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOnSurfaceVariant"
+            android:importantForAutofill="no" />
+    </ir.hanzodev1375.components.input.TextInputGlass>
 
     <ImageButton
         android:id="@+id/deleteButton"

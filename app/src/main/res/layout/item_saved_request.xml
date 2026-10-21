@@ -1,69 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:background="?attr/selectableItemBackground"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
     android:clickable="true"
     android:focusable="true"
-    android:paddingStart="20dp"
-    android:paddingEnd="12dp"
-    android:paddingTop="14dp"
-    android:paddingBottom="14dp">
-
-    <TextView
-        android:id="@+id/methodBadge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_chip_rounded"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:textSize="11sp"
-        android:textStyle="bold"
-        android:minWidth="58dp"
-        android:gravity="center"
-        tools:text="GET" />
+    android:foreground="?attr/selectableItemBackground"
+    app:cornerRadius="24dp"
+    app:glassMaterial="regular"
+    app:refractionHeight="66dp"
+    app:bevelWidth="14dp"
+    app:dispersionStrength="0.12"
+    app:sensorHighlight="false"
+    app:adaptiveTint="true"
+    app:backdropSourceId="@id/contentFrame">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="12dp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp">
 
         <TextView
-            android:id="@+id/nameText"
-            android:layout_width="match_parent"
+            android:id="@+id/methodBadge"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            tools:text="Get current user" />
+            android:background="@drawable/bg_chip_rounded"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:minWidth="58dp"
+            android:gravity="center"
+            tools:text="GET" />
 
-        <TextView
-            android:id="@+id/urlText"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="12sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            tools:text="https://api.example.com/v1/users/me" />
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="Get current user" />
+
+            <TextView
+                android:id="@+id/urlText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                tools:text="https://api.example.com/v1/users/me" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_delete"
+            android:tint="?attr/colorOnSurfaceVariant"
+            android:padding="7dp"
+            android:contentDescription="@string/action_delete" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/deleteButton"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_delete"
-        android:tint="?attr/colorOnSurfaceVariant"
-        android:padding="7dp"
-        android:contentDescription="@string/action_delete" />
-
-</LinearLayout>
+</ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat>

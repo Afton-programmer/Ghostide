@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,19 +22,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
+import ir.hanzodev1375.ghostide.adapters.ContributorAdapter;
+import ir.hanzodev1375.ghostide.mvvm.viewmodel.AboutViewModel;
 import java.io.File;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import ir.hanzodev1375.components.childern.ViewChilder;
 import ir.hanzodev1375.ghostide.R;
 import ir.theme.M3Theme;
+import ir.theme.ThemeUtils;
 
 public class AboutActivity extends BaseCompat {
   private GlassCompat cardDisplay, cardMemory, cardStorage, cardDeviceInfo;
+  private GlassCompat cardContributors, cardStars;
   private LinearLayout bodyDeviceInfo, bodyDisplay, bodyMemory, bodyStorage;
   private View arrowDeviceInfo, arrowDisplay, arrowMemory, arrowStorage;
-  private boolean expDeviceInfo = true, expDisplay = true, expMemory = true, expStorage = true;
+  private RecyclerView contributorList;
+  private TextView contributorStatus, starsValue;
+  private ContributorAdapter contributorAdapter;
+  private AboutViewModel viewModel;
+  private boolean expDeviceInfo, expDisplay, expMemory, expStorage;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +65,21 @@ public class AboutActivity extends BaseCompat {
         });
 
     bindViews();
+    fillVersion();
+    setupGlassBackdrop(cardContributors);
+    setupGlassBackdrop(cardStars);
     setupGlassBackdrop(cardDeviceInfo);
     setupGlassBackdrop(cardDisplay);
     setupGlassBackdrop(cardMemory);
     setupGlassBackdrop(cardStorage);
     fillData();
     setupClickListeners();
+    setupContributors();
     animateCardsIn();
 
     M3Theme.applyTopLevel(findViewById(R.id.contentAreaAbout));
+    applyCardTints();
+    root.post(this::applyCardTints);
   }
 
   private void setupGlassBackdrop(GlassCompat glass) {
@@ -68,6 +87,75 @@ public class AboutActivity extends BaseCompat {
     glass.setEnableDynamicBackground(true);
     glass.setEnableChromaticAberration(true);
     glass.setEnableEdgeHighlight(true);
+  }
+
+  private void fillVersion() {
+    TextView versionTitle = findViewById(R.id.tv_about_version);
+    String version = "";
+    try {
+      String packageVersion =
+          getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+      if (packageVersion != null) version = packageVersion;
+    } catch (PackageManager.NameNotFoundException e) {
+      version = "";
+    }
+    versionTitle.setText(getString(R.string.about_version_title, version));
+  }
+
+  private void setupContributors() {
+    contributorAdapter = new ContributorAdapter();
+    contributorList.setLayoutManager(
+        new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+    contributorList.setAdapter(contributorAdapter);
+
+    viewModel = new ViewModelProvider(this).get(AboutViewModel.class);
+    viewModel
+        .getStars()
+        .observe(
+            this,
+            value -> {
+              if (value == null || value < 0) {
+                starsValue.setText(R.string.about_unavailable);
+              } else {
+                starsValue.setText(NumberFormat.getIntegerInstance().format(value));
+              }
+            });
+    viewModel
+        .getContributors()
+        .observe(
+            this,
+            contributors -> {
+              if (contributors == null) return;
+              if (contributors.isEmpty()) {
+                contributorStatus.setText(R.string.about_unavailable);
+                contributorStatus.setVisibility(View.VISIBLE);
+                contributorList.setVisibility(View.GONE);
+                return;
+              }
+              contributorStatus.setVisibility(View.GONE);
+              contributorList.setVisibility(View.VISIBLE);
+              contributorAdapter.setItems(contributors);
+            });
+    viewModel.load();
+  }
+
+  private void applyCardTints() {
+    tintCard(cardContributors, M3Theme.primaryContainer());
+    tintCard(cardStars, M3Theme.tertiaryContainer());
+    tintCard(cardDeviceInfo, M3Theme.secondaryContainer());
+    tintCard(cardDisplay, M3Theme.primaryFixedDim());
+    tintCard(cardMemory, M3Theme.secondaryFixedDim());
+    tintCard(cardStorage, M3Theme.tertiaryFixedDim());
+  }
+
+  private void tintCard(GlassCompat card, Integer color) {
+    if (card == null || color == null) return;
+    card.setGlassTint(color, 0.5f);
+  }
+
+  @Override
+  protected void applyOwnTheme(ThemeUtils themeUtils) {
+    applyCardTints();
   }
 
   private void setupBackgroundBlur() {
@@ -78,10 +166,15 @@ public class AboutActivity extends BaseCompat {
   }
 
   private void bindViews() {
+    cardContributors = findViewById(R.id.card_contributors);
+    cardStars = findViewById(R.id.card_stars);
     cardDeviceInfo = findViewById(R.id.card_device_info);
     cardDisplay = findViewById(R.id.card_display);
     cardMemory = findViewById(R.id.card_memory);
     cardStorage = findViewById(R.id.card_storage);
+    contributorList = findViewById(R.id.rv_contributors);
+    contributorStatus = findViewById(R.id.tv_contributors_status);
+    starsValue = findViewById(R.id.tv_stars_value);
 
     bodyDeviceInfo = findViewById(R.id.body_device_info);
     bodyDisplay = findViewById(R.id.body_display);
@@ -293,6 +386,8 @@ public class AboutActivity extends BaseCompat {
 
   private void animateCardsIn() {
     List<View> cards = new ArrayList<>();
+    cards.add(cardContributors);
+    cards.add(cardStars);
     cards.add(cardDeviceInfo);
     cards.add(cardDisplay);
     cards.add(cardMemory);

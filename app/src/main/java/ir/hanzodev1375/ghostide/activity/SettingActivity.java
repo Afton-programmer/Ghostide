@@ -3,9 +3,11 @@ package ir.hanzodev1375.ghostide.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.ThreadUtils;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -139,7 +141,6 @@ public class SettingActivity extends BaseCompat {
     hideSectionIfEmpty(expandBackgroundPlugin, backgroundPluginSection);
     hideSectionIfEmpty(expandPlugins, pluginSection);
 
-    ser.show();
     ser.setIconClose(R.drawable.ic_close);
     ser.setIconSearch(R.drawable.outline_search);
 
@@ -316,8 +317,33 @@ public class SettingActivity extends BaseCompat {
   }
 
   @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_settings, menu);
+    return true;
+  }
+
+  @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == android.R.id.home) finish();
+    if (item.getItemId() == android.R.id.home) {
+      finish();
+      return true;
+    }
+    if (item.getItemId() == R.id.action_search) {
+      toggleSearch();
+      return true;
+    }
     return super.onOptionsItemSelected(item);
+  }
+
+  private void toggleSearch() {
+    if (ser == null) return;
+    if (ser.isShow()) {
+      ser.hide();
+      KeyboardUtils.hideSoftInput(ser);
+      if (!ser.getQuery().isEmpty()) ser.clear();
+    } else {
+      ser.show();
+      ser.requestFocusForEditText();
+    }
   }
 }
