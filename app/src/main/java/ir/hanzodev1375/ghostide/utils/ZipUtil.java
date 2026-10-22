@@ -5,33 +5,33 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import ir.hanzodev1375.components.views.GhostToast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
+import ir.hanzodev1375.components.views.GhostToast;
+import ir.hanzodev1375.ghostide.R;
+import ir.hanzodev1375.ghostide.activity.FileManagerActivity;
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.AesKeyStrength;
 import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
 import net.lingala.zip4j.model.enums.EncryptionMethod;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
+import net.lingala.zip4j.progress.ProgressMonitor;
 
-import ir.hanzodev1375.ghostide.R;
-import ir.hanzodev1375.ghostide.activity.FileManagerActivity;
-import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
 public class ZipUtil {
 
   private static final ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -41,9 +41,18 @@ public class ZipUtil {
   private static TextView tvFileName, tvPercent, tvDetails;
   private static String defaultName = "archive.zip";
 
-  // Order must match the labels set on zipspinner in showZipDialog()
   private static final CompressionLevel[] COMPRESSION_LEVELS = {
     CompressionLevel.FASTEST, CompressionLevel.NORMAL, CompressionLevel.MAXIMUM
+  };
+
+  private static final long[] PRESET_SPLIT_SIZES = {
+    10L * 1024 * 1024,        // 10 MB
+    50L * 1024 * 1024,        // 50 MB
+    100L * 1024 * 1024,       // 100 MB
+    700L * 1024 * 1024,       // 700 MB (CD)
+    2L * 1024 * 1024 * 1024,  // 2 GB
+    4L * 1024 * 1024 * 1024,  // 4 GB (DVD/FAT32)
+    -1                        // Custom
   };
 
   private static CompressionLevel getSelectedCompressionLevel(Spinner spinner) {
@@ -105,7 +114,7 @@ public class ZipUtil {
     tvDetails.setText(String.format(Locale.getDefault(), "%s / %s", processedStr, totalStr));
   }
 
-  private static String formatSize(long bytes) {
+  public static String formatSize(long bytes) {
     if (bytes >= 1024 * 1024 * 1024) {
       return String.format(Locale.getDefault(), "%.2f GB", bytes / (1024.0 * 1024 * 1024));
     } else if (bytes >= 1024 * 1024) {
@@ -130,7 +139,8 @@ public class ZipUtil {
       String password,
       Context context,
       Runnable onSuccess,
-      CompressionLevel compressionLevel) {
+      CompressionLevel compressionLevel,
+      long splitLength) {
     executor.execute(
         () -> {
           try {
@@ -146,11 +156,60 @@ public class ZipUtil {
               parameters.setAesKeyStrength(AesKeyStrength.KEY_STRENGTH_256);
             }
 
-            try (ZipFile zipFile =
-                new ZipFile(destination, password != null ? password.toCharArray() : null)) {
-              AtomicLong processedBytes = new AtomicLong(0);
+            ZipFile zipFile =
+                new ZipFile(destination, password != null ? password.toCharArray() : null);
+
+            if (splitLength >= 65536) {
+              zipFile.setRunInThread(true);
+              if (sources.size() == 1 && sources.get(0).isDirectory()) {
+                zipFile.createSplitZipFileFromFolder(sources.get(0), parameters, true, splitLength);
+              } else {
+                zipFile.createSplitZipFile(sources, parameters, true, splitLength);
+              }
+
+              ProgressMonitor monitor = zipFile.getProgressMonitor();
+              while (monitor.getState() == ProgressMonitor.State.BUSY) {
+                int percent = monitor.getPercentDone();
+                String name = monitor.getFileName();
+                long done = monitor.getWorkCompleted();
+                long total = monitor.getTotalWork() > 0 ? monitor.getTotalWork() : totalBytes;
+                mainHandler.post(() -> updateProgress(name != null ? name : "", done, total));
+                try {
+                  Thread.sleep(80);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                  break;
+                }
+              }
+              if (monitor.getResult() == ProgressMonitor.Result.ERROR) {
+                if (monitor.getException() != null) throw monitor.getException();
+              }
+            } else {
+              zipFile.setRunInThread(true);
               for (File src : sources) {
-                addToZip(zipFile, src, "", parameters, processedBytes, totalBytes);
+                if (src.isDirectory()) {
+                  zipFile.addFolder(src, parameters);
+                } else {
+                  zipFile.addFile(src, parameters);
+                }
+              }
+
+              ProgressMonitor monitor = zipFile.getProgressMonitor();
+              while (monitor.getState() == ProgressMonitor.State.BUSY) {
+                int percent = monitor.getPercentDone();
+                String name = monitor.getFileName();
+                long done = monitor.getWorkCompleted();
+                long total = monitor.getTotalWork() > 0 ? monitor.getTotalWork() : totalBytes;
+                mainHandler.post(() -> updateProgress(name != null ? name : "", done, total));
+                try {
+                  Thread.sleep(80);
+                } catch (InterruptedException e) {
+                  Thread.currentThread().interrupt();
+                  break;
+                }
+              }
+              if (monitor.getResult() == ProgressMonitor.Result.ERROR) {
+                if (monitor.getException() != null) throw monitor.getException();
               }
             }
 
@@ -169,46 +228,12 @@ public class ZipUtil {
                   dismissProgressDialog();
                   GhostToast.makeText(
                           context,
-                          context.getString(R.string.zip_error) + e.getMessage(),
+                          context.getString(R.string.zip_error) + " " + e.getMessage(),
                           GhostToast.LENGTH_LONG)
                       .show();
                 });
           }
         });
-  }
-
-  private static void addToZip(
-      ZipFile zipFile,
-      File file,
-      String parentRel,
-      ZipParameters params,
-      AtomicLong processed,
-      long total)
-      throws Exception {
-    String entryName = parentRel.isEmpty() ? file.getName() : parentRel + "/" + file.getName();
-
-    if (file.isDirectory()) {
-      ZipParameters dirParams = new ZipParameters();
-      dirParams.setCompressionMethod(CompressionMethod.STORE);
-      dirParams.setFileNameInZip(entryName + "/");
-      try {
-        zipFile.addStream(new ByteArrayInputStream(new byte[0]), dirParams);
-      } catch (Exception ignored) {
-      }
-      File[] children = file.listFiles();
-      if (children != null) {
-        for (File child : children) {
-          addToZip(zipFile, child, entryName, params, processed, total);
-        }
-      }
-      return;
-    }
-
-    params.setFileNameInZip(entryName);
-    zipFile.addFile(file, params);
-    long added = file.length();
-    long newProcessed = processed.addAndGet(added);
-    mainHandler.post(() -> updateProgress(file.getName(), newProcessed, total));
   }
 
   public static void showZipDialog(Context context, List<File> selectedFiles) {
@@ -224,6 +249,13 @@ public class ZipUtil {
     TextInputEditText etPassword = dialogView.findViewById(R.id.et_zip_password);
     SwitchMaterial swPassword = dialogView.findViewById(R.id.sw_zip_password);
     Spinner zipspinner = dialogView.findViewById(R.id.zipspinner);
+
+    SwitchMaterial swSplit = dialogView.findViewById(R.id.sw_zip_split);
+    View layoutSplitOptions = dialogView.findViewById(R.id.layout_split_options);
+    Spinner spinnerSplitSize = dialogView.findViewById(R.id.spinner_split_size);
+    TextInputLayout tilCustomSplit = dialogView.findViewById(R.id.til_custom_split_size);
+    TextInputEditText etCustomSplit = dialogView.findViewById(R.id.et_custom_split_size);
+
     ArrayAdapter<String> compressionAdapter =
         new ArrayAdapter<>(
             context,
@@ -238,6 +270,42 @@ public class ZipUtil {
         (btn, isChecked) -> {
           tilPassword.setVisibility(isChecked ? View.VISIBLE : View.GONE);
           if (!isChecked) etPassword.setText("");
+        });
+
+    String[] splitPresets =
+        new String[] {
+          "10 MB",
+          "50 MB",
+          "100 MB",
+          "700 MB (CD)",
+          "2 GB",
+          "4 GB (DVD)",
+          context.getString(R.string.split_custom_mb)
+        };
+    ArrayAdapter<String> splitAdapter =
+        new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, splitPresets);
+    splitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    spinnerSplitSize.setAdapter(splitAdapter);
+    spinnerSplitSize.setSelection(0);
+
+    spinnerSplitSize.setOnItemSelectedListener(
+        new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            tilCustomSplit.setVisibility(position == 6 ? View.VISIBLE : View.GONE);
+          }
+
+          @Override
+          public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+    swSplit.setOnCheckedChangeListener(
+        (btn, isChecked) -> {
+          layoutSplitOptions.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+          if (!isChecked) {
+            tilCustomSplit.setVisibility(View.GONE);
+            etCustomSplit.setText("");
+          }
         });
 
     if (selectedFiles.size() == 1) {
@@ -268,6 +336,32 @@ public class ZipUtil {
               File zipFile = new File(parentDir, zipName);
               String password = swPassword.isChecked() ? etPassword.getText().toString() : null;
               if (password != null && password.isEmpty()) password = null;
+
+              long splitLength = 0;
+              if (swSplit.isChecked()) {
+                int selectedPos = spinnerSplitSize.getSelectedItemPosition();
+                if (selectedPos >= 0 && selectedPos < 6) {
+                  splitLength = PRESET_SPLIT_SIZES[selectedPos];
+                } else if (selectedPos == 6) {
+                  String customStr =
+                      etCustomSplit.getText() != null
+                          ? etCustomSplit.getText().toString().trim()
+                          : "";
+                  if (!customStr.isEmpty()) {
+                    try {
+                      long mb = Long.parseLong(customStr);
+                      if (mb > 0) {
+                        splitLength = mb * 1024 * 1024;
+                      }
+                    } catch (NumberFormatException ignored) {
+                    }
+                  }
+                  if (splitLength <= 0) {
+                    splitLength = 10L * 1024 * 1024;
+                  }
+                }
+              }
+
               dialog.dismiss();
               zipFilesWithProgress(
                   selectedFiles,
@@ -275,9 +369,12 @@ public class ZipUtil {
                   password,
                   context,
                   () -> {
-                    GhostToast.makeText(context, R.string.zip_created_success, GhostToast.LENGTH_LONG).show();
+                    GhostToast.makeText(
+                            context, R.string.zip_created_success, GhostToast.LENGTH_LONG)
+                        .show();
                   },
-                  getSelectedCompressionLevel(zipspinner));
+                  getSelectedCompressionLevel(zipspinner),
+                  splitLength);
             });
   }
 }

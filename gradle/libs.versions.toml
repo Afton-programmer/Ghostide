@@ -27,6 +27,7 @@ jgit = "6.7.0.202309050840-r"
 svg = "1.4"
 #zip4j
 zip = "2.11.6"
+junrar = "7.5.5"
 #jsoup
 jsoup = "1.22.2"
 markwon = "4.6.2"
@@ -72,6 +73,7 @@ androidx-recyclerview-selection = { module = "androidx.recyclerview:recyclerview
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 androidsvg = { module = "com.caverock:androidsvg", version.ref = "svg" }
 zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip" }
+junrar = { module = "com.github.junrar:junrar", version.ref = "junrar" }
 
 # Markwon
 markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }

@@ -58,6 +58,10 @@ public abstract class SettingSection {
     if (adapter != null) adapter.resetToFull();
   }
 
+  public final void reload() {
+    if (adapter != null) adapter.setItems(buildItems());
+  }
+
   // ---------------------------------------------------------------------
   // Rows refreshers
   // ---------------------------------------------------------------------
@@ -152,7 +156,6 @@ public abstract class SettingSection {
         .setNegativeButton(R.string.cancel, null)
         .show();
   }
-
 
   protected String getString(int res) {
     return activity.getString(res);
