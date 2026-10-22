@@ -76,6 +76,7 @@ import ir.hanzodev1375.ghostide.postman.PostManActivity;
 import ir.hanzodev1375.ghostide.refactor.rename.ui.RenamePackageBottomSheet;
 import ir.hanzodev1375.ghostide.bookmark.BookmarkBottomSheet;
 import ir.hanzodev1375.ghostide.bookmark.BookmarkViewModel;
+import ir.hanzodev1375.ghostide.project.AndroidStudioProjectDialog;
 import ir.hanzodev1375.ghostide.project.NewProjectDialog;
 import ir.hanzodev1375.ghostide.history.HistoryBottomSheet;
 import ir.hanzodev1375.ghostide.history.HistoryViewModel;
@@ -420,12 +421,21 @@ public class FileManagerActivity extends BaseCompat
     List<Integer> listIcon = new ArrayList<>();
     listIcon.add(R.drawable.folder);
     listIcon.add(R.drawable.ic_fileicon);
+    listIcon.add(R.drawable.ic_android);
     listIcon.add(R.drawable.add);
+
+    List<Integer> listTooltips = new ArrayList<>();
+    listTooltips.add(R.string.new_folder);
+    listTooltips.add(R.string.new_file);
+    listTooltips.add(R.string.android_studio_project);
+    listTooltips.add(R.string.project_new_title);
+
     bind.fab
         .getRecyclerView()
         .setAdapter(
             new ToolbarAdapter(
                 listIcon,
+                listTooltips,
                 (view2, mypos) -> {
                   switch (mypos) {
                     case 0 -> {
@@ -437,6 +447,26 @@ public class FileManagerActivity extends BaseCompat
                       bind.fab.dismiss();
                     }
                     case 2 -> {
+                      String currentDir = viewModel.getCurrentPath().getValue();
+                      if (currentDir != null) {
+                        new AndroidStudioProjectDialog(
+                                FileManagerActivity.this,
+                                currentDir,
+                                projectPath ->
+                                    runOnUiThread(
+                                        () -> {
+                                          viewModel.loadFiles(currentDir);
+                                          GhostToast.makeText(
+                                                  FileManagerActivity.this,
+                                                  getString(R.string.android_project_created_toast),
+                                                  GhostToast.LENGTH_SHORT)
+                                              .show();
+                                        }))
+                            .show();
+                      }
+                      bind.fab.dismiss();
+                    }
+                    case 3 -> {
                       String currentDir = viewModel.getCurrentPath().getValue();
                       if (currentDir != null) {
                         new NewProjectDialog(

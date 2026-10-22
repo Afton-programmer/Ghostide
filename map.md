@@ -103,6 +103,12 @@ Directory structure:
     │           │   │   ├── init.sh
     │           │   │   └── weblsp.sh
     │           │   └── templates/
+    │           │       ├── android/
+    │           │       │   └── wrapper/
+    │           │       │       ├── gradle-wrapper.jar
+    │           │       │       ├── gradle-wrapper.properties
+    │           │       │       ├── gradlew
+    │           │       │       └── gradlew.bat
     │           │       ├── c/
     │           │       │   ├── gitignore
     │           │       │   ├── main.c
@@ -400,6 +406,12 @@ Directory structure:
     │           │       │       │       ├── TimeUtils.java
     │           │       │       │       └── UiUtils.java
     │           │       │       ├── project/
+    │           │       │       │   ├── android/
+    │           │       │       │   │   ├── AndroidCategory.java
+    │           │       │       │   │   ├── AndroidProjectConfig.java
+    │           │       │       │   │   ├── AndroidProjectGenerator.java
+    │           │       │       │   │   └── AndroidTemplate.java
+    │           │       │       │   ├── AndroidStudioProjectDialog.java
     │           │       │       │   ├── DslType.java
     │           │       │       │   ├── LibraryManager.java
     │           │       │       │   ├── ModuleCreator.java
@@ -599,6 +611,7 @@ Directory structure:
     │               │   ├── check_24px.xml
     │               │   ├── folder.xml
     │               │   ├── ic_add.xml
+    │               │   ├── ic_android.xml
     │               │   ├── ic_arrow_down.xml
     │               │   ├── ic_arrow_forward.xml
     │               │   ├── ic_back.xml
@@ -608,6 +621,7 @@ Directory structure:
     │               │   ├── ic_copy.xml
     │               │   ├── ic_cut.xml
     │               │   ├── ic_delete.xml
+    │               │   ├── ic_directions_car.xml
     │               │   ├── ic_download.xml
     │               │   ├── ic_drag_handle.xml
     │               │   ├── ic_edit.xml
@@ -630,6 +644,9 @@ Directory structure:
     │               │   ├── ic_open_files.xml
     │               │   ├── ic_panel.xml
     │               │   ├── ic_paste.xml
+    │               │   ├── ic_phone_android.xml
+    │               │   ├── ic_tv.xml
+    │               │   ├── ic_watch.xml
     │               │   ├── ic_photo.xml
     │               │   ├── ic_plugin_editor.xml
     │               │   ├── ic_plugin_lsp.xml
@@ -719,6 +736,7 @@ Directory structure:
     │               │   ├── dialog_element_editor.xml
     │               │   ├── dialog_file_sort.xml
     │               │   ├── dialog_new_module.xml
+    │               │   ├── dialog_android_studio_project.xml
     │               │   ├── dialog_new_project.xml
     │               │   ├── dialog_sheet_commands.xml
     │               │   ├── dialog_sheet_open_files.xml

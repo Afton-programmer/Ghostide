@@ -364,24 +364,14 @@ public class CodeRuner {
         if (dir == null) dir = new File(".");
 
         if (isAndroidProject(dir)) {
-            String androidHomeExport = androidHomeExport();
-
             File gradleWrapper = findGradleWrapper(dir);
             if (gradleWrapper != null) {
-                File projectRoot = gradleWrapper.getParentFile();
-                return "clear; "
-                        + androidHomeExport
-                        + "if [ ! -x \"" + gradleWrapper.getAbsolutePath() + "\" ]; then chmod +x \"" + gradleWrapper.getAbsolutePath() + "\"; fi; "
-                        + "cd \"" + projectRoot.getAbsolutePath() + "\" && sh gradlew build";
+                return buildAndRunAndroidProject(gradleWrapper.getParentFile(), gradleWrapper, null);
             }
 
             File gradleFile = findGradleBuildFile(dir);
             if (gradleFile != null) {
-                File projectRoot = gradleFile.getParentFile();
-                return "clear; "
-                        + androidHomeExport
-                        + "if ! command -v gradle >/dev/null 2>&1; then apt update && apt install gradle -y; fi; "
-                        + "cd \"" + projectRoot.getAbsolutePath() + "\" && gradle build";
+                return buildAndRunAndroidProject(gradleFile.getParentFile(), null, gradleFile);
             }
         }
 
@@ -503,6 +493,18 @@ public class CodeRuner {
         File dir = file.getParentFile();
         if (dir == null) dir = new File(".");
 
+        if (isAndroidProject(dir)) {
+            File gradleWrapper = findGradleWrapper(dir);
+            if (gradleWrapper != null) {
+                return buildAndRunAndroidProject(gradleWrapper.getParentFile(), gradleWrapper, null);
+            }
+
+            File gradleFile = findGradleBuildFile(dir);
+            if (gradleFile != null) {
+                return buildAndRunAndroidProject(gradleFile.getParentFile(), null, gradleFile);
+            }
+        }
+
         String className = file.getName();
         int dot = className.lastIndexOf('.');
         if (dot != -1) className = className.substring(0, dot);
@@ -526,6 +528,22 @@ public class CodeRuner {
     }
 
     private String kotlinScript(String path) {
+        File file = new File(path);
+        File dir = file.getParentFile();
+        if (dir == null) dir = new File(".");
+
+        if (isAndroidProject(dir)) {
+            File gradleWrapper = findGradleWrapper(dir);
+            if (gradleWrapper != null) {
+                return buildAndRunAndroidProject(gradleWrapper.getParentFile(), gradleWrapper, null);
+            }
+
+            File gradleFile = findGradleBuildFile(dir);
+            if (gradleFile != null) {
+                return buildAndRunAndroidProject(gradleFile.getParentFile(), null, gradleFile);
+            }
+        }
+
         return "clear; "
                 + "if ! command -v kotlinc >/dev/null 2>&1; then "
                 + "  echo 'Kotlin compiler not found. Installing latest version...'; "
@@ -536,6 +554,28 @@ public class CodeRuner {
                 + "  rm kotlin-compiler-2.4.10.zip; "
                 + "fi; "
                 + "kotlinc -script \"" + path + "\"";
+    }
+
+    private String buildAndRunAndroidProject(File projectRoot, File gradleWrapper, File gradleFile) {
+        String androidHomeExport = androidHomeExport();
+        String gradleCmd = (gradleWrapper != null)
+                ? "if [ ! -x \"" + gradleWrapper.getAbsolutePath() + "\" ]; then chmod +x \"" + gradleWrapper.getAbsolutePath() + "\"; fi; sh \"" + gradleWrapper.getAbsolutePath() + "\""
+                : "if ! command -v gradle >/dev/null 2>&1; then apt update && apt install gradle -y; fi; gradle";
+
+        return "clear; "
+                + androidHomeExport
+                + "cd \"" + projectRoot.getAbsolutePath() + "\" && "
+                + "echo '🚀 Building Android Project (assembleDebug)...' && "
+                + gradleCmd + " assembleDebug && ("
+                + "  APK=$(find app/build/outputs/apk/debug -name \"*.apk\" 2>/dev/null | head -n 1); "
+                + "  if [ -z \"$APK\" ]; then APK=$(find build/outputs/apk/debug -name \"*.apk\" 2>/dev/null | head -n 1); fi; "
+                + "  if [ -n \"$APK\" ]; then "
+                + "    echo '✅ Build Successful!'; "
+                + "    echo \"📦 Output APK: $APK\"; "
+                + "    echo '📲 Installing on device...'; "
+                + "    termux-open \"$APK\" 2>/dev/null || xdg-open \"$APK\" 2>/dev/null || open \"$APK\" 2>/dev/null || echo \"APK ready at: $APK\"; "
+                + "  fi"
+                + ")";
     }
 
     private File findGradleWrapper(File dir) {
