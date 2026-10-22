@@ -61,7 +61,7 @@ public class ExpandableLayout extends GlassCompat {
     setBevelWidth(8f * density);
     setDispersionStrength(0.1f);
     setMaterial(GlassMaterial.REGULAR);
-    setEnableDynamicBackground(true);
+    setEnableDynamicBackground(false);
     setEnableSensorHighlight(false);
     setEnableAdaptiveTint(true);
     refresh();

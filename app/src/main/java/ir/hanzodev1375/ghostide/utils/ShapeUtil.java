@@ -8,6 +8,7 @@ import android.graphics.drawable.RippleDrawable;
 import android.view.View;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.material.shape.ShapeAppearanceModel;
+import ir.hanzodev1375.ghostide.GhostIdeAppLoader;
 import ir.hanzodev1375.ghostide.activity.BaseCompat;
 import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.theme.M3Theme;
@@ -42,10 +43,12 @@ public class ShapeUtil {
     drawable.setStroke(3, ColorStateList.valueOf(getcolorSurfaceContainer(context)));
     drawable.setElevation(0);
 
-    ((BaseCompat) context)
-        .getWindow()
-        .getDecorView()
-        .setBackgroundColor(getcolorSurfaceContainer(context));
+    if (context instanceof BaseCompat baseCompat) {
+      baseCompat
+          .getWindow()
+          .getDecorView()
+          .setBackgroundColor(getcolorSurfaceContainer(context));
+    }
 
     ColorStateList rippleColor = ColorStateList.valueOf(getRippleColor(context));
     return new RippleDrawable(rippleColor, drawable, null);
@@ -66,8 +69,7 @@ public class ShapeUtil {
           0,
           0 // پایین-چپ
         });
-    PreferencesUtils appsetting = new PreferencesUtils(context);
-    bg.setAlpha(appsetting.isShowBackground() ? 128 : 255);
+    bg.setAlpha(isShowBackground(context) ? 128 : 255);
     ColorStateList rippleColor = ColorStateList.valueOf(getRippleColor(context));
     return new RippleDrawable(rippleColor, bg, null);
   }
@@ -77,8 +79,7 @@ public class ShapeUtil {
     var bg = new GradientDrawable();
     bg.setColor(color);
     bg.setCornerRadii(new float[] {r, r, r, r, 0, 0, 0, 0});
-    PreferencesUtils appsetting = new PreferencesUtils(context);
-    bg.setAlpha(appsetting.isShowBackground() ? 128 : 255);
+    bg.setAlpha(isShowBackground(context) ? 128 : 255);
     ColorStateList rippleColor = ColorStateList.valueOf(getRippleColor(context));
     return new RippleDrawable(rippleColor, bg, null);
   }
@@ -97,9 +98,19 @@ public class ShapeUtil {
     MaterialShapeDrawable drawable = new MaterialShapeDrawable(model);
     drawable.setFillColor(ColorStateList.valueOf(M3Theme.surfaceContainer()));
     drawable.setElevation(0);
-    PreferencesUtils appsetting = new PreferencesUtils(view.getContext());
-    drawable.setAlpha(appsetting.isShowBackground() ? 100 : 255);
+    drawable.setAlpha(isShowBackground(view.getContext()) ? 100 : 255);
     return drawable;
+  }
+
+  private static boolean isShowBackground(Context context) {
+    try {
+      GhostIdeAppLoader app = GhostIdeAppLoader.getInstance();
+      if (app != null && app.getSetting() != null) {
+        return app.getSetting().isShowBackground();
+      }
+    } catch (Throwable ignored) {
+    }
+    return new PreferencesUtils(context).isShowBackground();
   }
 
   public static int getcolorSurfaceContainer(View v) {
