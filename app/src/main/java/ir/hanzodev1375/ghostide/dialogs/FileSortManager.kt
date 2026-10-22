@@ -30,9 +30,9 @@ class FileSortManager(
         val sortType = dialogView.findViewById<RadioButton>(R.id.sort_type)
 
         M3Theme.radio(sortName, sortSize, sortDate, sortType)
-        M3Theme.textView(sortName, sortSize, sortDate, sortType)
+        M3Theme.text(sortName, sortSize, sortDate, sortType)
         M3Theme.toggle(onlyFolder, reverse)
-        M3Theme.textView(onlyFolder, reverse)
+        M3Theme.text(onlyFolder, reverse)
 
         group.check(radioIdFor(SortType.fromKey(preferences.getFileSortType(dirPath))))
         reverse.isChecked = preferences.isFileSortReverse(dirPath)
