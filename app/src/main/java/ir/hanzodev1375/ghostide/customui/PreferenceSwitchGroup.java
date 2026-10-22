@@ -12,17 +12,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.materialswitch.MaterialSwitch;
-import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.databinding.LayoutSwitchPerfenceBinding;
 import ir.hanzodev1375.ghostide.utils.ShapeUtil;
 import ir.theme.M3Theme;
 
 public class PreferenceSwitchGroup extends RelativeLayout implements View.OnClickListener {
 
+  private static final int BG_TYPE_UNKNOWN = -1;
+  private static final int BG_TYPE_SINGLE = 0;
+  private static final int BG_TYPE_TOP = 1;
+  private static final int BG_TYPE_BOTTOM = 2;
+  private static final int BG_TYPE_MIDDLE = 3;
+
   private LayoutSwitchPerfenceBinding binding;
   private boolean value = false;
-  private int lastListPosition = -1;
-  private int lastListTotal = -1;
+  private int lastBackgroundType = BG_TYPE_UNKNOWN;
 
   public PreferenceSwitchGroup(Context context) {
     super(context);
@@ -59,26 +63,31 @@ public class PreferenceSwitchGroup extends RelativeLayout implements View.OnClic
   }
 
   public void setListPosition(int position, int totalCount) {
-    if (position == lastListPosition && totalCount == lastListTotal) {
+    int type;
+    if (totalCount <= 1) {
+      type = BG_TYPE_SINGLE;
+    } else if (position == 0) {
+      type = BG_TYPE_TOP;
+    } else if (position == totalCount - 1) {
+      type = BG_TYPE_BOTTOM;
+    } else {
+      type = BG_TYPE_MIDDLE;
+    }
+
+    if (type == lastBackgroundType) {
       return;
     }
-    lastListPosition = position;
-    lastListTotal = totalCount;
-    Drawable background = getListBackground(position, totalCount);
+    lastBackgroundType = type;
+    Drawable background;
+    if (type == BG_TYPE_TOP) {
+      background = ShapeUtil.top(this);
+    } else if (type == BG_TYPE_BOTTOM || type == BG_TYPE_SINGLE) {
+      background = ShapeUtil.bottom(this);
+    } else {
+      background = ShapeUtil.middel(this);
+    }
     if (background != null) {
       setBackground(background);
-    }
-  }
-
-  private Drawable getListBackground(int pos, int total) {
-    if (total == 1) {
-      return ShapeUtil.bottom(this);
-    } else if (pos == 0) {
-      return ShapeUtil.top(this);
-    } else if (pos == total - 1) {
-      return ShapeUtil.bottom(this);
-    } else {
-      return ShapeUtil.middel(this);
     }
   }
 

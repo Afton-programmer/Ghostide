@@ -105,6 +105,7 @@ import ir.hanzodev1375.ghostide.utils.ShapeUtil;
 import ir.hanzodev1375.ghostide.utils.ShortcutHelper;
 import ir.hanzodev1375.ghostide.utils.StorageUtils;
 import ir.hanzodev1375.ghostide.utils.ZipUtil;
+import ir.hanzodev1375.ghostide.utils.ArchiveExtractUtil;
 import ir.theme.themeeditor.ThemeEditorActivity;
 import java.io.File;
 import java.util.List;
@@ -396,8 +397,11 @@ public class FileManagerActivity extends BaseCompat
               pendingAnimation = true;
               bind.rvfiles.saveScrollPosition();
               viewModel.navigateTo(item.getPath());
-            } else if (item.getPath().toLowerCase().endsWith(".zip")) {
-              zipModeHelper.enterZipMode(item.getPath());
+            } else if (ArchiveExtractUtil.isZip(item.getPath())) {
+              showZipActionDialog(item.getPath());
+            } else if (ArchiveExtractUtil.isArchive(item.getPath())) {
+              ArchiveExtractUtil.showExtractOptionsDialog(
+                  FileManagerActivity.this, new File(item.getPath()), this::refreshFileList);
             } else {
               setupClick(item.getPath(), item.getName(), view);
             }
@@ -1286,11 +1290,36 @@ public class FileManagerActivity extends BaseCompat
             });
   }
 
+  private void showZipActionDialog(String zipPath) {
+    new DialogCompat(this)
+        .setTitle(R.string.zip)
+        .setItems(
+            new String[] {
+              getString(R.string.archive_browse),
+              getString(R.string.extract_archive)
+            },
+            (d, which) -> {
+              d.dismiss();
+              if (which == 0) {
+                zipModeHelper.enterZipMode(zipPath);
+              } else {
+                ArchiveExtractUtil.showExtractOptionsDialog(
+                    FileManagerActivity.this, new File(zipPath), this::refreshFileList);
+              }
+            })
+        .setNegativeButton(R.string.cancel, null)
+        .show();
+  }
+
   void stepMoreAdapter() {
     adapter.setOnMoreClickListener(
         (filemodel, view, pos) -> {
           boolean showRenamePackage = isRenameablePackageDirectory(filemodel);
           boolean showRenameClass = isRenameableClassFile(filemodel);
+          boolean isDir = filemodel.isDirectory();
+          boolean isArch = ArchiveExtractUtil.isArchive(filemodel.getPath());
+          boolean isZip = ArchiveExtractUtil.isZip(filemodel.getPath());
+
           List<String> items = new ArrayList<>();
           items.add(getString(R.string.removed));
           items.add(getString(R.string.rename));
@@ -1298,6 +1327,16 @@ public class FileManagerActivity extends BaseCompat
           items.add(getString(R.string.bookmark_add));
           items.add(getString(R.string.shortcut_menu_item));
           items.add(getString(R.string.copyfullpath));
+          if (isDir) {
+            items.add(getString(R.string.create_zip_title));
+          }
+          if (isArch) {
+            items.add(getString(R.string.zip_extract_here));
+            items.add(getString(R.string.zip_extract_to));
+            if (isZip) {
+              items.add(getString(R.string.archive_browse));
+            }
+          }
           if (showRenamePackage) {
             items.add(getString(R.string.rename_package_menu_item));
           }
@@ -1309,12 +1348,33 @@ public class FileManagerActivity extends BaseCompat
               view,
               items,
               (index, title) -> {
-                switch (index) {
-                  case 0 -> removedItem(filemodel);
-                  case 1 -> renameItem(filemodel);
-                  case 2 -> FilePropertiesSheet.newInstance(Collections.singletonList(filemodel))
+                if (title.equals(getString(R.string.create_zip_title))) {
+                  ZipUtil.showZipDialog(
+                      FileManagerActivity.this,
+                      Collections.singletonList(new File(filemodel.getPath())));
+                } else if (title.equals(getString(R.string.zip_extract_here))) {
+                  File arch = new File(filemodel.getPath());
+                  ArchiveExtractUtil.extractArchive(
+                      FileManagerActivity.this, arch, arch.getParentFile(), this::refreshFileList);
+                } else if (title.equals(getString(R.string.zip_extract_to))) {
+                  File arch = new File(filemodel.getPath());
+                  File targetDir =
+                      new File(
+                          arch.getParentFile(),
+                          ArchiveExtractUtil.getBaseArchiveName(arch.getName()));
+                  ArchiveExtractUtil.extractArchive(
+                      FileManagerActivity.this, arch, targetDir, this::refreshFileList);
+                } else if (title.equals(getString(R.string.archive_browse))) {
+                  zipModeHelper.enterZipMode(filemodel.getPath());
+                } else if (title.equals(getString(R.string.removed))) {
+                  removedItem(filemodel);
+                } else if (title.equals(getString(R.string.rename))) {
+                  renameItem(filemodel);
+                } else if (title.equals(getString(R.string.props_title_single))) {
+                  FilePropertiesSheet.newInstance(Collections.singletonList(filemodel))
                       .show(getSupportFragmentManager(), FilePropertiesSheet.TAG);
-                  case 3 -> bookmarkViewModel.toggle(
+                } else if (title.equals(getString(R.string.bookmark_add))) {
+                  bookmarkViewModel.toggle(
                       filemodel.getPath(),
                       filemodel.getName(),
                       filemodel.isDirectory(),
@@ -1328,20 +1388,17 @@ public class FileManagerActivity extends BaseCompat
                                               : getString(R.string.bookmark_removed),
                                           GhostToast.LENGTH_SHORT)
                                       .show()));
-                  case 4 -> ShortcutHelper.showShortcutDialog(this, filemodel);
-                  case 5 -> {
-                    ClipboardUtils.copyText(filemodel.getPath());
-                    GhostToast.makeText(
-                            FileManagerActivity.this, filemodel.getPath(), GhostToast.LENGTH_SHORT)
-                        .show();
-                  }
-                  case 6 -> {
-                    if (showRenamePackage) {
-                      openRenamePackageSheet(filemodel);
-                    } else if (showRenameClass) {
-                      openRenameClassSheet(filemodel);
-                    }
-                  }
+                } else if (title.equals(getString(R.string.shortcut_menu_item))) {
+                  ShortcutHelper.showShortcutDialog(this, filemodel);
+                } else if (title.equals(getString(R.string.copyfullpath))) {
+                  ClipboardUtils.copyText(filemodel.getPath());
+                  GhostToast.makeText(
+                          FileManagerActivity.this, filemodel.getPath(), GhostToast.LENGTH_SHORT)
+                      .show();
+                } else if (title.equals(getString(R.string.rename_package_menu_item))) {
+                  openRenamePackageSheet(filemodel);
+                } else if (title.equals(getString(R.string.rename_class_menu_item))) {
+                  openRenameClassSheet(filemodel);
                 }
               });
         });

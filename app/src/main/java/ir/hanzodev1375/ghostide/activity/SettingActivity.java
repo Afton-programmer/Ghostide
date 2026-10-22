@@ -115,6 +115,18 @@ public class SettingActivity extends BaseCompat {
     rvBackgroundPlugin.setLayoutManager(new LinearLayoutManager(this));
     rvPlugins.setLayoutManager(new LinearLayoutManager(this));
 
+    // Shared recycled view pool for all setting sections to reuse row views
+    RecyclerView.RecycledViewPool sharedPool = new RecyclerView.RecycledViewPool();
+    sharedPool.setMaxRecycledViews(0, 30);
+    rvEditor.setRecycledViewPool(sharedPool);
+    rvApp.setRecycledViewPool(sharedPool);
+    rvAi.setRecycledViewPool(sharedPool);
+    rvLsp.setRecycledViewPool(sharedPool);
+    rvRunner.setRecycledViewPool(sharedPool);
+    rvIconPack.setRecycledViewPool(sharedPool);
+    rvBackgroundPlugin.setRecycledViewPool(sharedPool);
+    rvPlugins.setRecycledViewPool(sharedPool);
+
     editorSection = new EditorSettingSection(this, prefs);
     appSection = new AppSettingSection(this, prefs);
     aiSection = new AiSettingSection(this, aiPrefs);
@@ -184,7 +196,7 @@ public class SettingActivity extends BaseCompat {
                 filterAll(item);
                 expandMatching();
               };
-          ser.postDelayed(filterRunnable, 50);
+          ser.postDelayed(filterRunnable, 200);
         });
 
     if ("githublogin".equals(getIntent().getStringExtra("open_section"))) {
@@ -249,43 +261,66 @@ public class SettingActivity extends BaseCompat {
   }
 
   private void collapseAll() {
-    for (ExpandableLayout layout :
-        new ExpandableLayout[] {
-          expandEditor,
-          expandApp,
-          expandAi,
-          LspView,
-          expandRunner,
-          expandIconPack,
-          expandBackgroundPlugin,
-          expandPlugins
-        }) {
+    for (ExpandableLayout layout : expandableCards()) {
       if (layout.isExpanded()) layout.collapse();
     }
   }
 
-  /** Hides a section entirely when it has no rows, so empty sections never show up. */
+  /** Shows the card when the section has rows and hides it when it has none. */
   private void hideSectionIfEmpty(ExpandableLayout layout, SettingSection section) {
-    if (section.getAdapter().getItemCount() == 0) {
-      layout.setVisibility(View.GONE);
-    }
+    boolean hasRows = section.getAdapter() != null && section.getAdapter().getItemCount() > 0;
+    layout.setVisibility(hasRows ? View.VISIBLE : View.GONE);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    if (iconPackSection == null || ser == null || !ser.getQuery().trim().isEmpty()) return;
+    iconPackSection.reload();
+    backgroundPluginSection.reload();
+    pluginSection.reload();
+    hideSectionIfEmpty(expandIconPack, iconPackSection);
+    hideSectionIfEmpty(expandBackgroundPlugin, backgroundPluginSection);
+    hideSectionIfEmpty(expandPlugins, pluginSection);
+  }
+
+  private ExpandableLayout[] expandableCards() {
+    if (expandEditor == null) return new ExpandableLayout[0];
+    return new ExpandableLayout[] {
+      expandEditor,
+      expandApp,
+      expandAi,
+      LspView,
+      expandRunner,
+      expandIconPack,
+      expandBackgroundPlugin,
+      expandPlugins
+    };
   }
 
   /** Points every expandable glass card at the settings background so it has a backdrop to sample. */
   private void setExpandableBackdrop(View backdrop) {
     if (backdrop == null) return;
-    for (ExpandableLayout layout :
-        new ExpandableLayout[] {
-          expandEditor,
-          expandApp,
-          expandAi,
-          LspView,
-          expandRunner,
-          expandIconPack,
-          expandBackgroundPlugin,
-          expandPlugins
-        }) {
+    for (ExpandableLayout layout : expandableCards()) {
       layout.setBackdropSource(backdrop);
+    }
+  }
+
+  private final Runnable glassRefreshRunnable = this::refreshExpandableGlass;
+
+  private void scheduleGlassRefresh() {
+    View host = findViewById(R.id.settings_container);
+    if (host == null) return;
+    host.removeCallbacks(glassRefreshRunnable);
+    host.postDelayed(glassRefreshRunnable, 250L);
+    host.postDelayed(glassRefreshRunnable, 800L);
+  }
+
+  private void refreshExpandableGlass() {
+    if (isFinishing()) return;
+    for (ExpandableLayout layout : expandableCards()) {
+      layout.refresh();
+      layout.invalidate();
     }
   }
 
@@ -305,6 +340,7 @@ public class SettingActivity extends BaseCompat {
     toolbar.setBackgroundColor(0);
     if (settingsContainer == null || backgroundIcon == null) return;
     setupBackgroundBlur(backgroundIcon, settingRoot, appbar, scrollView);
+    scheduleGlassRefresh();
   }
 
   /**
@@ -314,6 +350,10 @@ public class SettingActivity extends BaseCompat {
   @Override
   protected void applyOwnTheme(ThemeUtils themeUtils) {
     setupBackgroundBlur();
+    for (ExpandableLayout layout : expandableCards()) {
+      layout.refresh();
+      layout.invalidate();
+    }
   }
 
   @Override

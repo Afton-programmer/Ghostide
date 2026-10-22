@@ -6,15 +6,14 @@ import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.customui.PreferenceSwitchGroup;
 import ir.hanzodev1375.ghostide.models.SettingItem;
 import ir.theme.M3Theme;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHolder> {
 
@@ -49,7 +48,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     return new ViewHolder(view);
   }
 
- public void updateItem(int originalPosition, SettingItem newItem) {
+  public void updateItem(int originalPosition, SettingItem newItem) {
     if (newItem == null) return;
     if (originalPosition < 0 || originalPosition >= backupList.size()) return;
     SettingItem oldItem = backupList.get(originalPosition);
@@ -66,7 +65,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     return backupList.get(originalPosition);
   }
 
-  
   public void notifyItemChangedByOriginalPosition(int originalPosition) {
     if (originalPosition < 0 || originalPosition >= backupList.size()) return;
     SettingItem item = backupList.get(originalPosition);
@@ -81,36 +79,20 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     SettingItem item = items.get(position);
     holder.switchGroup.setListPosition(position, getItemCount());
 
-    // Set plain text first (fast)
-    holder.switchGroup.setTitle(item.getTitle());
-    if (item.getDescription() != null && !item.getDescription().isEmpty()) {
-      holder.switchGroup.setDescription(item.getDescription());
-    }
-
     if (currentQuery != null && !currentQuery.isEmpty()) {
-      String text = item.getTitle();
-      String desc = item.getDescription();
-      String query = currentQuery;
-
-      holder.itemView.post(
-          () -> {
-            int bindingPos = holder.getBindingAdapterPosition();
-            if (bindingPos == RecyclerView.NO_POSITION) {
-              return;
-            }
-
-            if (bindingPos >= items.size() || items.get(bindingPos) != item) {
-              return;
-            }
-
-            SpannableString highlightedTitle = highlightText(text, query, holder);
-            holder.switchGroup.setTitle(highlightedTitle);
-
-            if (item.getDescription() != null && !item.getDescription().isEmpty()) {
-              SpannableString highlightedDesc = highlightText(desc, query, holder);
-              holder.switchGroup.setDescription(highlightedDesc);
-            }
-          });
+      holder.switchGroup.setTitle(highlightText(item.getTitle(), currentQuery));
+      if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+        holder.switchGroup.setDescription(highlightText(item.getDescription(), currentQuery));
+      } else {
+        holder.switchGroup.setDescription("");
+      }
+    } else {
+      holder.switchGroup.setTitle(item.getTitle());
+      if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+        holder.switchGroup.setDescription(item.getDescription());
+      } else {
+        holder.switchGroup.setDescription("");
+      }
     }
 
     if (item.getIconRes() != 0) {
@@ -138,24 +120,29 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     }
   }
 
-  private SpannableString highlightText(String text, String query, ViewHolder holder) {
+  private SpannableString highlightText(String text, String query) {
+    if (text == null) return new SpannableString("");
     SpannableString spannableString = new SpannableString(text);
-    String lowerText = text.toLowerCase();
-    int startIndex = lowerText.indexOf(query);
+    if (query == null || query.isEmpty()) {
+      return spannableString;
+    }
+    String lowerText = text.toLowerCase(Locale.getDefault());
+    String lowerQuery = query.toLowerCase(Locale.getDefault());
+    int startIndex = lowerText.indexOf(lowerQuery);
 
     if (startIndex == -1) {
-      return new SpannableString(text); // No highlight needed
+      return spannableString;
     }
 
+    int highlightColor = fallback(M3Theme.error(), 0);
     while (startIndex != -1) {
-      int endIndex = startIndex + query.length();
+      int endIndex = startIndex + lowerQuery.length();
       spannableString.setSpan(
-          new ForegroundColorSpan(
-              fallback(M3Theme.error(), 0)),
+          new ForegroundColorSpan(highlightColor),
           startIndex,
           endIndex,
           Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-      startIndex = lowerText.indexOf(query, endIndex);
+      startIndex = lowerText.indexOf(lowerQuery, endIndex);
     }
     return spannableString;
   }
@@ -169,56 +156,35 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
     filter("");
   }
 
-  public void filter(String query) {
-    String newQuery = query != null ? query.toLowerCase().trim() : "";
+  /**
+   * Replaces the row list and clears any active filter.
+   */
+  public void setItems(List<SettingItem> newItems) {
+    items.clear();
+    items.addAll(newItems);
+    backupList.clear();
+    backupList.addAll(newItems);
+    currentQuery = "";
+    notifyDataSetChanged();
+  }
 
-    // If query changed, force rebind by treating as different items
-    boolean queryChanged = !newQuery.equals(currentQuery);
+  public void filter(String query) {
+    String newQuery = query != null ? query.toLowerCase(Locale.getDefault()).trim() : "";
     currentQuery = newQuery;
 
-    List<SettingItem> newList;
+    items.clear();
     if (currentQuery.isEmpty()) {
-      newList = new ArrayList<>(backupList);
+      items.addAll(backupList);
     } else {
-      newList = new ArrayList<>();
       for (SettingItem item : backupList) {
-        if (item.getTitle().toLowerCase().contains(currentQuery)
+        if (item.getTitle().toLowerCase(Locale.getDefault()).contains(currentQuery)
             || (item.getDescription() != null
-                && item.getDescription().toLowerCase().contains(currentQuery))) {
-          newList.add(item);
+                && item.getDescription().toLowerCase(Locale.getDefault()).contains(currentQuery))) {
+          items.add(item);
         }
       }
     }
-
-    DiffUtil.DiffResult diffResult =
-        DiffUtil.calculateDiff(
-            new DiffUtil.Callback() {
-              @Override
-              public int getOldListSize() {
-                return items.size();
-              }
-
-              @Override
-              public int getNewListSize() {
-                return newList.size();
-              }
-
-              @Override
-              public boolean areItemsTheSame(int oldPos, int newPos) {
-                // Force rebind if query changed
-                if (queryChanged) return false;
-                return items.get(oldPos).getTitle().equals(newList.get(newPos).getTitle());
-              }
-
-              @Override
-              public boolean areContentsTheSame(int oldPos, int newPos) {
-                return false; // Always rebind to update highlight
-              }
-            });
-
-    items.clear();
-    items.addAll(newList);
-    diffResult.dispatchUpdatesTo(this);
+    notifyDataSetChanged();
   }
 
   static class ViewHolder extends RecyclerView.ViewHolder {

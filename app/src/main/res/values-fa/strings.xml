@@ -684,4 +684,16 @@
     <string name="sort_by_type">بر اساس نوع</string>
     <string name="sort_only_this_folder">فقط برای این پوشه اعمال شود</string>
     <string name="sort_reverse_order">ترتیب معکوس</string>
+    <string name="split_archive">تقسیم به پارت‌های چندگانه</string>
+    <string name="split_volume_size">اندازه هر پارت</string>
+    <string name="split_custom_mb">اندازه سفارشی (مگابایت)</string>
+    <string name="archive_password_required">آرشیو دارای رمز عبور است</string>
+    <string name="archive_enter_password">لطفاً برای استخراج آرشیو رمز عبور را وارد کنید:</string>
+    <string name="archive_wrong_password">رمز عبور اشتباه است یا آرشیو آسیب دیده است</string>
+    <string name="extracting_archive">در حال استخراج آرشیو...</string>
+    <string name="extract_archive">استخراج فایل فشرده</string>
+    <string name="archive_browse">مشاهده داخل آرشیو</string>
+    <string name="unsupported_rar_v5">فرمت RAR5 توسط موتور جاوا پشتیبانی نمی‌شود</string>
+    <string name="extract_to_named_folder">استخراج در پوشه «%s/»</string>
+    <string name="archive_multi_volume_detected">آرشیو چند پارت شناسایی شد: شروع از %s</string>
 </resources>
