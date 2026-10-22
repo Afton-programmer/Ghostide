@@ -425,8 +425,8 @@ public class FileManagerActivity extends BaseCompat
     listIcon.add(R.drawable.add);
 
     List<Integer> listTooltips = new ArrayList<>();
-    listTooltips.add(R.string.new_folder);
-    listTooltips.add(R.string.new_file);
+    listTooltips.add(R.string.dialog_create_folder_title);
+    listTooltips.add(R.string.dialog_create_file_title);
     listTooltips.add(R.string.android_studio_project);
     listTooltips.add(R.string.project_new_title);
 
