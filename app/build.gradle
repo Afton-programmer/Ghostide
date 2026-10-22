@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.powermenu)
     implementation(libs.zip4j)
+    implementation(libs.junrar)
     implementation(libs.utilcode)
     implementation(libs.eventbus)
     implementation(libs.glide.avif.integration)

@@ -687,4 +687,16 @@
     <string name="sort_by_type">By type</string>
     <string name="sort_only_this_folder">Only apply to this folder</string>
     <string name="sort_reverse_order">Reverse order</string>
+    <string name="split_archive">Split into volumes</string>
+    <string name="split_volume_size">Volume size</string>
+    <string name="split_custom_mb">Custom volume size (MB)</string>
+    <string name="archive_password_required">Archive is Password-Protected</string>
+    <string name="archive_enter_password">Please enter the password to extract this archive:</string>
+    <string name="archive_wrong_password">Incorrect password or damaged archive</string>
+    <string name="extracting_archive">Extracting archive...</string>
+    <string name="extract_archive">Extract Archive</string>
+    <string name="archive_browse">Browse Archive</string>
+    <string name="unsupported_rar_v5">RAR5 format is not supported by the pure-Java engine</string>
+    <string name="extract_to_named_folder">Extract to \"%s/\"</string>
+    <string name="archive_multi_volume_detected">Multi-volume archive detected: starting from %s</string>
 </resources>

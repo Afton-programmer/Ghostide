@@ -547,6 +547,7 @@ Directory structure:
     │           │       │       │   └── viewmodel/
     │           │       │       │       └── TranslatorViewModel.java
     │           │       │       └── utils/
+    │           │       │           ├── ArchiveExtractUtil.java
     │           │       │           ├── BitmapTransformation.java
     │           │       │           ├── BlurHelper.java
     │           │       │           ├── BlurTransformation.java
@@ -708,6 +709,7 @@ Directory structure:
     │               │   ├── bottom_sheet_translator.xml
     │               │   ├── custom_tab.xml
     │               │   ├── diag_sheet.xml
+    │               │   ├── dialog_archive_password.xml
     │               │   ├── dialog_copy_progress.xml
     │               │   ├── dialog_create_zip.xml
     │               │   ├── dialog_delete_progress.xml
