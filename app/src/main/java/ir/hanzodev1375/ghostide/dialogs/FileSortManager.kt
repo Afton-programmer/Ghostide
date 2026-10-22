@@ -28,18 +28,8 @@ class FileSortManager(
         val sortSize = dialogView.findViewById<RadioButton>(R.id.sort_size)
         val sortDate = dialogView.findViewById<RadioButton>(R.id.sort_date)
         val sortType = dialogView.findViewById<RadioButton>(R.id.sort_type)
-
         M3Theme.radio(sortName, sortSize, sortDate, sortType)
-<<<<<<< HEAD
-=======
-        M3Theme.text(sortName, sortSize, sortDate, sortType)
->>>>>>> branch 'main' of https://github.com/HanzoDev30/Ghostide.git
         M3Theme.toggle(onlyFolder, reverse)
-<<<<<<< HEAD
-=======
-        M3Theme.text(onlyFolder, reverse)
-
->>>>>>> branch 'main' of https://github.com/HanzoDev30/Ghostide.git
         group.check(radioIdFor(SortType.fromKey(preferences.getFileSortType(dirPath))))
         reverse.isChecked = preferences.isFileSortReverse(dirPath)
         onlyFolder.isChecked = preferences.hasFolderSortOverride(dirPath)
