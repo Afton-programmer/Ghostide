@@ -317,6 +317,29 @@ public class FloatingToolbarView extends FrameLayout {
     }
   }
 
+  /**
+   * Cancels any running transition and restores a stable state. Called when the host activity is
+   * paused or resumed so an interrupted animation cannot leave the FAB at a reduced size.
+   */
+  public void clearRunningAnimation() {
+    cancelCurrentAnimation();
+    cardView.animate().cancel();
+    cardView.setTranslationX(0f);
+    fab.animate().cancel();
+    if (fab.getVisibility() == VISIBLE) {
+      fab.setScaleX(1f);
+      fab.setScaleY(1f);
+      fab.setAlpha(1f);
+    }
+    if (state != State.EXPANDED) {
+      state = State.COLLAPSED;
+      cardView.setVisibility(GONE);
+      cardView.setScaleX(0f);
+      cardView.setAlpha(0f);
+      setFabCustomSize(dp(70));
+    }
+  }
+
   // ──────────────────── Public API ────────────────────
 
   public RecyclerView getRecyclerView() {

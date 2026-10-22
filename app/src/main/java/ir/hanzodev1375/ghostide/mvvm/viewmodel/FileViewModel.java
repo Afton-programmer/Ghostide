@@ -18,11 +18,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import android.os.Environment;
 import ir.hanzodev1375.ghostide.enums.FileState;
+import ir.hanzodev1375.ghostide.enums.SortType;
 import ir.hanzodev1375.ghostide.fileevents.FileCreatedEvent;
 import ir.hanzodev1375.ghostide.fileevents.FileEventCheck;
 import ir.hanzodev1375.ghostide.fileevents.FileRenamedEvent;
@@ -170,11 +172,9 @@ public class FileViewModel extends AndroidViewModel {
           File dir = new File(dirPath);
           File[] files = dir.listFiles();
           if (files != null) {
-            Arrays.sort(
-                files,
-                Comparator.comparing(File::isDirectory)
-                    .reversed()
-                    .thenComparing(File::getName, String.CASE_INSENSITIVE_ORDER));
+            SortType sortType = SortType.fromKey(prefs.getFileSortType(dirPath));
+            boolean reverse = prefs.isFileSortReverse(dirPath);
+            Arrays.sort(files, buildSortComparator(sortType, reverse));
             for (File file : files) {
               String name = file.getName();
               if (prefs.isShowHiddenFiles() || !name.startsWith(".")) {
@@ -191,6 +191,38 @@ public class FileViewModel extends AndroidViewModel {
           filesLiveData.postValue(list);
           isLoading.postValue(false);
         });
+  }
+
+  private static Comparator<File> buildSortComparator(SortType sortType, boolean reverse) {
+    Comparator<File> primary;
+    switch (sortType) {
+      case SIZE ->
+          primary = Comparator.comparingLong((File file) -> file.isFile() ? file.length() : 0L);
+      case DATE -> primary = Comparator.comparingLong((File file) -> file.lastModified());
+      case TYPE ->
+          primary =
+              Comparator.comparing(
+                  (File file) -> extensionOf(file), String.CASE_INSENSITIVE_ORDER);
+      default ->
+          primary = Comparator.comparing(File::getName, String.CASE_INSENSITIVE_ORDER);
+    }
+    Comparator<File> within =
+        primary.thenComparing(File::getName, String.CASE_INSENSITIVE_ORDER);
+    return (a, b) -> {
+      boolean aDir = a.isDirectory();
+      boolean bDir = b.isDirectory();
+      if (aDir != bDir) return aDir ? -1 : 1;
+      int result = within.compare(a, b);
+      return reverse ? -result : result;
+    };
+  }
+
+  private static String extensionOf(File file) {
+    if (file.isDirectory()) return "";
+    String name = file.getName();
+    int dot = name.lastIndexOf('.');
+    if (dot <= 0 || dot == name.length() - 1) return "";
+    return name.substring(dot + 1).toLowerCase(Locale.ROOT);
   }
 
   private FileEventCheck eventFor(List<FileEventCheck> events, String path) {

@@ -51,16 +51,15 @@
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <ir.hanzodev1375.components.input.TextInputGlass
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginTop="16dp"
         app:errorEnabled="true"
         android:id="@+id/tilHost"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/ftp_host_hint"
@@ -68,19 +67,18 @@
             android:id="@+id/etHost"
             />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </ir.hanzodev1375.components.input.TextInputGlass>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <ir.hanzodev1375.components.input.TextInputGlass
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:visibility="gone"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginTop="8dp"
         app:errorEnabled="true"
         android:id="@+id/tilShare"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/ftp_share_hint"
@@ -88,18 +86,17 @@
             android:id="@+id/etShare"
             />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </ir.hanzodev1375.components.input.TextInputGlass>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <ir.hanzodev1375.components.input.TextInputGlass
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginTop="8dp"
         app:errorEnabled="true"
         android:id="@+id/tilPort"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/ftp_port_hint"
@@ -107,18 +104,17 @@
             android:id="@+id/etPort"
             />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </ir.hanzodev1375.components.input.TextInputGlass>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <ir.hanzodev1375.components.input.TextInputGlass
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginTop="8dp"
         app:errorEnabled="true"
         android:id="@+id/tilUsername"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/ftp_username_hint"
@@ -126,19 +122,18 @@
             android:id="@+id/etUsername"
             />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </ir.hanzodev1375.components.input.TextInputGlass>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <ir.hanzodev1375.components.input.TextInputGlass
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:passwordToggleEnabled="true"
         android:layout_marginTop="8dp"
         app:errorEnabled="true"
         android:id="@+id/tilPassword"
         >
 
-        <com.google.android.material.textfield.TextInputEditText
+        <ir.hanzodev1375.components.input.TextInputEditTextGlass
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/ftp_password_hint"
@@ -146,12 +141,11 @@
             android:id="@+id/etPassword"
             />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </ir.hanzodev1375.components.input.TextInputGlass>
 
-    <com.google.android.material.button.MaterialButton
+    <ir.hanzodev1375.components.glass.ButtonCompat
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        app:cornerRadius="24dp"
         android:layout_marginTop="16dp"
         android:id="@+id/btnConnect"
         android:text="@string/ftp_btn_connect"

@@ -63,6 +63,7 @@ import ir.hanzodev1375.ghostide.helper.ZipModeHelper;
 import ir.hanzodev1375.ghostide.databinding.ActivityFilemanagerBinding;
 import ir.hanzodev1375.ghostide.databinding.SelectionPanelBinding;
 import ir.hanzodev1375.ghostide.dialogs.CopyProgressDialog;
+import ir.hanzodev1375.ghostide.dialogs.FileSortManager;
 import ir.hanzodev1375.ghostide.dialogs.DeleteProgressDialog;
 import ir.hanzodev1375.ghostide.fragments.BatchRenameSheet;
 import ir.hanzodev1375.ghostide.fragments.FilePropertiesSheet;
@@ -407,7 +408,7 @@ public class FileManagerActivity extends BaseCompat
           }
           if (bind.ser.isShow()) {
             bind.ser.hide();
-            bind.fab.setVisibility(View.VISIBLE);
+            setFabVisible(true);
             bind.ser.setQuery("");
           }
         });
@@ -715,12 +716,14 @@ public class FileManagerActivity extends BaseCompat
 
   public void setFabVisible(boolean visible) {
     if (bind.fab == null) return;
+    bind.fab.animate().cancel();
     if (visible) {
-      if (bind.fab.getVisibility() == View.VISIBLE) return;
-      bind.fab.setScaleX(0.8f);
-      bind.fab.setScaleY(0.8f);
-      bind.fab.setAlpha(0f);
-      bind.fab.setVisibility(View.VISIBLE);
+      if (bind.fab.getVisibility() != View.VISIBLE) {
+        bind.fab.setScaleX(0.8f);
+        bind.fab.setScaleY(0.8f);
+        bind.fab.setAlpha(0f);
+        bind.fab.setVisibility(View.VISIBLE);
+      }
       bind.fab
           .animate()
           .alpha(1f)
@@ -1611,6 +1614,7 @@ public class FileManagerActivity extends BaseCompat
   @Override
   protected void onResume() {
     super.onResume();
+    bind.fab.clearRunningAnimation();
     if (toolbarAdapter != null) {
       stepToolbar();
     }
@@ -1669,7 +1673,7 @@ public class FileManagerActivity extends BaseCompat
             }
             if (bind.ser.isShow()) {
               bind.ser.hide();
-              bind.fab.setVisibility(View.VISIBLE);
+              setFabVisible(true);
               bind.ser.setQuery("");
             }
           });
@@ -1718,6 +1722,7 @@ public class FileManagerActivity extends BaseCompat
   @Override
   protected void onPause() {
     coilPulseRoot();
+    bind.fab.clearRunningAnimation();
     bind.rvfiles.saveScrollPosition();
     super.onPause();
   }
@@ -1726,6 +1731,7 @@ public class FileManagerActivity extends BaseCompat
     List<String> items =
         List.of(
             getString(R.string.settings_title),
+            getString(R.string.sort_title),
             getString(R.string.search_hint),
             getString(R.string.serachdata),
             getString(R.string.openlogcat),
@@ -1734,11 +1740,11 @@ public class FileManagerActivity extends BaseCompat
             getString(R.string.ftp_connect),
             getString(R.string.sd_card_menu_item),
             getString(R.string.store),
-            getString(R.string.aboutapp),
             getString(R.string.translator_title),
             getString(R.string.terminal_title),
             getString(R.string.postman_title),
-            getString(R.string.plugin_manager_title));
+            getString(R.string.plugin_manager_title),
+            getString(R.string.aboutapp));
     ObjectUtil.showGlassMenu(
         this,
         v,
@@ -1746,7 +1752,8 @@ public class FileManagerActivity extends BaseCompat
         (index, title) -> {
           switch (index) {
             case 0 -> startActivity(new Intent(getApplicationContext(), SettingActivity.class));
-            case 1 -> {
+            case 1 -> showSortDialog();
+            case 2 -> {
               if (!bind.ser.isShow()) {
                 bind.ser.show();
                 setFabVisible(false);
@@ -1755,14 +1762,14 @@ public class FileManagerActivity extends BaseCompat
                 setFabVisible(true);
               }
             }
-            case 2 -> {
+            case 3 -> {
               openSearchSheet();
             }
-            case 3 -> {
+            case 4 -> {
               var log = new BottomSheetLogView();
               log.show(getSupportFragmentManager(), "log");
             }
-            case 4 -> {
+            case 5 -> {
               HistoryBottomSheet sheet = HistoryBottomSheet.newInstance();
               sheet.setOnHistoryItemSelectedListener(
                   item -> {
@@ -1775,7 +1782,7 @@ public class FileManagerActivity extends BaseCompat
                   });
               sheet.show(getSupportFragmentManager(), HistoryBottomSheet.TAG);
             }
-            case 5 -> {
+            case 6 -> {
               BookmarkBottomSheet bsheet = BookmarkBottomSheet.newInstance();
               bsheet.setOnBookmarkSelectedListener(
                   item -> {
@@ -1788,20 +1795,26 @@ public class FileManagerActivity extends BaseCompat
                   });
               bsheet.show(getSupportFragmentManager(), BookmarkBottomSheet.TAG);
             }
-            case 6 -> {
+            case 7 -> {
               showFtpConnectSheet();
             }
-            case 7 -> openSdCard();
-            case 8 -> startActivity(new Intent(FileManagerActivity.this, StoreActivity.class));
-            case 9 -> startActivity(new Intent(FileManagerActivity.this, AboutActivity.class));
+            case 8 -> openSdCard();
+            case 9 -> startActivity(new Intent(FileManagerActivity.this, StoreActivity.class));
             case 10 -> StringsTranslatorSheet.newInstance(viewModel.getCurrentPath().getValue())
                 .show(getSupportFragmentManager(), StringsTranslatorSheet.TAG);
             case 11 -> startActivity(new Intent(FileManagerActivity.this, TerminalActivity.class));
             case 12 -> startActivity(new Intent(FileManagerActivity.this, PostManActivity.class));
             case 13 -> startActivity(
                 new Intent(FileManagerActivity.this, PluginManagerActivity.class));
+            case 14 -> startActivity(new Intent(FileManagerActivity.this, AboutActivity.class));
           }
         });
+  }
+
+  private void showSortDialog() {
+    String currentPath = viewModel.getCurrentPath().getValue();
+    if (currentPath == null) return;
+    new FileSortManager(this, currentPath, () -> viewModel.loadFiles(currentPath)).show();
   }
 
   private void openSearchSheet() {

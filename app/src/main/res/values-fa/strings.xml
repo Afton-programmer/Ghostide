@@ -677,4 +677,11 @@
     <string name="runner_java_version_message">برای اجرای این فایل جاوا کدام JDK استفاده شود؟ اگر جاوا از قبل نصب باشد همان استفاده می‌شود، وگرنه نسخه انتخابی (Temurin) نصب می‌شود.</string>
     <string name="runner_java_version_17">جاوا ۱۷</string>
     <string name="runner_java_version_25">جاوا ۲۵</string>
+    <string name="sort_title">مرتب‌سازی</string>
+    <string name="sort_by_name">بر اساس نام</string>
+    <string name="sort_by_size">بر اساس اندازه</string>
+    <string name="sort_by_date">بر اساس تاریخ</string>
+    <string name="sort_by_type">بر اساس نوع</string>
+    <string name="sort_only_this_folder">فقط برای این پوشه اعمال شود</string>
+    <string name="sort_reverse_order">ترتیب معکوس</string>
 </resources>

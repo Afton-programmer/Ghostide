@@ -243,9 +243,9 @@ public class VectorMasterView extends View {
                                 tempPosition = getAttrPosition(xpp, "fillColor");
                                 pathModel.setFillColor(
                                     (tempPosition != -1)
-                                        ? Utils.getColorFromString(
+                                        ? Utils.getColorFromStringTheme(
                                         xpp.getAttributeValue(tempPosition), useLightTheme)
-                                        : DefaultValues.PATH_FILL_COLOR_BLACK);
+                                        : Utils.getColorFromStringTheme("", useLightTheme));
 
                                 tempPosition = getAttrPosition(xpp, "fillType");
                                 pathModel.setFillType(
@@ -290,7 +290,7 @@ public class VectorMasterView extends View {
                                 tempPosition = getAttrPosition(xpp, "strokeColor");
                                 pathModel.setStrokeColor(
                                     (tempPosition != -1)
-                                        ? Utils.getColorFromString(
+                                        ? Utils.getColorFromStringTheme(
                                         xpp.getAttributeValue(tempPosition), useLightTheme)
                                         : DefaultValues.PATH_STROKE_COLOR);
 

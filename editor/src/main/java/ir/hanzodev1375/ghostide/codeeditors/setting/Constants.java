@@ -62,6 +62,9 @@ public class Constants {
     public static final String KEY_FILRMB = "filemanager_showbackgroundtheme";
     public static final String KEY_ANIMATION_BATTERY_THRESHOLD = "pref_animation_battery_threshold";
     public static final String KEY_SHOW_HIDDEN_FILES = "filemanager_show_hidden_files";
+    public static final String KEY_FILE_SORT_TYPE = "filemanager_sort_type";
+    public static final String KEY_FILE_SORT_REVERSE = "filemanager_sort_reverse";
+    public static final String KEY_FILE_SORT_FOLDER_PREFIX = "filemanager_sort_folder_";
     public static final String KEY_CODE_EDITOR_POWER_MODE = "pref_code_editor_power_mode";
     public static final String KEY_CODE_EDITOR_POWER_MODE_EFFECT =
         "pref_code_editor_power_mode_effect";

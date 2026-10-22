@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="4dp">
+
+    <RadioGroup
+        android:id="@+id/sort_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/sort_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_by_name" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/sort_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_by_size" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/sort_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_by_date" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/sort_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/sort_by_type" />
+
+    </RadioGroup>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/sort_only_folder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:minHeight="48dp"
+        android:text="@string/sort_only_this_folder" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/sort_reverse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:text="@string/sort_reverse_order" />
+
+</LinearLayout>

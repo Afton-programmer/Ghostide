@@ -448,9 +448,39 @@ public class ThemeStorePreviewSheet extends BaseBlurBottomSheet {
     int imageTint = color(w.getImageTint(), m != null ? m.getOnSurface() : null);
     int onSurface = color(null, m != null ? m.getOnSurface() : null);
 
+    boolean hasBackground = hasThemeBackground(theme);
+    int container = hasBackground ? surface : color(null, m != null ? m.getPrimary() : null);
+    if (container == Color.TRANSPARENT) container = surface;
+
     if (bg != Color.TRANSPARENT) widgetRoot.setBackgroundColor(bg);
 
-    applyWidgetRecursively(widgetRoot, surface, accent, text, hint, imageTint, onSurface);
+    if (binding != null && binding.tabLayout != null) {
+      int tabSelected = selectedTabColor(w, accent);
+      int tabUnselected = unselectedTabColor(w, hint, text);
+      binding.tabLayout.setBackgroundColor(container);
+      binding.tabLayout.setSelectedTabIndicatorColor(tabSelected);
+      binding.tabLayout.setTabTextColors(tabUnselected, tabSelected);
+    }
+
+    applyWidgetRecursively(widgetRoot, container, accent, text, hint, imageTint, onSurface);
+  }
+
+  /** A theme counts as having a background when it defines an image or a visible background colour. */
+  private boolean hasThemeBackground(GhostTheme theme) {
+    WidgetTheme widget = theme.getWidget();
+    ActivityTheme activity = theme.getActivity();
+    String imagePath = widget != null ? widget.getImagepath() : null;
+    if (isNotEmpty(imagePath)) return true;
+    return hasVisibleColor(widget != null ? widget.getBackground() : null)
+        || hasVisibleColor(activity != null ? activity.getBackground() : null);
+  }
+
+  private boolean hasVisibleColor(String value) {
+    return isNotEmpty(value) && Color.alpha(parseColor(value)) != 0;
+  }
+
+  private static boolean isNotEmpty(String value) {
+    return value != null && !value.isEmpty();
   }
 
   private void applyWidgetRecursively(
@@ -484,8 +514,14 @@ public class ThemeStorePreviewSheet extends BaseBlurBottomSheet {
         }
       }
     } else if (v instanceof TabLayout) {
-      ((TabLayout) v).setBackgroundColor(surface);
-      ((TabLayout) v).setSelectedTabIndicatorColor(accent);
+      TabLayout tabLayout = (TabLayout) v;
+      WidgetTheme w = appliedTheme != null ? appliedTheme.getWidget() : null;
+      int tabSelected = selectedTabColor(w, accent);
+      tabLayout.setBackgroundColor(surface);
+      tabLayout.setSelectedTabIndicatorColor(tabSelected);
+      tabLayout.setTabTextColors(unselectedTabColor(w, hint, text), tabSelected);
+      // TabLayout keeps its labels in internal TextViews; recursing would overwrite the tab colours.
+      return;
     } else if (v instanceof BottomNavigationView) {
       ((BottomNavigationView) v)
           .setBackgroundColor(surface);
@@ -672,6 +708,17 @@ public class ThemeStorePreviewSheet extends BaseBlurBottomSheet {
     }
     binding = null;
     super.onDestroyView();
+  }
+
+  private int selectedTabColor(WidgetTheme w, int accent) {
+    int color = w != null ? parseColor(w.getTabSelected()) : Color.TRANSPARENT;
+    return color == Color.TRANSPARENT ? accent : color;
+  }
+
+  private int unselectedTabColor(WidgetTheme w, int hint, int text) {
+    int color = w != null ? parseColor(w.getTabUnselected()) : Color.TRANSPARENT;
+    if (color == Color.TRANSPARENT) color = hint != Color.TRANSPARENT ? hint : text;
+    return color;
   }
 
   private int color(String direct, String fallback) {

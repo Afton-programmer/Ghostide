@@ -202,7 +202,7 @@ public class VectorMasterDrawable extends Drawable {
                     (tempPosition != -1)
                         ? Utils.getColorFromStringTheme(
                             xpp.getAttributeValue(tempPosition), useLightTheme)
-                        : DefaultValues.PATH_FILL_COLOR);
+                        : Utils.getColorFromStringTheme("", useLightTheme));
 
                 tempPosition = getAttrPosition(xpp, "fillType");
                 pathModel.setFillType(
@@ -234,7 +234,7 @@ public class VectorMasterDrawable extends Drawable {
                 tempPosition = getAttrPosition(xpp, "strokeColor");
                 pathModel.setStrokeColor(
                     (tempPosition != -1)
-                        ? Utils.getColorFromString(
+                        ? Utils.getColorFromStringTheme(
                             xpp.getAttributeValue(tempPosition), useLightTheme)
                         : DefaultValues.PATH_STROKE_COLOR);
 

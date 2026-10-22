@@ -680,4 +680,11 @@
     <string name="runner_java_version_message">Which JDK should Ghost IDE use for this Java file? If Java is already installed it will be used; otherwise the selected version (Temurin) is installed.</string>
     <string name="runner_java_version_17">Java 17</string>
     <string name="runner_java_version_25">Java 25</string>
+    <string name="sort_title">Sort</string>
+    <string name="sort_by_name">By name</string>
+    <string name="sort_by_size">By size</string>
+    <string name="sort_by_date">By date</string>
+    <string name="sort_by_type">By type</string>
+    <string name="sort_only_this_folder">Only apply to this folder</string>
+    <string name="sort_reverse_order">Reverse order</string>
 </resources>

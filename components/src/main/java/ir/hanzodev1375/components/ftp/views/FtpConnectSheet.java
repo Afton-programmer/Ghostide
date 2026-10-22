@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import ir.hanzodev1375.components.sheet.BaseBlurBottomSheet;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import ir.hanzodev1375.components.glass.ButtonCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -34,7 +35,7 @@ public class FtpConnectSheet extends BaseBlurBottomSheet {
   private TextInputEditText etHost, etPort, etUsername, etPassword, etShare;
   private TextInputLayout tilHost, tilPort, tilUsername, tilPassword, tilShare;
   private MaterialButtonToggleGroup toggleProtocol;
-  private MaterialButton btnConnect;
+  private ButtonCompat btnConnect;
   private MaterialButton btnFtp, btnSftp, btnSmb;
 
   private final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -131,7 +132,7 @@ public class FtpConnectSheet extends BaseBlurBottomSheet {
     }
 
     btnConnect.setEnabled(false);
-    btnConnect.setText(R.string.ftp_connecting);
+    btnConnect.setLabel(getString(R.string.ftp_connecting));
 
     final String finalHost1 = finalHost;
     final int finalPort = port;
@@ -165,7 +166,7 @@ public class FtpConnectSheet extends BaseBlurBottomSheet {
                     () -> {
                       if (!isAdded()) return;
                       btnConnect.setEnabled(true);
-                      btnConnect.setText(R.string.ftp_btn_connect);
+                      btnConnect.setLabel(getString(R.string.ftp_btn_connect));
                       GhostToast.makeText(
                               requireContext(),
                               getString(R.string.ftp_error_connect, e.getMessage()),

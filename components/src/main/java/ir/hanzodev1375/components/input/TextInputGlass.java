@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.example.liquidglass.GlassMaterial;
 import com.google.android.material.textfield.TextInputLayout;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.GlassCompat;
+import ir.theme.M3Theme;
 
 /**
  * Glass variant of Material's {@link TextInputLayout}.
@@ -85,7 +86,7 @@ public class TextInputGlass extends TextInputLayout {
 
   private GlassCompat createGlass() {
     float density = getResources().getDisplayMetrics().density;
-    GlassCompat glassView = new GlassCompat(getContext());
+    GlassCompat glassView = new TextFieldGlass(getContext());
     glassView.setCornerRadius(CORNER_RADIUS_DP * density);
     glassView.setRefractionHeight(REFRACTION_HEIGHT_DP * density);
     glassView.setBevelWidth(BEVEL_WIDTH_DP * density);
@@ -96,6 +97,18 @@ public class TextInputGlass extends TextInputLayout {
     glassView.setEnableAdaptiveTint(true);
     glassView.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
     return glassView;
+  }
+
+  /** Keeps the field's glass on the theme's highest surface container, including after re-themes. */
+  private static final class TextFieldGlass extends GlassCompat {
+    TextFieldGlass(Context context) {
+      super(context);
+    }
+
+    @Override
+    protected Integer resolveHintColor() {
+      return M3Theme.surfaceContainerHighest();
+    }
   }
 
   /** The internal frame that hosts the EditText, so the glass spans exactly the input box. */

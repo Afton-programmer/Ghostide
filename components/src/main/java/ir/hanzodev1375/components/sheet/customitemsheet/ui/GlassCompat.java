@@ -9,6 +9,7 @@ import ir.theme.M3Theme;
 
 public class GlassCompat extends LiquidGlassView {
   private ComponentsPrefs setting;
+  private Integer customHintColor;
 
   public GlassCompat(Context c) {
     super(c);
@@ -39,12 +40,24 @@ public class GlassCompat extends LiquidGlassView {
       Glass.applyFallback(this);
       return;
     }
-    setGlassColorByCustomHint(M3Theme.surface());
+    Integer color = resolveHintColor();
+    if (color != null) {
+      setGlassTint(color, setting.getGlassTint());
+    }
+  }
+
+  /** Colour this glass should use; subclasses may override for a dynamic theme colour. */
+  protected Integer resolveHintColor() {
+    return customHintColor != null ? customHintColor : M3Theme.surface();
   }
 
   public void setGlassColorByCustomHint(Integer color) {
+    customHintColor = color;
     if (color == null || !Glass.isGlassEnabled(getContext())) {
       return;
+    }
+    if (setting == null) {
+      setting = new ComponentsPrefs(getContext());
     }
     setGlassTint(color, setting.getGlassTint());
   }

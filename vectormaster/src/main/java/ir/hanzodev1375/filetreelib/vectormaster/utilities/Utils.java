@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 
 import ir.hanzodev1375.filetreelib.vectormaster.DefaultValues;
+import ir.theme.M3Theme;
 
 import java.lang.reflect.Field;
 
@@ -18,12 +19,20 @@ public class Utils {
             || color == 0xFF000000
             || value.startsWith("@android:color/white")
             || value.startsWith("@android:color/black")) {
-            return useLightTheme
-                ? DefaultValues.PATH_FILL_COLOR_BLACK
-                : DefaultValues.PATH_FILL_COLOR_WHITE;
+            return themeFallbackColor(useLightTheme);
         }
 
         return color;
+    }
+
+    private static int themeFallbackColor(boolean useLightTheme) {
+        Integer secondary = M3Theme.secondary();
+        if (secondary != null) {
+            return secondary;
+        }
+        return useLightTheme
+            ? DefaultValues.PATH_FILL_COLOR_BLACK
+            : DefaultValues.PATH_FILL_COLOR_WHITE;
     }
 
     public static int getColorFromString(String value, boolean useLightTheme) {

@@ -764,6 +764,67 @@ public class PreferencesUtils {
         .apply();
   }
 
+  /**
+   * Returns the persisted sort type key for the given directory. A per-directory override is used
+   * when present; otherwise the global default is returned.
+   */
+  public String getFileSortType(String dirPath) {
+    String folderType = getFolderSortValue(dirPath, "type");
+    if (folderType != null) return folderType;
+    return getDefaultPreferences()
+        .getString(Constants.SharedPreferenceKeys.KEY_FILE_SORT_TYPE, "name");
+  }
+
+  /**
+   * Returns whether the given directory should be sorted in reverse order. A per-directory
+   * override is used when present; otherwise the global default is returned.
+   */
+  public boolean isFileSortReverse(String dirPath) {
+    String folderReverse = getFolderSortValue(dirPath, "reverse");
+    if (folderReverse != null) return Boolean.parseBoolean(folderReverse);
+    return getDefaultPreferences()
+        .getBoolean(Constants.SharedPreferenceKeys.KEY_FILE_SORT_REVERSE, false);
+  }
+
+  public boolean hasFolderSortOverride(String dirPath) {
+    return dirPath != null && getFolderSortValue(dirPath, "type") != null;
+  }
+
+  public void setFileSortGlobal(String type, boolean reverse) {
+    getDefaultPreferences()
+        .edit()
+        .putString(Constants.SharedPreferenceKeys.KEY_FILE_SORT_TYPE, type)
+        .putBoolean(Constants.SharedPreferenceKeys.KEY_FILE_SORT_REVERSE, reverse)
+        .apply();
+  }
+
+  public void setFileSortForFolder(String dirPath, String type, boolean reverse) {
+    if (dirPath == null) return;
+    getDefaultPreferences()
+        .edit()
+        .putString(folderSortKey(dirPath, "type"), type)
+        .putString(folderSortKey(dirPath, "reverse"), String.valueOf(reverse))
+        .apply();
+  }
+
+  public void clearFileSortForFolder(String dirPath) {
+    if (dirPath == null) return;
+    getDefaultPreferences()
+        .edit()
+        .remove(folderSortKey(dirPath, "type"))
+        .remove(folderSortKey(dirPath, "reverse"))
+        .apply();
+  }
+
+  private String getFolderSortValue(String dirPath, String value) {
+    if (dirPath == null) return null;
+    return getDefaultPreferences().getString(folderSortKey(dirPath, value), null);
+  }
+
+  private String folderSortKey(String dirPath, String value) {
+    return Constants.SharedPreferenceKeys.KEY_FILE_SORT_FOLDER_PREFIX + value + ":" + dirPath;
+  }
+
   public boolean enablePowerMode() {
     return getDefaultPreferences()
         .getBoolean(Constants.SharedPreferenceKeys.KEY_CODE_EDITOR_POWER_MODE, false);

@@ -253,6 +253,7 @@ Directory structure:
     │           │       │       │   ├── CopyProgressDialog.java
     │           │       │       │   ├── DeleteProgressDialog.java
     │           │       │       │   ├── DiagnosticsBottomSheet.java
+    │           │       │       │   ├── FileSortManager.kt
     │           │       │       │   ├── OpenFilesSheet.java
     │           │       │       │   ├── OutlineSheet.java
     │           │       │       │   ├── ShortcutSettingsDialog.java
@@ -260,7 +261,8 @@ Directory structure:
     │           │       │       ├── editorlangs/
     │           │       │       │   └── LanguageManager.java
     │           │       │       ├── enums/
-    │           │       │       │   └── FileState.java
+    │           │       │       │   ├── FileState.java
+    │           │       │       │   └── SortType.java
     │           │       │       ├── fileevents/
     │           │       │       │   ├── BaseFileEventCheck.java
     │           │       │       │   ├── FileCreatedEvent.java
@@ -713,6 +715,7 @@ Directory structure:
     │               │   ├── dialog_download_progress.xml
     │               │   ├── dialog_edit_shortcut.xml
     │               │   ├── dialog_element_editor.xml
+    │               │   ├── dialog_file_sort.xml
     │               │   ├── dialog_new_module.xml
     │               │   ├── dialog_new_project.xml
     │               │   ├── dialog_sheet_commands.xml

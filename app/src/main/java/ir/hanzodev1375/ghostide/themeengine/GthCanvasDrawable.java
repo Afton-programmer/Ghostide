@@ -1,108 +1,116 @@
 package ir.hanzodev1375.ghostide.themeengine;
 
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
-import android.graphics.RectF;
-import android.graphics.Shader;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
+import ir.hanzodev1375.filetreelib.vectormaster.utilities.legacyparser.PathParser;
 import ir.theme.M3Theme;
 
-/** Paints a small abstract canvas from a theme's primary and tertiary colors. */
+/** Paints the ghost palette glyph using a theme's primary, secondary and tertiary colors. */
 public final class GthCanvasDrawable extends Drawable {
+
+  private static final float VIEWPORT = 24f;
+  private static final float CONTENT_SCALE = 0.94f;
+  private static final int INTRINSIC_DP = 24;
 
   private static final int FALLBACK_PRIMARY = 0xFF6750A4;
   private static final int FALLBACK_SECONDARY = 0xFF625B71;
   private static final int FALLBACK_TERTIARY = 0xFF7D5260;
+  private static final int FALLBACK_BASE = 0xFFE6E0E9;
+
+  private static final Path BODY_PATH =
+      PathParser.createPathFromPathData(
+          "M12,22C6.49,22 2,17.51 2,12S6.49,2 12,2s10,4.04 10,9c0,3.31 -2.69,6 -6,6h-1.77c-0.28,0 -0.5,0.22 -0.5,0.5 0,0.12 0.05,0.23 0.13,0.33 0.41,0.47 0.64,1.06 0.64,1.67 0,1.38 -1.12,2.5 -2.5,2.5zM12,4c-4.41,0 -8,3.59 -8,8s3.59,8 8,8c0.28,0 0.5,-0.22 0.5,-0.5 0,-0.16 -0.08,-0.28 -0.14,-0.35 -0.41,-0.46 -0.63,-1.05 -0.63,-1.65 0,-1.38 1.12,-2.5 2.5,-2.5L16,15c2.21,0 4,-1.79 4,-4 0,-3.86 -3.59,-7 -8,-7z");
+
+  private static final Path[] DOT_PATHS = {
+    PathParser.createPathFromPathData("M6.5,11.5m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0"),
+    PathParser.createPathFromPathData("M9.5,7.5m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0"),
+    PathParser.createPathFromPathData("M14.5,7.5m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0"),
+    PathParser.createPathFromPathData("M17.5,11.5m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0")
+  };
 
   private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-  private final RectF bounds = new RectF();
-  private final Path clip = new Path();
+  private final Matrix matrix = new Matrix();
+  private final Path scaledBody = new Path();
+  private final Path[] scaledDots = new Path[DOT_PATHS.length];
+  private final int[] dotColors = new int[DOT_PATHS.length];
+  private final int intrinsicSize;
 
+  private final int base;
   private final int primary;
   private final int secondary;
   private final int tertiary;
 
-  private float cornerRadius;
   private int drawAlpha = 255;
-  private Shader shader;
 
   public GthCanvasDrawable(
       @Nullable Integer primary, @Nullable Integer secondary, @Nullable Integer tertiary) {
+    this(primary, secondary, tertiary, null);
+  }
+
+  public GthCanvasDrawable(
+      @Nullable Integer primary,
+      @Nullable Integer secondary,
+      @Nullable Integer tertiary,
+      @Nullable Integer base) {
     this.primary = resolve(primary, M3Theme.primary(), FALLBACK_PRIMARY);
     this.secondary = resolve(secondary, M3Theme.secondary(), FALLBACK_SECONDARY);
     this.tertiary = resolve(tertiary, M3Theme.tertiary(), FALLBACK_TERTIARY);
+    this.base = resolve(base, M3Theme.surfaceContainerHighest(), FALLBACK_BASE);
+    for (int i = 0; i < scaledDots.length; i++) {
+      scaledDots[i] = new Path();
+      dotColors[i] = dotColor(i);
+    }
+    float density = Resources.getSystem().getDisplayMetrics().density;
+    intrinsicSize = Math.round(INTRINSIC_DP * density);
   }
 
   @Override
-  protected void onBoundsChange(android.graphics.Rect newBounds) {
+  protected void onBoundsChange(Rect newBounds) {
     super.onBoundsChange(newBounds);
-    bounds.set(newBounds);
-    float min = Math.min(bounds.width(), bounds.height());
-    cornerRadius = min * 0.24f;
-    clip.reset();
-    clip.addRoundRect(bounds, cornerRadius, cornerRadius, Path.Direction.CW);
-    if (bounds.width() > 0f && bounds.height() > 0f) {
-      shader =
-          new LinearGradient(
-              bounds.left,
-              bounds.top,
-              bounds.right,
-              bounds.bottom,
-              new int[] {primary, ColorUtils.blendARGB(primary, tertiary, 0.55f), tertiary},
-              null,
-              Shader.TileMode.CLAMP);
+    if (newBounds.isEmpty()) return;
+    float scale =
+        Math.min(newBounds.width(), newBounds.height()) / VIEWPORT * CONTENT_SCALE;
+    float dx = newBounds.left + (newBounds.width() - VIEWPORT * scale) * 0.5f;
+    float dy = newBounds.top + (newBounds.height() - VIEWPORT * scale) * 0.5f;
+    matrix.setScale(scale, scale);
+    matrix.postTranslate(dx, dy);
+    BODY_PATH.transform(matrix, scaledBody);
+    for (int i = 0; i < DOT_PATHS.length; i++) {
+      DOT_PATHS[i].transform(matrix, scaledDots[i]);
     }
   }
 
   @Override
   public void draw(Canvas canvas) {
-    if (bounds.isEmpty()) return;
-    float width = bounds.width();
-    float height = bounds.height();
-    float min = Math.min(width, height);
-
-    int save = canvas.save();
-    canvas.clipPath(clip);
-
-    paint.setShader(shader);
-    paint.setAlpha(drawAlpha);
+    if (getBounds().isEmpty()) return;
     paint.setStyle(Paint.Style.FILL);
-    canvas.drawRect(bounds, paint);
-
     paint.setShader(null);
-    paint.setAlpha(255);
 
-    paint.setColor(withAlpha(tertiary, 96));
-    canvas.drawCircle(
-        bounds.left + width * 0.82f, bounds.top + height * 0.2f, min * 0.34f, paint);
+    paint.setColor(withAlpha(base, 255));
+    canvas.drawPath(scaledBody, paint);
 
-    paint.setColor(withAlpha(primary, 72));
-    canvas.drawCircle(
-        bounds.left + width * 0.14f, bounds.bottom - height * 0.12f, min * 0.3f, paint);
+    for (int i = 0; i < scaledDots.length; i++) {
+      paint.setColor(withAlpha(dotColors[i], 255));
+      canvas.drawPath(scaledDots[i], paint);
+    }
+  }
 
-    paint.setColor(withAlpha(secondary, 150));
-    canvas.drawCircle(
-        bounds.left + width * 0.72f, bounds.bottom - height * 0.28f, min * 0.08f, paint);
+  @Override
+  public int getIntrinsicWidth() {
+    return intrinsicSize;
+  }
 
-    paint.setStyle(Paint.Style.STROKE);
-    paint.setStrokeWidth(min * 0.09f);
-    paint.setStrokeCap(Paint.Cap.ROUND);
-    paint.setColor(withAlpha(tertiary, 120));
-    canvas.drawLine(
-        bounds.left + width * 0.08f,
-        bounds.bottom - height * 0.24f,
-        bounds.right - width * 0.1f,
-        bounds.top + height * 0.3f,
-        paint);
-    paint.setStyle(Paint.Style.FILL);
-
-    canvas.restoreToCount(save);
+  @Override
+  public int getIntrinsicHeight() {
+    return intrinsicSize;
   }
 
   @Override
@@ -131,5 +139,12 @@ public final class GthCanvasDrawable extends Drawable {
     if (value != null) return value;
     if (themeValue != null) return themeValue;
     return fallback;
+  }
+
+  /** Cycles the theme's three accents across the four dots of the palette glyph. */
+  private int dotColor(int index) {
+    if (index == 1) return secondary;
+    if (index == 2) return tertiary;
+    return primary;
   }
 }

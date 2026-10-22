@@ -40,6 +40,7 @@ import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.fileevents.FileEventCheck;
 import ir.hanzodev1375.ghostide.models.FileManagerModel;
 import ir.hanzodev1375.ghostide.plugin.gpl.GplManifestReader;
+import ir.hanzodev1375.ghostide.themeengine.GthCanvasDrawable;
 import ir.hanzodev1375.ghostide.utils.Icon;
 import ir.hanzodev1375.ghostide.utils.ShapeUtil;
 import ir.theme.M3Theme;
@@ -564,7 +565,10 @@ public class FileManagerAdapter extends RecyclerView.Adapter<FileManagerAdapter.
     }
 
     void bindItem(FileManagerModel item) {
-      if (isGpl(item.getPath())) {
+      Glide.with(ivIcon).clear(ivIcon);
+      if (isThemeFile(item.getPath())) {
+        Glide.with(ivIcon).load(new GthCanvasDrawable(null, null, null)).into(ivIcon);
+      } else if (isGpl(item.getPath())) {
         File gplFile = new File(item.getPath());
         byte[] iconBytes =
             GplManifestReader.readIconBytes(gplFile, GplManifestReader.read(gplFile));
@@ -672,5 +676,9 @@ public class FileManagerAdapter extends RecyclerView.Adapter<FileManagerAdapter.
 
   private static boolean isGpl(String path) {
     return path != null && path.toLowerCase(Locale.ROOT).endsWith(".gpl");
+  }
+
+  private static boolean isThemeFile(String path) {
+    return path != null && path.toLowerCase(Locale.ROOT).endsWith(".gth");
   }
 }
