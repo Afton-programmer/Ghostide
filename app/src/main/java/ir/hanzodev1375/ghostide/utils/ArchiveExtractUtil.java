@@ -12,7 +12,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.UnsupportedRarV5Exception;
 import com.github.junrar.rarfile.FileHeader;
-import com.github.junrar.volume.FileVolumeManager;
 import com.google.android.material.textfield.TextInputEditText;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
 import ir.hanzodev1375.components.views.GhostToast;
@@ -308,7 +307,7 @@ public final class ArchiveExtractUtil {
     ProgressMonitor monitor = zipFile.getProgressMonitor();
     while (monitor.getState() == ProgressMonitor.State.BUSY) {
       if (isCancelled.get()) {
-        monitor.cancelWork();
+        monitor.setCancelAllTasks(true);
         break;
       }
       int percent = monitor.getPercentDone();
@@ -334,11 +333,10 @@ public final class ArchiveExtractUtil {
       Context context, File archiveFile, File destDir, AtomicBoolean isCancelled)
       throws Exception {
     File firstVolume = resolveFirstVolume(archiveFile);
-    FileVolumeManager volumeManager = new FileVolumeManager(firstVolume);
-    String password = null;
+        String password = null;
     Archive archive = null;
     try {
-      archive = new Archive(volumeManager);
+      archive = new Archive(firstVolume);
       if (archive.isEncrypted()) {
         archive.close();
         archive = null;
@@ -347,7 +345,7 @@ public final class ArchiveExtractUtil {
           isCancelled.set(true);
           return;
         }
-        archive = new Archive(new FileVolumeManager(firstVolume), password);
+        archive = new Archive(firstVolume, password);
       }
 
       List<FileHeader> headers = archive.getFileHeaders();
@@ -368,7 +366,7 @@ public final class ArchiveExtractUtil {
             isCancelled.set(true);
             return;
           }
-          archive = new Archive(new FileVolumeManager(firstVolume), password);
+          archive = new Archive(firstVolume, password);
         }
 
         count++;
