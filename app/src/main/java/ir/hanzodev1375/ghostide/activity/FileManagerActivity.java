@@ -1357,9 +1357,7 @@ public class FileManagerActivity extends BaseCompat
           items.add(getString(R.string.bookmark_add));
           items.add(getString(R.string.shortcut_menu_item));
           items.add(getString(R.string.copyfullpath));
-          if (isDir) {
-            items.add(getString(R.string.create_zip_title));
-          }
+          items.add(getString(R.string.create_zip_title));
           if (isArch) {
             items.add(getString(R.string.zip_extract_here));
             items.add(getString(R.string.zip_extract_to));
