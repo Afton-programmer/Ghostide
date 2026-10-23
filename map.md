@@ -410,6 +410,7 @@ Directory structure:
     │           │       │       │   │   ├── AndroidCategory.java
     │           │       │       │   │   ├── AndroidProjectConfig.java
     │           │       │       │   │   ├── AndroidProjectGenerator.java
+    │           │       │       │   │   ├── AndroidStudioProjectFragment.java
     │           │       │       │   │   └── AndroidTemplate.java
     │           │       │       │   ├── AndroidStudioProjectDialog.java
     │           │       │       │   ├── DslType.java
@@ -750,6 +751,7 @@ Directory structure:
     │               │   ├── editor_status_bar.xml
     │               │   ├── errormanager.xml
     │               │   ├── floating_panel_window.xml
+    │               │   ├── fragment_android_studio_project.xml
     │               │   ├── fragment_editor_pane.xml
     │               │   ├── fragment_features.xml
     │               │   ├── fragment_image_viewer.xml

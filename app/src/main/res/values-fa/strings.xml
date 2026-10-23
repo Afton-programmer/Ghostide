@@ -262,6 +262,14 @@
     <string name="android_compose_kotlin_only">جت‌پک کامپوز نیازمند زبان کاتلین است</string>
     <string name="android_project_created_toast">پروژه اندروید با موفقیت ایجاد شد</string>
     <string name="android_building_apk">در حال بیلد APK اندروید...</string>
+    <string name="android_create_and_sync">ساخت و همگام‌سازی پروژه</string>
+    <string name="android_sync_title">همگام‌سازی پروژه (Gradle Sync)</string>
+    <string name="android_sync_subtitle">در حال پیکربندی وابستگی‌ها و آماده‌سازی فضای کاری...</string>
+    <string name="android_sync_step_1">در حال ایجاد ساختار پوشه‌ها و دایرکتوری‌ها...</string>
+    <string name="android_sync_step_2">در حال نصب Gradle 8.9 Wrapper و اسکریپت‌های بیلد...</string>
+    <string name="android_sync_step_3">در حال پیکربندی کاتالوگ نسخه‌ها (libs.versions.toml)...</string>
+    <string name="android_sync_step_4">در حال تولید AndroidManifest، تم‌های Material 3 و قالب...</string>
+    <string name="android_sync_step_5">پایان همگام‌سازی گریدل و باز کردن ادیتور...</string>
     <string name="module_new_title">ماژول Android جدید</string>
     <string name="module_create">ایجاد</string>
     <string name="module_creating">در حال ایجاد ماژول…</string>

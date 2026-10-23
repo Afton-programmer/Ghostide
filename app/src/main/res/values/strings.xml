@@ -264,6 +264,14 @@
     <string name="android_compose_kotlin_only">Jetpack Compose requires Kotlin language</string>
     <string name="android_project_created_toast">Android project created successfully</string>
     <string name="android_building_apk">Building Android APK...</string>
+    <string name="android_create_and_sync">Create &amp; Sync Project</string>
+    <string name="android_sync_title">Gradle Project Sync</string>
+    <string name="android_sync_subtitle">Configuring dependencies and setting up workspace...</string>
+    <string name="android_sync_step_1">Creating project structure and directories...</string>
+    <string name="android_sync_step_2">Setting up Gradle 8.9 wrapper and build scripts...</string>
+    <string name="android_sync_step_3">Configuring Version Catalog (libs.versions.toml)...</string>
+    <string name="android_sync_step_4">Generating AndroidManifest, Material 3 themes &amp; templates...</string>
+    <string name="android_sync_step_5">Finalizing Gradle sync and opening workspace...</string>
     <string name="module_new_title">New Android Module</string>
     <string name="module_create">Create</string>
     <string name="module_creating">Creating module…</string>

@@ -448,22 +448,12 @@ public class FileManagerActivity extends BaseCompat
                     }
                     case 2 -> {
                       String currentDir = viewModel.getCurrentPath().getValue();
+                      Intent intent = new Intent(FileManagerActivity.this, EditorActivity.class);
+                      intent.putExtra("open_tab_type", "new_android_project");
                       if (currentDir != null) {
-                        new AndroidStudioProjectDialog(
-                                FileManagerActivity.this,
-                                currentDir,
-                                projectPath ->
-                                    runOnUiThread(
-                                        () -> {
-                                          viewModel.loadFiles(currentDir);
-                                          GhostToast.makeText(
-                                                  FileManagerActivity.this,
-                                                  getString(R.string.android_project_created_toast),
-                                                  GhostToast.LENGTH_SHORT)
-                                              .show();
-                                        }))
-                            .show();
+                        intent.putExtra("save_path", currentDir);
                       }
+                      startActivity(intent);
                       bind.fab.dismiss();
                     }
                     case 3 -> {
