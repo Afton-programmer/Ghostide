@@ -100,6 +100,13 @@
       android:id="@+id/chipAndroidModule"
       android:text="Android Module" />
 
+    <ir.hanzodev1375.components.glass.ChipCompat
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:checkable="true"
+      android:id="@+id/chipAndroid"
+      android:text="@string/android_studio_project" />
+
   </ir.hanzodev1375.components.glass.ChipGroupCompat>
 
   <com.google.android.material.textfield.TextInputLayout

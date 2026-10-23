@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
 import ir.hanzodev1375.components.glass.ChipGroupCompat;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.DialogCompat;
+import ir.hanzodev1375.ghostide.project.android.AndroidStudioProjectSheet;
 import ir.theme.M3Theme;
 
 public class NewProjectDialog {
@@ -108,6 +110,16 @@ public class NewProjectDialog {
     dialog.show();
     chipGroup.setOnCheckedStateChangeListener(
         (group, checkedIds) -> {
+          if (!checkedIds.isEmpty() && checkedIds.get(0) == R.id.chipAndroid) {
+            dialog.dismiss();
+            if (context instanceof FragmentActivity) {
+              AndroidStudioProjectSheet.newInstance(savePath)
+                  .show(
+                      ((FragmentActivity) context).getSupportFragmentManager(),
+                      AndroidStudioProjectSheet.TAG);
+            }
+            return;
+          }
           boolean isJava = !checkedIds.isEmpty() && checkedIds.get(0) == R.id.chipJava;
           tilPkg.setVisibility(isJava ? View.VISIBLE : View.GONE);
           ProjectCreator.ProjectType type = getSelectedType(chipGroup);

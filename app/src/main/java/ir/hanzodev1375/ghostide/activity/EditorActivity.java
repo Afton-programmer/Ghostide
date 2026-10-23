@@ -2,12 +2,14 @@ package ir.hanzodev1375.ghostide.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.text.InputType;
 import android.widget.FrameLayout;
 import ir.hanzodev1375.components.sheet.customitemsheet.ui.LiquidGlassDialogBuilderJava;
 import ir.hanzodev1375.ghostide.utils.EditorFileStats;
 import ir.hanzodev1375.ghostide.utils.EditorGitStatus;
+import ir.hanzodev1375.ghostide.materialfileicon.core.langcolor.LanguageColors;
 import ir.hanzodev1375.ghostide.utils.UriFileImporter;
 import ir.hanzodev1375.ghostide.utils.EditorGlassMenu;
 import com.google.android.material.textfield.TextInputEditText;
@@ -52,6 +54,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import ir.hanzodev1375.ghostide.R;
 import ir.hanzodev1375.ghostide.adapters.EditorPagerAdapter;
 import ir.hanzodev1375.ghostide.adapters.ToolbarListAdapter;
@@ -67,7 +70,6 @@ import ir.hanzodev1375.ghostide.dialogs.SnippetManagerSheet;
 import ir.hanzodev1375.ghostide.customui.GhostIdeEditorSearch;
 import ir.hanzodev1375.ghostide.databinding.ActivityEditorBinding;
 import ir.hanzodev1375.ghostide.fragments.EditorFragment;
-import ir.hanzodev1375.ghostide.project.android.AndroidStudioProjectFragment;
 import ir.hanzodev1375.ghostide.models.TabModel;
 import ir.hanzodev1375.ghostide.models.ToolbarModel;
 import ir.hanzodev1375.ghostide.adapters.EditorHostAdapter;
@@ -114,37 +116,6 @@ public class EditorActivity extends BaseCompat
   private static final String KEY_SPLIT_COLS = "splitCols";
   private TabLayoutMediator tabMediator;
   private ToolbarListAdapter listAdapter;
-  private String wizardSavePath;
-
-  public String getWizardSavePath() {
-    return wizardSavePath;
-  }
-
-  public void setWizardSavePath(String wizardSavePath) {
-    this.wizardSavePath = wizardSavePath;
-  }
-
-  public void openAndroidProjectWizardTab(String savePath) {
-    this.wizardSavePath = savePath;
-    if (adapter != null) {
-      adapter.setWizardSavePath(savePath);
-    }
-    String virtualPath = AndroidStudioProjectFragment.VIRTUAL_PATH;
-    for (int i = 0; i < tabsList.size(); i++) {
-      if (virtualPath.equals(tabsList.get(i).getFilePath())) {
-        switchToTab(i);
-        return;
-      }
-    }
-    String tabTitle = getString(R.string.android_studio_project);
-    TabModel model = new TabModel(virtualPath, tabTitle, false);
-    tabsList.add(model);
-    adapter.setTabs(new ArrayList<>(tabsList));
-    if (binding.splitPaneRoot != null) binding.splitPaneRoot.notifyTabsChanged(tabsList);
-    int newPos = tabsList.size() - 1;
-    switchToTab(newPos);
-    saveCurrentPosition(newPos);
-  }
   private boolean isShowSys = false;
   private List<ToolbarModel> toolbarModel = new ArrayList<>();
   private EditorGitStatus gitStatus;
@@ -418,7 +389,7 @@ public class EditorActivity extends BaseCompat
     return -1;
   }
 
-  public void closeTabByPath(String filePath) {
+  private void closeTabByPath(String filePath) {
     int i = indexOfTab(filePath);
     if (i >= 0) closeTab(i);
   }
@@ -557,11 +528,6 @@ public class EditorActivity extends BaseCompat
 
   private void handleIncomingIntent(Intent intent) {
     if (intent == null) return;
-    String openTabType = intent.getStringExtra("open_tab_type");
-    if ("new_android_project".equals(openTabType)) {
-      openAndroidProjectWizardTab(intent.getStringExtra("save_path"));
-      return;
-    }
     String directPath = intent.getStringExtra("open_file_direct");
     if (directPath != null && !directPath.isEmpty()) {
       openFileDirect(directPath);
@@ -694,10 +660,10 @@ public class EditorActivity extends BaseCompat
                 switch (tag) {
                   case "git" -> showGitBottomSheet();
                   case "undo" -> {
-                    if (getEditor() != null && getEditor().canUndo()) getEditor().undo();
+                    if (getEditor().canUndo()) getEditor().undo();
                   }
                   case "redo" -> {
-                    if (getEditor() != null && getEditor().canRedo()) getEditor().redo();
+                    if (getEditor().canRedo()) getEditor().redo();
                   }
                   case "more" -> setupMenuCalltoAction(view);
                   case "plugins" -> pluginPopupController.show(view);
@@ -806,9 +772,6 @@ public class EditorActivity extends BaseCompat
     items.add(
         new EditorGlassMenu.GlassMenuItem(
             getString(R.string.webcolor), R.drawable.outline_color_lens));
-    items.add(
-        new EditorGlassMenu.GlassMenuItem(
-            getString(R.string.android_studio_project), R.drawable.ic_android));
     EditorGlassMenu.showGlassMenu(
         this,
         v,
@@ -826,7 +789,6 @@ public class EditorActivity extends BaseCompat
               var colors = new ColorPickerBottomSheet();
               colors.show(getSupportFragmentManager(), "");
             }
-            case 8 -> openAndroidProjectWizardTab(null);
           }
         });
   }
@@ -1000,14 +962,7 @@ public class EditorActivity extends BaseCompat
       try {
         Type type = new TypeToken<List<TabModel>>() {}.getType();
         List<TabModel> saved = gson.fromJson(json, type);
-        if (saved != null) {
-          tabsList = new ArrayList<>();
-          for (TabModel tab : saved) {
-            if (tab != null && tab.getFilePath() != null && !tab.getFilePath().startsWith("ghostide://")) {
-              tabsList.add(tab);
-            }
-          }
-        }
+        if (saved != null) tabsList = saved;
       } catch (Exception e) {
         tabsList = new ArrayList<>();
       }
@@ -1052,21 +1007,15 @@ public class EditorActivity extends BaseCompat
   }
 
   private void saveTabs() {
-    List<TabModel> persistableTabs = new ArrayList<>();
-    for (TabModel tab : tabsList) {
-      if (tab != null && tab.getFilePath() != null && !tab.getFilePath().startsWith("ghostide://")) {
-        persistableTabs.add(tab);
-      }
-    }
-    String json = gson.toJson(persistableTabs);
+    String json = gson.toJson(tabsList);
     prefs.edit().putString(KEY_TABS, json).apply();
   }
 
-  public void openFile(String path, String name) {
+  private void openFile(String path, String name) {
     openFile(path, name, false);
   }
 
-  public void openFile(String path, String name, boolean readOnly) {
+  private void openFile(String path, String name, boolean readOnly) {
     for (int i = 0; i < tabsList.size(); i++) {
       if (tabsList.get(i).getFilePath().equals(path)) {
         switchToTab(i);
@@ -1092,17 +1041,40 @@ public class EditorActivity extends BaseCompat
   private void updateLanguageStatus(int position) {
     if (tabsList == null || position < 0 || position >= tabsList.size()) return;
     String filePath = tabsList.get(position).getFilePath();
-    if (filePath != null && filePath.startsWith("ghostide://")) {
-      binding.editorStatusBar.setLanguageText("Android");
-      binding.editorStatusBar.setLinesText("Wizard");
-      binding.editorStatusBar.setDirty(false);
-      return;
-    }
     String lang = EditorFileStats.getLanguageFromPath(filePath);
     binding.editorStatusBar.setLanguageText(lang.isEmpty() ? "Text" : lang);
     binding.editorStatusBar.setLinesText(EditorFileStats.formatFileStats(this, filePath));
     binding.editorStatusBar.setDirty(tabsList.get(position).getHasStar());
     refreshLspStatusIndicator();
+    updateLanguageGradient(getCurrentFilePath());
+  }
+
+  private void updateLanguageGradient(String filePath) {
+    if (binding == null) return;
+    if (filePath == null) {
+      binding.languageGradient.animateToColor(Color.TRANSPARENT, 220);
+      return;
+    }
+    int slash = filePath.lastIndexOf('/');
+    int dot = filePath.lastIndexOf('.');
+    String extension = dot > slash ? filePath.substring(dot + 1) : "";
+    String hex = LanguageColors.getColorForExtension(extension);
+    if (hex == null) {
+      hex = LanguageColors.getColorForExtension(filePath.substring(slash + 1).toLowerCase(Locale.ROOT));
+    }
+    Integer primary = M3Theme.primary();
+    int fallback = primary != null ? primary : Color.TRANSPARENT;
+    if (hex == null) {
+      binding.languageGradient.animateToColor(fallback, 320);
+      return;
+    }
+    int color;
+    try {
+      color = Color.parseColor(hex);
+    } catch (IllegalArgumentException e) {
+      color = fallback;
+    }
+    binding.languageGradient.animateToColor(color, 420);
   }
 
   /**

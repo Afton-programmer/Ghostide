@@ -410,9 +410,8 @@ Directory structure:
     │           │       │       │   │   ├── AndroidCategory.java
     │           │       │       │   │   ├── AndroidProjectConfig.java
     │           │       │       │   │   ├── AndroidProjectGenerator.java
-    │           │       │       │   │   ├── AndroidStudioProjectFragment.java
+    │           │       │       │   │   ├── AndroidStudioProjectSheet.java
     │           │       │       │   │   └── AndroidTemplate.java
-    │           │       │       │   ├── AndroidStudioProjectDialog.java
     │           │       │       │   ├── DslType.java
     │           │       │       │   ├── LibraryManager.java
     │           │       │       │   ├── ModuleCreator.java
@@ -716,6 +715,7 @@ Directory structure:
     │               │   ├── activity_theme_editor.xml
     │               │   ├── activity_web.xml
     │               │   ├── bottom_sheet_batch_rename.xml
+    │               │   ├── bottom_sheet_android_project.xml
     │               │   ├── bottom_sheet_bookmarks.xml
     │               │   ├── bottom_sheet_file_properties.xml
     │               │   ├── bottom_sheet_history.xml
@@ -737,7 +737,6 @@ Directory structure:
     │               │   ├── dialog_element_editor.xml
     │               │   ├── dialog_file_sort.xml
     │               │   ├── dialog_new_module.xml
-    │               │   ├── dialog_android_studio_project.xml
     │               │   ├── dialog_new_project.xml
     │               │   ├── dialog_sheet_commands.xml
     │               │   ├── dialog_sheet_open_files.xml
@@ -1051,6 +1050,7 @@ Directory structure:
     │           │   │               ├── ButtonProgress.java
     │           │   │               ├── EmptyView.java
     │           │   │               ├── GhostToast.java
+    │           │   │               ├── GradientFrameLayout.java
     │           │   │               ├── ImageViewAnimator.java
     │           │   │               ├── PluginInstallButton.java
     │           │   │               ├── RoundedProgressFill.java

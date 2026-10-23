@@ -76,8 +76,8 @@ import ir.hanzodev1375.ghostide.postman.PostManActivity;
 import ir.hanzodev1375.ghostide.refactor.rename.ui.RenamePackageBottomSheet;
 import ir.hanzodev1375.ghostide.bookmark.BookmarkBottomSheet;
 import ir.hanzodev1375.ghostide.bookmark.BookmarkViewModel;
-import ir.hanzodev1375.ghostide.project.AndroidStudioProjectDialog;
 import ir.hanzodev1375.ghostide.project.NewProjectDialog;
+import ir.hanzodev1375.ghostide.project.android.AndroidStudioProjectSheet;
 import ir.hanzodev1375.ghostide.history.HistoryBottomSheet;
 import ir.hanzodev1375.ghostide.history.HistoryViewModel;
 
@@ -235,6 +235,14 @@ public class FileManagerActivity extends BaseCompat
     pluginHostHandler.postDelayed(pluginHostRunnable, 100);
 
     viewModel = new ViewModelProvider(this).get(FileViewModel.class);
+    getSupportFragmentManager()
+        .setFragmentResultListener(
+            AndroidStudioProjectSheet.RESULT_KEY,
+            this,
+            (requestKey, result) -> {
+              String currentDir = viewModel.getCurrentPath().getValue();
+              if (currentDir != null) viewModel.loadFiles(currentDir);
+            });
     fileManagerHostRegistration =
         GlobalRegistry.services()
             .register(IdeHostServices.FILE_MANAGER_HOST, new FileManagerHostAdapter(this));
@@ -421,13 +429,11 @@ public class FileManagerActivity extends BaseCompat
     List<Integer> listIcon = new ArrayList<>();
     listIcon.add(R.drawable.folder);
     listIcon.add(R.drawable.ic_fileicon);
-    listIcon.add(R.drawable.ic_android);
     listIcon.add(R.drawable.add);
 
     List<Integer> listTooltips = new ArrayList<>();
     listTooltips.add(R.string.dialog_create_folder_title);
     listTooltips.add(R.string.dialog_create_file_title);
-    listTooltips.add(R.string.android_studio_project);
     listTooltips.add(R.string.project_new_title);
 
     bind.fab
@@ -447,16 +453,6 @@ public class FileManagerActivity extends BaseCompat
                       bind.fab.dismiss();
                     }
                     case 2 -> {
-                      String currentDir = viewModel.getCurrentPath().getValue();
-                      Intent intent = new Intent(FileManagerActivity.this, EditorActivity.class);
-                      intent.putExtra("open_tab_type", "new_android_project");
-                      if (currentDir != null) {
-                        intent.putExtra("save_path", currentDir);
-                      }
-                      startActivity(intent);
-                      bind.fab.dismiss();
-                    }
-                    case 3 -> {
                       String currentDir = viewModel.getCurrentPath().getValue();
                       if (currentDir != null) {
                         new NewProjectDialog(
