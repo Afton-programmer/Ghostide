@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import ir.hanzodev1375.ghostide.fragments.EditorFragment;
 import ir.hanzodev1375.ghostide.models.TabModel;
+import ir.hanzodev1375.ghostide.project.android.AndroidStudioProjectFragment;
 
 public class EditorPagerAdapter extends FragmentStateAdapter {
   private final List<TabModel> tabs = new ArrayList<>();
+  private String wizardSavePath;
 
   public EditorPagerAdapter(@NonNull FragmentActivity fa, List<TabModel> initialTabs) {
     super(fa);
@@ -25,10 +27,17 @@ public class EditorPagerAdapter extends FragmentStateAdapter {
     notifyDataSetChanged();
   }
 
+  public void setWizardSavePath(String wizardSavePath) {
+    this.wizardSavePath = wizardSavePath;
+  }
+
   @NonNull
   @Override
   public Fragment createFragment(int position) {
     TabModel tab = tabs.get(position);
+    if (tab != null && AndroidStudioProjectFragment.VIRTUAL_PATH.equals(tab.getFilePath())) {
+      return AndroidStudioProjectFragment.newInstance(wizardSavePath);
+    }
     return EditorFragment.newInstance(tab.getFilePath(), tab.isReadOnly());
   }
 
@@ -56,5 +65,5 @@ public class EditorPagerAdapter extends FragmentStateAdapter {
     long itemId = getItemId(position);  
     String tag = "f" + itemId;
     return activity.getSupportFragmentManager().findFragmentByTag(tag);
-}
+  }
 }

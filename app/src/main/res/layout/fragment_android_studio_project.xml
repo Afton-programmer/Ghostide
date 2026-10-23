@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
+
+    <ScrollView
+        android:id="@+id/scrollWizardContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="40dp">
+
+            <!-- Wizard Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_android"
+                    app:tint="?attr/colorPrimary"
+                    android:contentDescription="@string/android_studio_project" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="14dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/android_project_new_title"
+                        android:textAppearance="?textAppearanceTitleLarge"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/android_sync_subtitle"
+                        android:textAppearance="?textAppearanceBodySmall"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Category Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/project_type"
+                android:textAppearance="?textAppearanceLabelLarge" />
+
+            <ir.hanzodev1375.components.glass.ChipGroupCompat
+                android:id="@+id/chipGroupCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:glassChipSpacingHorizontal="8dp"
+                app:glassChipSpacingVertical="8dp"
+                app:glassSelectionRequired="true"
+                app:glassSingleSelection="true">
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipCatPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/android_category_phone" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipCatWear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/android_category_wear" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipCatTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/android_category_tv" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipCatAuto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/android_category_auto" />
+            </ir.hanzodev1375.components.glass.ChipGroupCompat>
+
+            <!-- Template Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/android_section_templates"
+                android:textAppearance="?textAppearanceLabelLarge" />
+
+            <ir.hanzodev1375.components.glass.ChipGroupCompat
+                android:id="@+id/chipGroupTemplates"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                app:glassChipSpacingHorizontal="6dp"
+                app:glassChipSpacingVertical="6dp"
+                app:glassSelectionRequired="true"
+                app:glassSingleSelection="true" />
+
+            <!-- Template Info Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+
+                <TextView
+                    android:id="@+id/tvTemplateDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp"
+                    android:textAppearance="?textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSecondaryContainer" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Configuration Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/android_section_config"
+                android:textAppearance="?textAppearanceLabelLarge" />
+
+            <!-- Project Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilProjectName"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="@string/android_name_hint"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etProjectName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="My Application" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Package Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilPackageName"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="@string/android_package_hint"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPackageName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="com.example.myapplication" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Language -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="@string/android_language_label"
+                android:textAppearance="?textAppearanceLabelMedium" />
+
+            <ir.hanzodev1375.components.glass.ChipGroupCompat
+                android:id="@+id/chipGroupLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:glassChipSpacingHorizontal="8dp"
+                app:glassSelectionRequired="true"
+                app:glassSingleSelection="true">
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipLangKotlin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/android_language_kotlin" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipLangJava"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/android_language_java" />
+            </ir.hanzodev1375.components.glass.ChipGroupCompat>
+
+            <!-- Build Configuration DSL -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="@string/android_dsl_label"
+                android:textAppearance="?textAppearanceLabelMedium" />
+
+            <ir.hanzodev1375.components.glass.ChipGroupCompat
+                android:id="@+id/chipGroupDsl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:glassChipSpacingHorizontal="8dp"
+                app:glassSelectionRequired="true"
+                app:glassSingleSelection="true">
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipDslKotlin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="@string/android_dsl_kotlin" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipDslGroovy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="@string/android_dsl_groovy" />
+            </ir.hanzodev1375.components.glass.ChipGroupCompat>
+
+            <!-- Minimum SDK -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="@string/android_min_sdk_label"
+                android:textAppearance="?textAppearanceLabelMedium" />
+
+            <ir.hanzodev1375.components.glass.ChipGroupCompat
+                android:id="@+id/chipGroupMinSdk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:glassChipSpacingHorizontal="6dp"
+                app:glassChipSpacingVertical="6dp"
+                app:glassSelectionRequired="true"
+                app:glassSingleSelection="true">
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk21"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="API 21 (Android 5.0)" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:checked="true"
+                    android:text="API 24 (Android 7.0)" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk26"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="API 26 (Android 8.0)" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk28"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="API 28 (Android 9.0)" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="API 30 (Android 11)" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="API 31 (Android 12)" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk34"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="API 34 (Android 14)" />
+
+                <ir.hanzodev1375.components.glass.ChipCompat
+                    android:id="@+id/chipSdk35"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="API 35 (Android 15)" />
+            </ir.hanzodev1375.components.glass.ChipGroupCompat>
+
+            <!-- Save Location Hint -->
+            <TextView
+                android:id="@+id/tvSaveLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:textAppearance="?textAppearanceBodySmall"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancelWizard"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:text="@string/cancel" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCreateProject"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_android"
+                    android:text="@string/android_create_and_sync" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Gradle Sync & Initialization Progress Overlay -->
+    <LinearLayout
+        android:id="@+id/layoutSyncProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_android"
+            app:tint="?attr/colorPrimary" />
+
+        <TextView
+            android:id="@+id/tvSyncTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="@string/android_sync_title"
+            android:textAppearance="?textAppearanceTitleLarge"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvSyncDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="@string/android_sync_step_1"
+            android:textAppearance="?textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressSync"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:max="100"
+            android:progress="20"
+            app:indicatorColor="?attr/colorPrimary"
+            app:trackColor="?attr/colorSurfaceVariant"
+            app:trackCornerRadius="4dp"
+            app:trackThickness="8dp" />
+
+        <TextView
+            android:id="@+id/tvSyncPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20%"
+            android:textAppearance="?textAppearanceLabelMedium"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</FrameLayout>

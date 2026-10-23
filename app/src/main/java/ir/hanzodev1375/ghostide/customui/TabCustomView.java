@@ -58,15 +58,20 @@ public class TabCustomView extends LinearLayout
     updateTitleText();
     binding.tabPinIcon.setVisibility(tabModel.isPinned() ? View.VISIBLE : View.GONE);
 
-    FileIconHelper icon = new FileIconHelper(tabModel.getFilePath());
-    icon.setDynamicFolderEnabled(false);
-    icon.setEnvironmentEnabled(false);
-
-    if (showTabIcon) {
+    if (tabModel.getFilePath() != null && tabModel.getFilePath().startsWith("ghostide://")) {
       binding.tabIcon.setVisibility(View.VISIBLE);
-      icon.bindIcon(binding.tabIcon);
+      binding.tabIcon.setImageResource(R.drawable.ic_android);
     } else {
-      binding.tabIcon.setVisibility(View.GONE);
+      FileIconHelper icon = new FileIconHelper(tabModel.getFilePath());
+      icon.setDynamicFolderEnabled(false);
+      icon.setEnvironmentEnabled(false);
+
+      if (showTabIcon) {
+        binding.tabIcon.setVisibility(View.VISIBLE);
+        icon.bindIcon(binding.tabIcon);
+      } else {
+        binding.tabIcon.setVisibility(View.GONE);
+      }
     }
 
     updateGitTextColor();

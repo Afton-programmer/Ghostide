@@ -15,6 +15,7 @@ import java.util.List;
 public class ToolbarAdapter extends RecyclerView.Adapter<ToolbarAdapter.Holder> {
 
   private List<Integer> icons;
+  private List<Integer> tooltips;
   private OnClick click;
 
   public interface OnClick {
@@ -22,7 +23,12 @@ public class ToolbarAdapter extends RecyclerView.Adapter<ToolbarAdapter.Holder> 
   }
 
   public ToolbarAdapter(List<Integer> icons, OnClick click) {
+    this(icons, null, click);
+  }
+
+  public ToolbarAdapter(List<Integer> icons, List<Integer> tooltips, OnClick click) {
     this.icons = icons;
+    this.tooltips = tooltips;
     this.click = click;
   }
 
@@ -50,12 +56,13 @@ public class ToolbarAdapter extends RecyclerView.Adapter<ToolbarAdapter.Holder> 
         c -> {
           click.click(c, position);
         });
-        holder.image.setOnLongClickListener(
+    holder.image.setOnLongClickListener(
         v -> {
-          GhostToast.makeText("Long").show();
+          if (tooltips != null && position < tooltips.size() && tooltips.get(position) != null) {
+            GhostToast.makeText(holder.image.getContext(), holder.image.getContext().getString(tooltips.get(position)), GhostToast.LENGTH_SHORT).show();
+          }
           return true;
         });
-   // holder.image.setVisibility(icons.get(position).isShowVisblityItem() ? View.VISIBLE : View.GONE);
   }
 
   @Override

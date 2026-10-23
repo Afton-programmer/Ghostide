@@ -76,6 +76,7 @@ import ir.hanzodev1375.ghostide.postman.PostManActivity;
 import ir.hanzodev1375.ghostide.refactor.rename.ui.RenamePackageBottomSheet;
 import ir.hanzodev1375.ghostide.bookmark.BookmarkBottomSheet;
 import ir.hanzodev1375.ghostide.bookmark.BookmarkViewModel;
+import ir.hanzodev1375.ghostide.project.AndroidStudioProjectDialog;
 import ir.hanzodev1375.ghostide.project.NewProjectDialog;
 import ir.hanzodev1375.ghostide.history.HistoryBottomSheet;
 import ir.hanzodev1375.ghostide.history.HistoryViewModel;
@@ -420,12 +421,21 @@ public class FileManagerActivity extends BaseCompat
     List<Integer> listIcon = new ArrayList<>();
     listIcon.add(R.drawable.folder);
     listIcon.add(R.drawable.ic_fileicon);
+    listIcon.add(R.drawable.ic_android);
     listIcon.add(R.drawable.add);
+
+    List<Integer> listTooltips = new ArrayList<>();
+    listTooltips.add(R.string.dialog_create_folder_title);
+    listTooltips.add(R.string.dialog_create_file_title);
+    listTooltips.add(R.string.android_studio_project);
+    listTooltips.add(R.string.project_new_title);
+
     bind.fab
         .getRecyclerView()
         .setAdapter(
             new ToolbarAdapter(
                 listIcon,
+                listTooltips,
                 (view2, mypos) -> {
                   switch (mypos) {
                     case 0 -> {
@@ -437,6 +447,16 @@ public class FileManagerActivity extends BaseCompat
                       bind.fab.dismiss();
                     }
                     case 2 -> {
+                      String currentDir = viewModel.getCurrentPath().getValue();
+                      Intent intent = new Intent(FileManagerActivity.this, EditorActivity.class);
+                      intent.putExtra("open_tab_type", "new_android_project");
+                      if (currentDir != null) {
+                        intent.putExtra("save_path", currentDir);
+                      }
+                      startActivity(intent);
+                      bind.fab.dismiss();
+                    }
+                    case 3 -> {
                       String currentDir = viewModel.getCurrentPath().getValue();
                       if (currentDir != null) {
                         new NewProjectDialog(
@@ -1327,9 +1347,7 @@ public class FileManagerActivity extends BaseCompat
           items.add(getString(R.string.bookmark_add));
           items.add(getString(R.string.shortcut_menu_item));
           items.add(getString(R.string.copyfullpath));
-          if (isDir) {
-            items.add(getString(R.string.create_zip_title));
-          }
+          items.add(getString(R.string.create_zip_title));
           if (isArch) {
             items.add(getString(R.string.zip_extract_here));
             items.add(getString(R.string.zip_extract_to));
