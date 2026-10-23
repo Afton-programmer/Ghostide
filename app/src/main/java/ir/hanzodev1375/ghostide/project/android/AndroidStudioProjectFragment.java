@@ -201,7 +201,7 @@ public class AndroidStudioProjectFragment extends Fragment {
             AndroidTemplate t = templates.get(i);
             ChipCompat chip = new ChipCompat(requireContext());
             chip.setId(View.generateViewId());
-            chip.setText(t.getTitleRes());
+            chip.setText(t.getTitle());
             chip.setCheckable(true);
             chip.setTag(t);
 
@@ -224,9 +224,9 @@ public class AndroidStudioProjectFragment extends Fragment {
 
     private void selectTemplate(AndroidTemplate template) {
         this.selectedTemplate = template;
-        tvTemplateDescription.setText(template.getDescriptionRes());
+        tvTemplateDescription.setText(template.getDescription());
 
-        if (template.isCompose() || !template.isSupportsJava()) {
+        if (template.isSupportsCompose() || !template.isSupportsJava()) {
             chipLangKotlin.setChecked(true);
             chipLangJava.setEnabled(false);
         } else {
@@ -255,7 +255,7 @@ public class AndroidStudioProjectFragment extends Fragment {
                 ? AndroidProjectConfig.Language.KOTLIN
                 : AndroidProjectConfig.Language.JAVA;
 
-        if (selectedTemplate.isCompose() && lang != AndroidProjectConfig.Language.KOTLIN) {
+        if (selectedTemplate.isSupportsCompose() && lang != AndroidProjectConfig.Language.KOTLIN) {
             GhostToast.makeText(requireContext(), R.string.android_compose_kotlin_only, GhostToast.LENGTH_SHORT).show();
             return;
         }
