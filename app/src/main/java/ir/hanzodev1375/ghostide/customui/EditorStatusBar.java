@@ -108,6 +108,7 @@ public class EditorStatusBar extends FrameLayout {
   private StatusIndicator currentStatusIndicator = StatusIndicator.IDLE;
   @ColorInt private int dirtyColor;
   private boolean dirtyShowing;
+  private boolean indentationEnabled = true;
 
   public EditorStatusBar(@NonNull Context context) {
     this(context, null);
@@ -188,7 +189,7 @@ public class EditorStatusBar extends FrameLayout {
     applyIconSizeToAll();
     applyIconTextSpacingToAll();
     applyDividerColor();
-    updateDividerVisibility();
+    syncIndentationSection();
     ensureStatusDotDrawable();
     ensureDirtyDotDrawable();
   }
@@ -227,7 +228,7 @@ public class EditorStatusBar extends FrameLayout {
       binding.sectionEncoding.setVisibility(GONE);
     }
     if (!a.getBoolean(R.styleable.EditorStatusBar_esb_indentationVisible, true)) {
-      binding.sectionIndentation.setVisibility(GONE);
+      indentationEnabled = false;
     }
     if (!a.getBoolean(R.styleable.EditorStatusBar_esb_linesVisible, true)) {
       binding.sectionLines.setVisibility(GONE);
@@ -374,8 +375,8 @@ public class EditorStatusBar extends FrameLayout {
   }
 
   /**
-   * A divider is shown only when both the section before and after it are visible, so hiding a
-   * section never leaves a divider floating next to nothing.
+   * A divider is shown between two visible sections, skipping hidden ones, so hiding a section
+   * never leaves a divider floating next to nothing or two sections with no divider between them.
    */
   private void updateDividerVisibility() {
     boolean lang = isLanguageVisible();
@@ -385,9 +386,10 @@ public class EditorStatusBar extends FrameLayout {
     boolean stat = isStatusVisible();
 
     binding.dividerLanguageEncoding.setVisibility(lang && enc ? VISIBLE : GONE);
-    binding.dividerEncodingIndentation.setVisibility(enc && ind ? VISIBLE : GONE);
-    binding.dividerIndentationLines.setVisibility(ind && lines ? VISIBLE : GONE);
-    binding.dividerLinesStatus.setVisibility(lines && stat ? VISIBLE : GONE);
+    binding.dividerEncodingIndentation.setVisibility((lang || enc) && ind ? VISIBLE : GONE);
+    boolean beforeLines = lang || enc || ind;
+    binding.dividerIndentationLines.setVisibility(beforeLines && lines ? VISIBLE : GONE);
+    binding.dividerLinesStatus.setVisibility((beforeLines || lines) && stat ? VISIBLE : GONE);
   }
 
   /**
@@ -462,6 +464,7 @@ public class EditorStatusBar extends FrameLayout {
 
   public void setIndentationText(String text) {
     binding.textIndentation.setText(text);
+    syncIndentationSection();
   }
 
   public String getIndentationText() {
@@ -754,12 +757,22 @@ public class EditorStatusBar extends FrameLayout {
   }
 
   public void setIndentationVisible(boolean visible) {
-    binding.sectionIndentation.setVisibility(visible ? VISIBLE : GONE);
-    updateDividerVisibility();
+    indentationEnabled = visible;
+    syncIndentationSection();
   }
 
   public boolean isIndentationVisible() {
     return binding.sectionIndentation.getVisibility() == VISIBLE;
+  }
+
+  /**
+   * The indentation section is shown only while it is enabled and has text, so an unused section
+   * never leaves an empty cell between two dividers.
+   */
+  private void syncIndentationSection() {
+    boolean show = indentationEnabled && binding.textIndentation.length() > 0;
+    binding.sectionIndentation.setVisibility(show ? VISIBLE : GONE);
+    updateDividerVisibility();
   }
 
   public void setLinesVisible(boolean visible) {

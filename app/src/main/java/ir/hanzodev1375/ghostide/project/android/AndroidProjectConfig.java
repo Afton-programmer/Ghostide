@@ -4,117 +4,117 @@ import ir.hanzodev1375.ghostide.project.DslType;
 
 public class AndroidProjectConfig {
 
-    public enum Language {
-        KOTLIN("Kotlin", ".kt"),
-        JAVA("Java", ".java");
+  public enum Language {
+    KOTLIN("Kotlin", ".kt"),
+    JAVA("Java", ".java");
 
-        private final String displayName;
-        private final String fileExtension;
+    private final String displayName;
+    private final String fileExtension;
 
-        Language(String displayName, String fileExtension) {
-            this.displayName = displayName;
-            this.fileExtension = fileExtension;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
-
-        public String getFileExtension() {
-            return fileExtension;
-        }
+    Language(String displayName, String fileExtension) {
+      this.displayName = displayName;
+      this.fileExtension = fileExtension;
     }
 
-    private String projectName;
-    private String packageName;
-    private String parentPath;
-    private AndroidCategory category = AndroidCategory.PHONE_TABLET;
-    private AndroidTemplate template = AndroidTemplate.PHONE_EMPTY_VIEWS;
-    private Language language = Language.KOTLIN;
-    private DslType dslType = DslType.KOTLIN;
-    private int minSdk = 24;
-    private int targetSdk = 34;
-    private int compileSdk = 34;
-
-    public AndroidProjectConfig() {}
-
-    public String getProjectName() {
-        return projectName;
+    public String getDisplayName() {
+      return displayName;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public String getFileExtension() {
+      return fileExtension;
     }
+  }
 
-    public String getPackageName() {
-        return packageName;
-    }
+  private String projectName;
+  private String packageName;
+  private String parentPath;
+  private AndroidCategory category = AndroidCategory.PHONE_TABLET;
+  private AndroidTemplate template = AndroidTemplate.PHONE_EMPTY_VIEWS;
+  private Language language = Language.KOTLIN;
+  private DslType dslType = DslType.KOTLIN;
+  private int minSdk = 24;
+  private int targetSdk = 34;
+  private int compileSdk = 37;
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
+  public AndroidProjectConfig() {}
 
-    public String getParentPath() {
-        return parentPath;
-    }
+  public String getProjectName() {
+    return projectName;
+  }
 
-    public void setParentPath(String parentPath) {
-        this.parentPath = parentPath;
-    }
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
+  }
 
-    public AndroidCategory getCategory() {
-        return category;
-    }
+  public String getPackageName() {
+    return packageName;
+  }
 
-    public void setCategory(AndroidCategory category) {
-        this.category = category;
-    }
+  public void setPackageName(String packageName) {
+    this.packageName = packageName;
+  }
 
-    public AndroidTemplate getTemplate() {
-        return template;
-    }
+  public String getParentPath() {
+    return parentPath;
+  }
 
-    public void setTemplate(AndroidTemplate template) {
-        this.template = template;
-    }
+  public void setParentPath(String parentPath) {
+    this.parentPath = parentPath;
+  }
 
-    public Language getLanguage() {
-        return language;
-    }
+  public AndroidCategory getCategory() {
+    return category;
+  }
 
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
+  public void setCategory(AndroidCategory category) {
+    this.category = category;
+  }
 
-    public DslType getDslType() {
-        return dslType;
-    }
+  public AndroidTemplate getTemplate() {
+    return template;
+  }
 
-    public void setDslType(DslType dslType) {
-        this.dslType = dslType;
-    }
+  public void setTemplate(AndroidTemplate template) {
+    this.template = template;
+  }
 
-    public int getMinSdk() {
-        return minSdk;
-    }
+  public Language getLanguage() {
+    return language;
+  }
 
-    public void setMinSdk(int minSdk) {
-        this.minSdk = minSdk;
-    }
+  public void setLanguage(Language language) {
+    this.language = language;
+  }
 
-    public int getTargetSdk() {
-        return targetSdk;
-    }
+  public DslType getDslType() {
+    return dslType;
+  }
 
-    public void setTargetSdk(int targetSdk) {
-        this.targetSdk = targetSdk;
-    }
+  public void setDslType(DslType dslType) {
+    this.dslType = dslType;
+  }
 
-    public int getCompileSdk() {
-        return compileSdk;
-    }
+  public int getMinSdk() {
+    return minSdk;
+  }
 
-    public void setCompileSdk(int compileSdk) {
-        this.compileSdk = compileSdk;
-    }
+  public void setMinSdk(int minSdk) {
+    this.minSdk = minSdk;
+  }
+
+  public int getTargetSdk() {
+    return targetSdk;
+  }
+
+  public void setTargetSdk(int targetSdk) {
+    this.targetSdk = targetSdk;
+  }
+
+  public int getCompileSdk() {
+    return compileSdk;
+  }
+
+  public void setCompileSdk(int compileSdk) {
+    this.compileSdk = compileSdk;
+  }
 }
