@@ -82,7 +82,8 @@ public class TranslateTask {
 
             for (int i = 0; i < parts.length(); i++) {
 
-              Object chunk = parts.getJSONArray(i).get(0);
+              JSONArray item = parts.optJSONArray(i);
+              Object chunk = (item != null && item.length() > 0) ? item.opt(0) : null;
 
               if (chunk != null && !"null".equals(chunk.toString())) {
 

@@ -50,7 +50,7 @@ public class StarParticlesView extends View {
           ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
       float rate = display.getRefreshRate();
       return rate > 0 ? rate : fallback;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       return fallback;
     }
   }

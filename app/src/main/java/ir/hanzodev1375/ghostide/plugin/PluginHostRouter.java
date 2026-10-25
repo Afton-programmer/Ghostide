@@ -54,7 +54,7 @@ public final class PluginHostRouter {
         if (registration.extension().supports(request)) {
           return registration.ownerPluginId();
         }
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
     return null;

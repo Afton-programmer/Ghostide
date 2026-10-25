@@ -1,0 +1,59 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <!-- Television Bezel -->
+    <path
+        android:fillColor="#12121C"
+        android:strokeColor="#525266"
+        android:strokeWidth="2.5"
+        android:pathData="M 12,32 L 108,32 A 6,6 0 0 1 114,38 L 114,106 A 6,6 0 0 1 108,112 L 12,112 A 6,6 0 0 1 6,106 L 6,38 A 6,6 0 0 1 12,32 Z" />
+    <!-- TV Screen -->
+    <path
+        android:fillColor="#1A1A28"
+        android:pathData="M 9,35 L 111,35 L 111,109 L 9,109 Z" />
+    <!-- TV Stand -->
+    <path
+        android:fillColor="#3A3A4C"
+        android:pathData="M 54,112 L 66,112 L 68,124 L 52,124 Z" />
+    <path
+        android:fillColor="#4A4A62"
+        android:pathData="M 40,124 L 80,124 A 2,2 0 0 1 82,126 L 82,127 A 2,2 0 0 1 80,129 L 40,129 A 2,2 0 0 1 38,127 L 38,126 A 2,2 0 0 1 40,124 Z" />
+    <!-- TV Left Sidebar / Categories -->
+    <path
+        android:fillColor="#0D47A1"
+        android:pathData="M 12,40 L 32,40 L 32,104 L 12,104 Z" />
+    <path
+        android:fillColor="#90CAF9"
+        android:pathData="M 16,46 L 28,46 A 1,1 0 0 1 29,47 L 29,47.5 A 1,1 0 0 1 28,48.5 L 16,48.5 A 1,1 0 0 1 15,47.5 L 15,47 A 1,1 0 0 1 16,46 Z" />
+    <path
+        android:fillColor="#BBDEFB"
+        android:pathData="M 16,54 L 28,54 A 1,1 0 0 1 29,55 L 29,55.5 A 1,1 0 0 1 28,56.5 L 16,56.5 A 1,1 0 0 1 15,55.5 L 15,55 A 1,1 0 0 1 16,54 Z" />
+    <path
+        android:fillColor="#90CAF9"
+        android:pathData="M 16,62 L 28,62 A 1,1 0 0 1 29,63 L 29,63.5 A 1,1 0 0 1 28,64.5 L 16,64.5 A 1,1 0 0 1 15,63.5 L 15,63 A 1,1 0 0 1 16,62 Z" />
+
+    <!-- TV Content: Media Card 1 (Focused) -->
+    <path
+        android:fillColor="#1565C0"
+        android:strokeColor="#64B5F6"
+        android:strokeWidth="1.5"
+        android:pathData="M 38,44 L 62,44 A 3,3 0 0 1 65,47 L 65,72 A 3,3 0 0 1 62,75 L 38,75 A 3,3 0 0 1 35,72 L 35,47 A 3,3 0 0 1 38,44 Z" />
+    <!-- Media Card 2 -->
+    <path
+        android:fillColor="#283593"
+        android:pathData="M 69,45 L 89,45 A 3,3 0 0 1 92,48 L 92,71 A 3,3 0 0 1 89,74 L 69,74 A 3,3 0 0 1 66,71 L 66,48 A 3,3 0 0 1 69,45 Z" />
+    <!-- Media Card 3 -->
+    <path
+        android:fillColor="#283593"
+        android:pathData="M 96,45 L 108,45 L 108,74 L 96,74 A 3,3 0 0 1 93,71 L 93,48 A 3,3 0 0 1 96,45 Z" />
+
+    <!-- Row 2 Card -->
+    <path
+        android:fillColor="#37474F"
+        android:pathData="M 38,82 L 62,82 A 3,3 0 0 1 65,85 L 65,102 A 3,3 0 0 1 62,105 L 38,105 A 3,3 0 0 1 35,102 L 35,85 A 3,3 0 0 1 38,82 Z" />
+    <path
+        android:fillColor="#37474F"
+        android:pathData="M 69,82 L 89,82 A 3,3 0 0 1 92,85 L 92,102 A 3,3 0 0 1 89,105 L 69,105 A 3,3 0 0 1 66,85 L 66,85 A 3,3 0 0 1 69,82 Z" />
+</vector>

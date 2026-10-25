@@ -146,15 +146,14 @@ public class AndroidUtils {
           totalRead += readLen;
         }
       }
-    } catch (Throwable e) {
+    } catch (Exception e) {
       return null;
     } finally {
       try {
         if (inputStream != null) {
           inputStream.close();
         }
-      } catch (Throwable ignore) {
-
+      } catch (Exception ignore) {
       }
     }
 

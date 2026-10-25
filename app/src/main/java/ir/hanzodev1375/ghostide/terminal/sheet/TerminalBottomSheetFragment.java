@@ -234,7 +234,7 @@ public class TerminalBottomSheetFragment extends BaseBlurBottomSheet
           && theme.getWidget() != null
           && theme.getWidget().getImagepath() != null
           && !theme.getWidget().getImagepath().isEmpty();
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
       return false;
     }
   }

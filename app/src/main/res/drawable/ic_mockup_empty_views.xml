@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <!-- Phone Body -->
+    <path
+        android:fillColor="#181824"
+        android:strokeColor="#555566"
+        android:strokeWidth="2"
+        android:pathData="M 22,6 L 98,6 A 14,14 0 0 1 112,20 L 112,140 A 14,14 0 0 1 98,154 L 22,154 A 14,14 0 0 1 8,140 L 8,20 A 14,14 0 0 1 22,6 Z" />
+    <!-- Camera notch -->
+    <path
+        android:fillColor="#3A3A4C"
+        android:pathData="M 60,12 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <!-- App Bar -->
+    <path
+        android:fillColor="#3D5AFE"
+        android:pathData="M 10,20 L 110,20 L 110,38 L 10,38 Z" />
+    <!-- App Bar Title -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 18,27 L 54,27 A 2,2 0 0 1 56,29 L 56,30 A 2,2 0 0 1 54,32 L 18,32 A 2,2 0 0 1 16,30 L 16,29 A 2,2 0 0 1 18,27 Z" />
+    <!-- Centered Hello World Card -->
+    <path
+        android:fillColor="#242436"
+        android:strokeColor="#3E3E56"
+        android:strokeWidth="1"
+        android:pathData="M 26,72 L 94,72 A 6,6 0 0 1 100,78 L 100,88 A 6,6 0 0 1 94,94 L 26,94 A 6,6 0 0 1 20,88 L 20,78 A 6,6 0 0 1 26,72 Z" />
+    <path
+        android:fillColor="#7C4DFF"
+        android:pathData="M 32,80 L 88,80 A 2,2 0 0 1 90,82 L 90,83 A 2,2 0 0 1 88,85 L 32,85 A 2,2 0 0 1 30,83 L 30,82 A 2,2 0 0 1 32,80 Z" />
+    <path
+        android:fillColor="#90CAF9"
+        android:pathData="M 40,87 L 80,87 A 1.5,1.5 0 0 1 81.5,88.5 L 81.5,89 A 1.5,1.5 0 0 1 80,90.5 L 40,90.5 A 1.5,1.5 0 0 1 38.5,89 L 38.5,88.5 A 1.5,1.5 0 0 1 40,87 Z" />
+</vector>

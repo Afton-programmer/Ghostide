@@ -388,18 +388,19 @@ public class AndroidProjectGenerator {
   }
 
   private void copyTextOrFallback(String assetPath, File dest, String fallback) throws IOException {
-    try (InputStream in = context.getAssets().open(assetPath)) {
-      copyStream(in, dest);
-    } catch (Exception e) {
-      writeFile(dest, fallback);
-    }
+      try (InputStream in = context.getAssets().open(assetPath)) {
+          copyStream(in, dest);
+      } catch (IOException e) {
+          writeFile(dest, fallback);
+      }
   }
 
   private void copyAssetBinary(String assetPath, File dest) {
-    try (InputStream in = context.getAssets().open(assetPath)) {
-      copyStream(in, dest);
-    } catch (Exception ignored) {
-    }
+      try (InputStream in = context.getAssets().open(assetPath)) {
+          copyStream(in, dest);
+      } catch (IOException e) {
+          android.util.Log.w("AndroidProjectGenerator", "Optional asset binary not found: " + assetPath, e);
+      }
   }
 
   private void copyText(String assetPath, File dest, Map<String, String> tokens)
@@ -411,43 +412,75 @@ public class AndroidProjectGenerator {
     writeFile(dest, applyTokens(content, tokens));
   }
 
-  private void copyTree(
-      String assetDir, File destDir, Map<String, String> tokens, Boolean kotlinLanguage)
-      throws IOException {
-    String[] children;
-    try {
-      children = context.getAssets().list(assetDir);
-    } catch (IOException e) {
-      throw new IOException("Missing template asset: " + assetDir, e);
-    }
-    if (children == null || children.length == 0) {
-      if (kotlinLanguage != null) {
-        if (assetDir.endsWith(".java") && kotlinLanguage) return;
-        if (assetDir.endsWith(".kt") && !kotlinLanguage) return;
-      }
-      String fileName = assetDir.substring(assetDir.lastIndexOf('/') + 1);
-      if (fileName.endsWith(".tpl")) {
-        fileName = fileName.substring(0, fileName.length() - 4);
-      }
-      String content;
-      try (InputStream in = context.getAssets().open(assetDir)) {
-        content = new String(readAll(in), StandardCharsets.UTF_8);
+  private void copyTree(String assetDir, File destDir, Map<String, String> tokens, Boolean kotlinLanguage)
+          throws IOException {
+      String[] children;
+      try {
+          children = context.getAssets().list(assetDir);
       } catch (IOException e) {
-        return;
+          return;
       }
-      File dest = new File(destDir, fileName);
-      if (!dest.getParentFile().exists() && !dest.getParentFile().mkdirs()) {
-        throw new IOException("Failed to create folder: " + dest.getParentFile());
+      if (children == null || children.length == 0) {
+          copyTemplateFile(assetDir, destDir, tokens, kotlinLanguage);
+          return;
       }
-      writeFile(dest, applyTokens(content, tokens));
-      return;
-    }
-    if (!destDir.exists() && !destDir.mkdirs()) {
-      throw new IOException("Failed to create folder: " + destDir);
-    }
-    for (String child : children) {
-      copyTree(assetDir + "/" + child, destDir, tokens, kotlinLanguage);
-    }
+
+      if (!destDir.exists() && !destDir.mkdirs()) {
+          throw new IOException("Failed to create folder: " + destDir);
+      }
+
+      for (String child : children) {
+          String childAssetPath = assetDir + "/" + child;
+          String[] subChildren = null;
+          try {
+              subChildren = context.getAssets().list(childAssetPath);
+          } catch (IOException ignored) {
+          }
+
+          if (subChildren != null && subChildren.length > 0) {
+              copyTree(childAssetPath, new File(destDir, child), tokens, kotlinLanguage);
+          } else {
+              copyTemplateFile(childAssetPath, destDir, tokens, kotlinLanguage);
+          }
+      }
+  }
+
+  private void copyTemplateFile(String assetPath, File destDir, Map<String, String> tokens, Boolean kotlinLanguage)
+          throws IOException {
+      String fileName = assetPath.substring(assetPath.lastIndexOf('/') + 1);
+
+      if (kotlinLanguage != null) {
+          if ((fileName.endsWith(".java") || fileName.endsWith(".java.tpl")) && kotlinLanguage) {
+              return;
+          }
+          if ((fileName.endsWith(".kt") || fileName.endsWith(".kt.tpl")) && !kotlinLanguage) {
+              return;
+          }
+      }
+
+      if (fileName.endsWith(".tpl")) {
+          fileName = fileName.substring(0, fileName.length() - 4);
+      }
+
+      File destFile = new File(destDir, fileName);
+      File parent = destFile.getParentFile();
+      if (parent != null && !parent.exists() && !parent.mkdirs()) {
+          throw new IOException("Failed to create folder: " + parent);
+      }
+
+      boolean isBinary = fileName.endsWith(".png") || fileName.endsWith(".webp")
+              || fileName.endsWith(".jar") || fileName.endsWith(".so");
+
+      try (InputStream in = context.getAssets().open(assetPath)) {
+          if (isBinary) {
+              copyStream(in, destFile);
+          } else {
+              String content = new String(readAll(in), StandardCharsets.UTF_8);
+              writeFile(destFile, applyTokens(content, tokens));
+          }
+      } catch (IOException e) {
+          android.util.Log.w("AndroidProjectGenerator", "Failed to read template asset file: " + assetPath, e);
+      }
   }
 
   private String applyTokens(String content, Map<String, String> tokens) {

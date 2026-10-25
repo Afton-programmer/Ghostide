@@ -605,7 +605,7 @@ public final class M3Theme {
       } else if (v instanceof ProgressBar) {
         progressBar((ProgressBar) v);
       }
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
     }
   }
 
@@ -742,7 +742,7 @@ public final class M3Theme {
         b.setBackgroundTintList(ColorStateList.valueOf(container));
         try {
           b.setStrokeColor(ColorStateList.valueOf(container));
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
       }
       if (onContainer != null) {
@@ -750,7 +750,7 @@ public final class M3Theme {
         b.setIconTint(ColorStateList.valueOf(onContainer));
         try {
           b.setRippleColor(ColorStateList.valueOf(surfaceAlpha(onContainer)));
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
       }
       return;
@@ -767,7 +767,7 @@ public final class M3Theme {
       if (stroke != null) {
         try {
           b.setStrokeColor(ColorStateList.valueOf(stroke));
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
       }
       if (text != null) {
@@ -778,7 +778,7 @@ public final class M3Theme {
       if (ripple != null) {
         try {
           b.setRippleColor(ColorStateList.valueOf(surfaceAlpha(ripple)));
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
       }
       return;
@@ -791,7 +791,7 @@ public final class M3Theme {
     if (!filled && primary != null) {
       try {
         b.setStrokeColor(ColorStateList.valueOf(primary));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
     if (onPrimary != null) {
@@ -801,7 +801,7 @@ public final class M3Theme {
     if (onPrimaryContainer != null) {
       try {
         b.setRippleColor(ColorStateList.valueOf(surfaceAlpha(onPrimaryContainer)));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -839,7 +839,7 @@ public final class M3Theme {
     if (container != null) {
       try {
         fab.setRippleColor(ColorStateList.valueOf(surfaceAlpha(container)));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -853,7 +853,7 @@ public final class M3Theme {
     if (stroke != null) {
       try {
         cardView.setStrokeColor(ColorStateList.valueOf(stroke));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -867,7 +867,7 @@ public final class M3Theme {
     if (stroke != null) {
       try {
         cardView.setStrokeColor(ColorStateList.valueOf(stroke));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -898,7 +898,7 @@ public final class M3Theme {
                 },
                 new int[] {focusedStroke, errorStroke, disabledStroke, enabledStroke});
         input.setBoxStrokeColorStateList(strokeColors);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
 
@@ -918,7 +918,7 @@ public final class M3Theme {
                 },
                 new int[] {focusedHint, errorHint, disabledHint, enabledHint});
         input.setDefaultHintTextColor(hintColors);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
 
@@ -926,7 +926,7 @@ public final class M3Theme {
       try {
         int bg = isBackgroundImageMode() ? ColorUtils.setAlphaComponent(boxBg, 128) : boxBg;
         input.setBoxBackgroundColor(bg);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
 
@@ -934,7 +934,7 @@ public final class M3Theme {
       try {
         input.setPrefixTextColor(ColorStateList.valueOf(onSurfaceVariant));
         input.setSuffixTextColor(ColorStateList.valueOf(onSurfaceVariant));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -946,7 +946,7 @@ public final class M3Theme {
     if (selected != null) {
       try {
         tabs.setTabTextColors(unselected != null ? unselected : selected, selected);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
     if (ind != null) {
@@ -954,7 +954,7 @@ public final class M3Theme {
         tabs.setSelectedTabIndicatorColor(ind);
         tabs.setBackgroundTintList(
             ColorStateList.valueOf(isBackgroundImageMode() ? 0 : surfaceContainerLow()));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -994,7 +994,7 @@ public final class M3Theme {
                   new int[] {}
                 },
                 new int[] {checkedBg, checkedBg, pressedBg, enabledBg, enabledBg}));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
 
@@ -1011,7 +1011,7 @@ public final class M3Theme {
                   new int[] {}
                 },
                 new int[] {pressedText, pressedText, pressedText, enabledText}));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
 
@@ -1023,7 +1023,7 @@ public final class M3Theme {
             new ColorStateList(
                 new int[][] {new int[] {android.R.attr.state_pressed}, new int[] {}},
                 new int[] {pressedStroke, enabledStroke}));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
 
@@ -1032,19 +1032,19 @@ public final class M3Theme {
         chip.setChipIconTint(ColorStateList.valueOf(accent));
         chip.setCheckedIconTint(ColorStateList.valueOf(onAccent != null ? onAccent : accent));
         chip.setCloseIconTint(ColorStateList.valueOf(onAccent != null ? onAccent : accent));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
 
     try {
       chip.setCheckedIconVisible(true);
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
     }
 
     if (accent != null) {
       try {
         chip.setRippleColor(ColorStateList.valueOf(surfaceAlpha(accent)));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -1177,7 +1177,7 @@ public final class M3Theme {
         nav.setItemActiveIndicatorColor(
             ColorStateList.valueOf(color(m3().getSecondaryContainer())));
         nav.setBackgroundTintList(ColorStateList.valueOf(color(m3().getSurfaceBright())));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -1196,13 +1196,13 @@ public final class M3Theme {
     if (accent != null) {
       try {
         p.setIndicatorColor(accent);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
     if (track != null) {
       try {
         p.setTrackColor(track);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -1214,13 +1214,13 @@ public final class M3Theme {
       try {
         s.setThumbTintList(active(accent));
         s.setTrackActiveTintList(active(accent));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
     if (inactiveTrack != null) {
       try {
         s.setTrackInactiveTintList(ColorStateList.valueOf(inactiveTrack));
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }
@@ -1264,7 +1264,7 @@ public final class M3Theme {
     if (Build.VERSION.SDK_INT >= 29) {
       try {
         et.setTextCursorDrawable(null);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
   }

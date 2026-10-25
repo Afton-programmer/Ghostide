@@ -1,0 +1,63 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <!-- Phone Body -->
+    <path
+        android:fillColor="#151B26"
+        android:strokeColor="#425066"
+        android:strokeWidth="2"
+        android:pathData="M 22,6 L 98,6 A 14,14 0 0 1 112,20 L 112,140 A 14,14 0 0 1 98,154 L 22,154 A 14,14 0 0 1 8,140 L 8,20 A 14,14 0 0 1 22,6 Z" />
+    <!-- Camera notch -->
+    <path
+        android:fillColor="#2A3546"
+        android:pathData="M 60,12 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <!-- Compose App Bar -->
+    <path
+        android:fillColor="#00695C"
+        android:pathData="M 10,20 L 110,20 L 110,38 L 10,38 Z" />
+    <!-- App Bar Title -->
+    <path
+        android:fillColor="#80CBC4"
+        android:pathData="M 18,27 L 60,27 A 2,2 0 0 1 62,29 L 62,30 A 2,2 0 0 1 60,32 L 18,32 A 2,2 0 0 1 16,30 L 16,29 A 2,2 0 0 1 18,27 Z" />
+    <!-- Compose Card 1 -->
+    <path
+        android:fillColor="#1E2A38"
+        android:strokeColor="#2E4057"
+        android:strokeWidth="1"
+        android:pathData="M 18,46 L 102,46 A 4,4 0 0 1 106,50 L 106,66 A 4,4 0 0 1 102,70 L 18,70 A 4,4 0 0 1 14,66 L 14,50 A 4,4 0 0 1 18,46 Z" />
+    <path
+        android:fillColor="#42A5F5"
+        android:pathData="M 22,53 m -4,0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0" />
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M 32,51 L 70,51 A 1.5,1.5 0 0 1 71.5,52.5 L 71.5,53.5 A 1.5,1.5 0 0 1 70,55 L 32,55 A 1.5,1.5 0 0 1 30.5,53.5 L 30.5,52.5 A 1.5,1.5 0 0 1 32,51 Z" />
+    <path
+        android:fillColor="#78909C"
+        android:pathData="M 32,59 L 90,59 A 1.5,1.5 0 0 1 91.5,60.5 L 91.5,61 A 1.5,1.5 0 0 1 90,62.5 L 32,62.5 A 1.5,1.5 0 0 1 30.5,61 L 30.5,60.5 A 1.5,1.5 0 0 1 32,59 Z" />
+
+    <!-- Compose Card 2 -->
+    <path
+        android:fillColor="#1E2A38"
+        android:strokeColor="#2E4057"
+        android:strokeWidth="1"
+        android:pathData="M 18,76 L 102,76 A 4,4 0 0 1 106,80 L 106,96 A 4,4 0 0 1 102,100 L 18,100 A 4,4 0 0 1 14,96 L 14,80 A 4,4 0 0 1 18,76 Z" />
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M 22,83 m -4,0 a 4,4 0 1,0 8,0 a 4,4 0 1,0 -8,0" />
+    <path
+        android:fillColor="#E0E0E0"
+        android:pathData="M 32,81 L 65,81 A 1.5,1.5 0 0 1 66.5,82.5 L 66.5,83.5 A 1.5,1.5 0 0 1 65,85 L 32,85 A 1.5,1.5 0 0 1 30.5,83.5 L 30.5,82.5 A 1.5,1.5 0 0 1 32,81 Z" />
+    <path
+        android:fillColor="#78909C"
+        android:pathData="M 32,89 L 85,89 A 1.5,1.5 0 0 1 86.5,90.5 L 86.5,91 A 1.5,1.5 0 0 1 85,92.5 L 32,92.5 A 1.5,1.5 0 0 1 30.5,91 L 30.5,90.5 A 1.5,1.5 0 0 1 32,89 Z" />
+
+    <!-- Compose Button -->
+    <path
+        android:fillColor="#00897B"
+        android:pathData="M 26,110 L 94,110 A 6,6 0 0 1 100,116 L 100,122 A 6,6 0 0 1 94,128 L 26,128 A 6,6 0 0 1 20,122 L 20,116 A 6,6 0 0 1 26,110 Z" />
+    <path
+        android:fillColor="#E0F2F1"
+        android:pathData="M 40,117 L 80,117 A 1.5,1.5 0 0 1 81.5,118.5 L 81.5,119.5 A 1.5,1.5 0 0 1 80,121 L 40,121 A 1.5,1.5 0 0 1 38.5,119.5 L 38.5,118.5 A 1.5,1.5 0 0 1 40,117 Z" />
+</vector>

@@ -270,6 +270,14 @@
     <string name="android_sync_step_3">در حال پیکربندی کاتالوگ نسخه‌ها (libs.versions.toml)...</string>
     <string name="android_sync_step_4">در حال تولید AndroidManifest، تم‌های Material 3 و قالب...</string>
     <string name="android_sync_step_5">پایان همگام‌سازی گریدل و باز کردن ادیتور...</string>
+    <string name="android_template_lang_both">زبان‌ها: کاتلین و جاوا</string>
+    <string name="android_template_lang_compose_only">زبان: فقط کاتلین (الزامی برای کامپوز)</string>
+    <string name="android_run_dialog_title">اجرای برنامه اندروید</string>
+    <string name="android_run_dialog_msg">پروژه: %s\nفایل APK از قبل ساخته شده است. چه عملیاتی انجام شود؟</string>
+    <string name="android_run_action_install">نصب برنامه</string>
+    <string name="android_run_action_rebuild">بیلد مجدد و نصب (assembleDebug)</string>
+    <string name="android_apk_not_found">فایل APK یافت نشد. لطفاً ابتدا پروژه را بیلد کنید.</string>
+    <string name="android_installing_apk">در حال باز کردن نصاب برنامه...</string>
     <string name="module_new_title">ماژول Android جدید</string>
     <string name="module_create">ایجاد</string>
     <string name="module_creating">در حال ایجاد ماژول…</string>

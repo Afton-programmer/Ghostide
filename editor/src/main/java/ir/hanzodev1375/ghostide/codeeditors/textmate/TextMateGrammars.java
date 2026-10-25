@@ -54,7 +54,7 @@ public final class TextMateGrammars {
                       .addFileProvider(new AssetsFileResolver(app.getAssets()));
                   GrammarRegistry.getInstance().loadGrammars(LANGUAGES_JSON);
                   collectScopes(app, AVAILABLE_SCOPES);
-                } catch (Throwable error) {
+                } catch (Exception error) {
                   initError = error;
                 } finally {
                   finish();

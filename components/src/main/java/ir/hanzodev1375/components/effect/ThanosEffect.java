@@ -257,7 +257,7 @@ public class ThanosEffect extends TextureView {
       try {
         init();
         initialized = true;
-      } catch (Throwable t) {
+      } catch (Exception t) {
         killInternal();
         return;
       }
@@ -317,7 +317,7 @@ public class ThanosEffect extends TextureView {
       if (surfaceTexture != null) {
         try {
           surfaceTexture.release();
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
       }
       if (destroy != null) {
@@ -500,7 +500,7 @@ public class ThanosEffect extends TextureView {
 
       try {
         egl.eglSwapBuffers(eglDisplay, eglSurface);
-      } catch (Throwable t) {
+      } catch (Exception t) {
         for (int i = 0; i < pendingAnimations.size(); ++i) {
           pendingAnimations.get(i).done(true);
         }
@@ -621,7 +621,7 @@ public class ThanosEffect extends TextureView {
         view.draw(canvas);
         try {
           canvas.restoreToCount(saveCount);
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
       }
 
@@ -726,11 +726,11 @@ public class ThanosEffect extends TextureView {
       public void done(boolean runCallback) {
         try {
           GLES31.glDeleteBuffers(2, buffer, 0);
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
         try {
           GLES31.glDeleteTextures(1, texture, 0);
-        } catch (Throwable ignored) {
+        } catch (Exception ignored) {
         }
         if (runCallback && doneCallback != null) {
           Runnable cb = doneCallback;

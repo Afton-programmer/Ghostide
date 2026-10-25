@@ -90,7 +90,7 @@ public class GhostIdeAppLoader extends Application {
             try {
               String icon = registration.extension().getIcon(path);
               if (icon != null && !icon.trim().isEmpty()) return icon;
-            } catch (Throwable ignored) {
+            } catch (Exception ignored) {
             }
           }
           return null;

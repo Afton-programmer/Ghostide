@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <path
+        android:fillColor="#0D1117"
+        android:strokeColor="#555566"
+        android:strokeWidth="2"
+        android:pathData="M 22,6 L 98,6 A 14,14 0 0 1 112,20 L 112,140 A 14,14 0 0 1 98,154 L 22,154 A 14,14 0 0 1 8,140 L 8,20 A 14,14 0 0 1 22,6 Z" />
+    <path
+        android:fillColor="#21262D"
+        android:pathData="M 60,12 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <!-- Fullscreen Immersive Canvas (edge to edge) -->
+    <path
+        android:fillColor="#161B22"
+        android:strokeColor="#30363D"
+        android:strokeWidth="1"
+        android:pathData="M 18,22 L 102,22 A 6,6 0 0 1 108,28 L 108,132 A 6,6 0 0 1 102,138 L 18,138 A 6,6 0 0 1 12,132 L 12,28 A 6,6 0 0 1 18,22 Z" />
+    <!-- Center Play / Expand Icon -->
+    <path
+        android:fillColor="#58A6FF"
+        android:pathData="M 60,80 m -16,0 a 16,16 0 1,0 32,0 a 16,16 0 1,0 -32,0" />
+    <path
+        android:fillColor="#0D1117"
+        android:pathData="M 55,72 L 69,80 L 55,88 Z" />
+    <path
+        android:fillColor="#8B949E"
+        android:pathData="M 36,104 L 84,104 A 1.5,1.5 0 0 1 85.5,105.5 L 85.5,106.5 A 1.5,1.5 0 0 1 84,108 L 36,108 A 1.5,1.5 0 0 1 34.5,106.5 L 34.5,105.5 A 1.5,1.5 0 0 1 36,104 Z" />
+</vector>

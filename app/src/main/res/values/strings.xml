@@ -272,6 +272,14 @@
     <string name="android_sync_step_3">Configuring Version Catalog (libs.versions.toml)...</string>
     <string name="android_sync_step_4">Generating AndroidManifest, Material 3 themes &amp; templates...</string>
     <string name="android_sync_step_5">Finalizing Gradle sync and opening workspace...</string>
+    <string name="android_template_lang_both">Languages: Kotlin &amp; Java</string>
+    <string name="android_template_lang_compose_only">Language: Kotlin Only (Compose)</string>
+    <string name="android_run_dialog_title">Run Android App</string>
+    <string name="android_run_dialog_msg">Project: %s\nAn APK has already been built. What would you like to do?</string>
+    <string name="android_run_action_install">Install App</string>
+    <string name="android_run_action_rebuild">Rebuild &amp; Install (assembleDebug)</string>
+    <string name="android_apk_not_found">No APK found. Please build the project first.</string>
+    <string name="android_installing_apk">Opening Package Installer...</string>
     <string name="module_new_title">New Android Module</string>
     <string name="module_create">Create</string>
     <string name="module_creating">Creating module…</string>

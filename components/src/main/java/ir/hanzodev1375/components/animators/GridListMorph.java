@@ -41,7 +41,7 @@ public class GridListMorph {
         target = new LinearLayoutManager(recyclerView.getContext());
       }
       morph(recyclerView, target);
-    } catch (Throwable tr) {
+    } catch (Exception tr) {
       Log.w(TAG, "toggle failed", tr);
     }
   }
@@ -119,11 +119,11 @@ public class GridListMorph {
                 });
           },
           foldOutEnd + 20);
-    } catch (Throwable tr) {
+    } catch (Exception tr) {
       Log.w(TAG, "morph failed", tr);
       try {
         swapLayout(recyclerView, target);
-      } catch (Throwable tr2) {
+      } catch (Exception tr2) {
         Log.w(TAG, "secondary swap failed", tr2);
       }
     }

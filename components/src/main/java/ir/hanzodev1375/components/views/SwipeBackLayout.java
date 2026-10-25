@@ -214,7 +214,7 @@ public class SwipeBackLayout extends FrameLayout {
     try {
       boolean intercepted = dragHelper.shouldInterceptTouchEvent(ev);
       return intercepted || super.onInterceptTouchEvent(ev);
-    } catch (Throwable tr) {
+    } catch (Exception tr) {
       return super.onInterceptTouchEvent(ev);
     }
   }
@@ -224,7 +224,7 @@ public class SwipeBackLayout extends FrameLayout {
     if (!enabled) return super.onTouchEvent(ev);
     try {
       dragHelper.processTouchEvent(ev);
-    } catch (Throwable tr) {
+    } catch (Exception tr) {
       finishSettling = false;
       cancelSettling = true;
     }

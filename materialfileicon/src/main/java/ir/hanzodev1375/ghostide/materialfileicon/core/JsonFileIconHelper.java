@@ -61,7 +61,7 @@ public class JsonFileIconHelper {
           resolvedExternal = icon;
           return icon;
         }
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
       }
     }
     resolvedExternal = "";

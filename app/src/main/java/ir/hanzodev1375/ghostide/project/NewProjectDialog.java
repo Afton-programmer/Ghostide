@@ -113,9 +113,19 @@ public class NewProjectDialog {
           if (!checkedIds.isEmpty() && checkedIds.get(0) == R.id.chipAndroid) {
             dialog.dismiss();
             if (context instanceof FragmentActivity) {
+              FragmentActivity fa = (FragmentActivity) context;
+              fa.getSupportFragmentManager().setFragmentResultListener(
+                  AndroidStudioProjectSheet.RESULT_KEY,
+                  fa,
+                  (requestKey, bundle) -> {
+                    String createdPath = bundle.getString(AndroidStudioProjectSheet.ARG_RESULT_PATH);
+                    if (createdPath != null && callback != null) {
+                      callback.onCreated(createdPath);
+                    }
+                  });
               AndroidStudioProjectSheet.newInstance(savePath)
                   .show(
-                      ((FragmentActivity) context).getSupportFragmentManager(),
+                      fa.getSupportFragmentManager(),
                       AndroidStudioProjectSheet.TAG);
             }
             return;

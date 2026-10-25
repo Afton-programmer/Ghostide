@@ -41,7 +41,7 @@ public class WaterRipple {
       }
       float clamped = Math.min(0.9f, Math.max(0.3f, intensity));
       currentRipple.animate(x, y, clamped);
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
       // A cosmetic effect must never crash the app.
     }
   }
@@ -50,7 +50,7 @@ public class WaterRipple {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && SuperRipple.supports()) {
       try {
         return new SuperRipple(root);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
         // AGSL is not available on this device -> scale-based fallback.
       }
     }

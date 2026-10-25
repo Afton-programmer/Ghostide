@@ -108,7 +108,7 @@ public class ShapeUtil {
       if (app != null && app.getSetting() != null) {
         return app.getSetting().isShowBackground();
       }
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
     }
     return new PreferencesUtils(context).isShowBackground();
   }

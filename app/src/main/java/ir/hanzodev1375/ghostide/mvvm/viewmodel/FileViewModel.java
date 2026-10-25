@@ -330,6 +330,10 @@ public class FileViewModel extends AndroidViewModel {
 
   public void pasteFiles(
       List<FileManagerModel> sources, String destDir, boolean isCut, OnPasteComplete callback) {
+    if (sources == null || sources.isEmpty()) {
+      if (callback != null) callback.onComplete(true);
+      return;
+    }
     ioExecutor.execute(
         () -> {
           boolean success = true;

@@ -173,7 +173,7 @@ public class TerminalBitmap {
 
             return buildOrThrow(terminalBuffer, bitmapNum, bitmap,
                 x, y, cellWidth, cellHeight);
-        } catch (Throwable t) {
+        } catch (OutOfMemoryError | Exception t) {
             if (t instanceof OutOfMemoryError) System.gc();
             Logger.logError(terminalBuffer.getClient(), LOG_TAG,
                 "Create terminal bitmap " + bitmapNum + " from terminal sixel failed: " + t.getMessage());
@@ -206,7 +206,7 @@ public class TerminalBitmap {
                 options.inJustDecodeBounds = true;
                 try {
                     BitmapFactory.decodeByteArray(image, 0, image.length, options);
-                } catch (Throwable t) {
+                } catch (OutOfMemoryError | Exception t) {
                     if (t instanceof OutOfMemoryError) System.gc();
                     Logger.logWarn(terminalBuffer.getClient(), LOG_TAG,
                         "Decode bitmap failed while creating" +
@@ -253,7 +253,7 @@ public class TerminalBitmap {
                     } else {
                         newBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
                     }
-                } catch (Throwable t) {
+                } catch (OutOfMemoryError | Exception t) {
                     if (t instanceof OutOfMemoryError) System.gc();
                     Logger.logError(terminalBuffer.getClient(), LOG_TAG,
                         "Create terminal bitmap " + bitmapNum + " from image byte array failed:" +
@@ -275,7 +275,7 @@ public class TerminalBitmap {
                     try {
                         newBitmap = Bitmap.createBitmap(newBitmap, 0, 0, cropWidth, newBitmap.getHeight());
                         newWidth = maxWidth;
-                    } catch (Throwable t) {
+                    } catch (OutOfMemoryError | Exception t) {
                         if (t instanceof OutOfMemoryError) {
                             // This is just a memory optimization. If it fails,
                             // continue (and probably fail later).
@@ -289,7 +289,7 @@ public class TerminalBitmap {
                 // Create final scaled bitmap.
                 try {
                     newBitmap = Bitmap.createScaledBitmap(newBitmap, newWidth, newHeight, true);
-                } catch (Throwable t) {
+                } catch (OutOfMemoryError | Exception t) {
                     if (t instanceof OutOfMemoryError) System.gc();
                     Logger.logError(terminalBuffer.getClient(), LOG_TAG,
                         "Create terminal bitmap " + bitmapNum + " from image byte array failed:" +
@@ -300,7 +300,7 @@ public class TerminalBitmap {
                 // Create bitmap from image.
                 try {
                     newBitmap = BitmapFactory.decodeByteArray(image, 0, image.length);
-                } catch (Throwable t) {
+                } catch (OutOfMemoryError | Exception t) {
                     if (t instanceof OutOfMemoryError) System.gc();
                     Logger.logError(terminalBuffer.getClient(), LOG_TAG,
                         "Create terminal bitmap " + bitmapNum + " from image byte array failed:" +
@@ -329,7 +329,7 @@ public class TerminalBitmap {
                 (terminalBitmap.getBitmap().getWidth() + cellWidth - 1) / cellWidth});
 
             return terminalBitmap;
-        } catch (Throwable t) {
+        } catch (OutOfMemoryError | Exception t) {
             if (t instanceof OutOfMemoryError) System.gc();
             Logger.logError(terminalBuffer.getClient(), LOG_TAG,
                 "Create terminal bitmap " + bitmapNum + " from image byte array failed: " + t.getMessage());
@@ -343,7 +343,7 @@ public class TerminalBitmap {
                                        int x, int y, int cellWidth, int cellHeight) {
         try {
             return buildOrThrow(terminalBuffer, bitmapNum, bitmap, x, y, cellWidth, cellHeight);
-        } catch (Throwable t) {
+        } catch (OutOfMemoryError | Exception t) {
             if (t instanceof OutOfMemoryError) System.gc();
             Logger.logError(terminalBuffer.getClient(), LOG_TAG,
                 "Create terminal bitmap " + bitmapNum + " from bitmap failed: " + t.getMessage());
@@ -353,7 +353,7 @@ public class TerminalBitmap {
 
     /** Build a {@link TerminalBitmap} from a {@link Bitmap}. */
     public static TerminalBitmap buildOrThrow(TerminalBuffer terminalBuffer, int bitmapNum, Bitmap bitmap,
-                                              int x, int y, int cellWidth, int cellHeight) throws Throwable {
+                                              int x, int y, int cellWidth, int cellHeight) {
         if (bitmap == null) {
             throw new IllegalArgumentException("Cannot create terminal bitmap from an unset bitmap");
         }
@@ -448,7 +448,7 @@ public class TerminalBitmap {
             int newHeight = Math.min(bitmap.getHeight(), bitmapHeight);
             newBitmap.setPixels(pixels, 0, bitmap.getWidth(), 0, 0, newWidth, newHeight);
             return newBitmap;
-        } catch (Throwable t) {
+        } catch (OutOfMemoryError | Exception t) {
             if (t instanceof OutOfMemoryError) System.gc();
             Logger.logError(client, logTag, "Resize " + label + " bitmap to" +
                 " width " + bitmapWidth + " and height " + bitmapHeight + " failed: " + t.getMessage());

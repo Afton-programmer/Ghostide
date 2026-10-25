@@ -77,7 +77,7 @@ public final class CodeRunnerHostAdapter implements CodeRunnerHost {
           if (onOutputLine != null) {
             try {
               onOutputLine.accept(line);
-            } catch (Throwable ignored) {
+            } catch (Exception ignored) {
             }
           }
         }

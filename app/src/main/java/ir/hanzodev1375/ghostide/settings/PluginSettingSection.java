@@ -38,7 +38,7 @@ public class PluginSettingSection extends SettingSection {
       List<PluginSetting> contributed;
       try {
         contributed = contributor.getSettings();
-      } catch (Throwable t) {
+      } catch (Exception t) {
         continue;
       }
       if (contributed == null) continue;
@@ -76,7 +76,7 @@ public class PluginSettingSection extends SettingSection {
     if (setting instanceof PluginSetting.Action action) {
       try {
         action.onClick().run();
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
         // A misbehaving plugin must not take down the settings screen.
       }
     }

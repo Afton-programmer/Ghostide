@@ -23,7 +23,7 @@ public class PriorityThreadFactory implements ThreadFactory {
             public void run() {
                 try {
                     Process.setThreadPriority(mThreadPriority);
-                } catch (Throwable ignored) {
+                } catch (Exception ignored) {
 
                 }
                 runnable.run();

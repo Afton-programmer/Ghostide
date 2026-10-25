@@ -85,7 +85,7 @@ public class TerminalSixel {
             bitmap.eraseColor(0);
 
             return new TerminalSixel(client, bitmap);
-        } catch (Throwable t) {
+        } catch (OutOfMemoryError | Exception t) {
             if (t instanceof OutOfMemoryError) System.gc();
             Logger.logError(client, LOG_TAG, "Create sixel bitmap for" +
                 " width " + bitmapWidth + " with height " + bitmapHeight + " failed: " + t.getMessage());

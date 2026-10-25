@@ -2,6 +2,7 @@ package ir.hanzodev1375.ghostide.project.android;
 
 import java.util.ArrayList;
 import java.util.List;
+import ir.hanzodev1375.ghostide.R;
 
 public enum AndroidTemplate {
   // Phone & Tablet
@@ -168,6 +169,74 @@ public enum AndroidTemplate {
 
   public boolean isSupportsCompose() {
     return supportsCompose;
+  }
+
+  public int getMockupRes() {
+    return switch (this) {
+      case PHONE_EMPTY_VIEWS -> R.drawable.ic_mockup_empty_views;
+      case PHONE_EMPTY_COMPOSE -> R.drawable.ic_mockup_compose;
+      case PHONE_BASIC_VIEWS -> R.drawable.ic_mockup_basic_views;
+      case PHONE_BOTTOM_NAV -> R.drawable.ic_mockup_bottom_nav;
+      case PHONE_NAVIGATION_DRAWER -> R.drawable.ic_mockup_nav_drawer;
+      case PHONE_TABBED -> R.drawable.ic_mockup_tabbed;
+      case PHONE_FULLSCREEN -> R.drawable.ic_mockup_fullscreen;
+      case PHONE_NO_ACTIVITY -> R.drawable.ic_mockup_no_activity;
+      case WEAR_BLANK_VIEWS, WEAR_COMPOSE, WEAR_WATCH_FACE, WEAR_TILE_SERVICE -> R.drawable.ic_mockup_wear;
+      case TV_LEANBACK, TV_COMPOSE -> R.drawable.ic_mockup_tv;
+      case AUTO_CAR_APP, AUTO_MEDIA_APP -> R.drawable.ic_mockup_auto;
+    };
+  }
+
+  public String getUiEngine() {
+    if (supportsCompose) return "Jetpack Compose (Material 3)";
+    return switch (category) {
+      case PHONE_TABLET -> "Material 3 XML Views (ViewBinding)";
+      case WEAR_OS -> "Wear OS Views + Ambient Display";
+      case ANDROID_TV -> "Android TV (Leanback SDK)";
+      case AUTOMOTIVE -> "Android for Cars (CarAppService)";
+    };
+  }
+
+  public String getArchitecture() {
+    return switch (this) {
+      case PHONE_EMPTY_VIEWS -> "Single Activity · ViewBinding · M3 Tokens";
+      case PHONE_EMPTY_COMPOSE -> "Single Activity · Compose Scaffolding · Material 3";
+      case PHONE_BASIC_VIEWS -> "Single Activity + Fragment Navigation + FAB";
+      case PHONE_BOTTOM_NAV -> "Single Activity + BottomNavigationView + 3 Fragments";
+      case PHONE_NAVIGATION_DRAWER -> "Single Activity + DrawerLayout + NavigationView";
+      case PHONE_TABBED -> "Single Activity + TabLayout + ViewPager2";
+      case PHONE_FULLSCREEN -> "Single Activity · WindowInsetsControllerCompat";
+      case PHONE_NO_ACTIVITY -> "Minimal Application Manifest Structure";
+      case WEAR_BLANK_VIEWS -> "WearableActivity + AmbientMode Callback";
+      case WEAR_COMPOSE -> "Wear Compose Material + ScalingLazyColumn";
+      case WEAR_WATCH_FACE -> "WatchFaceService + CanvasRenderer + Complications";
+      case WEAR_TILE_SERVICE -> "ProtoLayout TileService + Glanceable Timeline";
+      case TV_LEANBACK -> "BrowseSupportFragment + ArrayObjectAdapter";
+      case TV_COMPOSE -> "androidx.tv:tv-material + Focusable LazyRows";
+      case AUTO_CAR_APP -> "CarAppService + Session + PaneTemplate";
+      case AUTO_MEDIA_APP -> "MediaLibraryService + MediaSessionCompat";
+    };
+  }
+
+  public String getGeneratedFilesSummary() {
+    return switch (this) {
+      case PHONE_EMPTY_VIEWS -> "MainActivity, activity_main.xml, build.gradle.kts";
+      case PHONE_EMPTY_COMPOSE -> "MainActivity.kt, ui/theme/Theme.kt, build.gradle.kts";
+      case PHONE_BASIC_VIEWS -> "MainActivity, FirstFragment, SecondFragment, nav_graph.xml";
+      case PHONE_BOTTOM_NAV -> "MainActivity, ui/home, ui/dashboard, ui/notifications";
+      case PHONE_NAVIGATION_DRAWER -> "MainActivity, nav_header_main.xml, activity_main.xml";
+      case PHONE_TABBED -> "MainActivity, SectionsPagerAdapter, PlaceholderFragment";
+      case PHONE_FULLSCREEN -> "MainActivity, activity_fullscreen.xml, colors.xml";
+      case PHONE_NO_ACTIVITY -> "AndroidManifest.xml, build.gradle.kts, libs.versions.toml";
+      case WEAR_BLANK_VIEWS -> "MainActivity, activity_main.xml, AmbientModeSupport";
+      case WEAR_COMPOSE -> "MainActivity.kt, theme/Theme.kt, TimeText.kt";
+      case WEAR_WATCH_FACE -> "MyWatchFaceService, WatchFaceRenderer, complications.xml";
+      case WEAR_TILE_SERVICE -> "MainTileService, tile_layout.xml, ProtoLayout";
+      case TV_LEANBACK -> "MainActivity, MainFragment, CardPresenter, Movie.java";
+      case TV_COMPOSE -> "MainActivity.kt, TvTheme.kt, FeaturedCarousel.kt";
+      case AUTO_CAR_APP -> "MyCarAppService, MainScreen, session.xml";
+      case AUTO_MEDIA_APP -> "MyMediaLibraryService, media_items.xml";
+    };
   }
 
   public static List<AndroidTemplate> getByCategory(AndroidCategory category) {

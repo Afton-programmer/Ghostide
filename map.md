@@ -410,6 +410,7 @@ Directory structure:
     │           │       │       │   │   ├── AndroidCategory.java
     │           │       │       │   │   ├── AndroidProjectConfig.java
     │           │       │       │   │   ├── AndroidProjectGenerator.java
+    │           │       │       │   │   ├── AndroidProjectRunner.java
     │           │       │       │   │   ├── AndroidStudioProjectSheet.java
     │           │       │       │   │   └── AndroidTemplate.java
     │           │       │       │   ├── DslType.java
@@ -600,6 +601,17 @@ Directory structure:
     │               │   └── popup_split_exit.xml
     │               ├── drawable/
     │               │   ├── add.xml
+    │               │   ├── ic_mockup_auto.xml
+    │               │   ├── ic_mockup_basic_views.xml
+    │               │   ├── ic_mockup_bottom_nav.xml
+    │               │   ├── ic_mockup_compose.xml
+    │               │   ├── ic_mockup_empty_views.xml
+    │               │   ├── ic_mockup_fullscreen.xml
+    │               │   ├── ic_mockup_nav_drawer.xml
+    │               │   ├── ic_mockup_no_activity.xml
+    │               │   ├── ic_mockup_tabbed.xml
+    │               │   ├── ic_mockup_tv.xml
+    │               │   ├── ic_mockup_wear.xml
     │               │   ├── bg_chip_rounded.xml
     │               │   ├── bg_code_input.xml
     │               │   ├── bg_drag_handle.xml

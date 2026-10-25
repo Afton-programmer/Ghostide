@@ -29,7 +29,7 @@ public final class ProotSessionFactory {
     } catch (IllegalStateException e) {
       Log.e(LOG_TAG, e.getMessage());
       throw e;
-    } catch (Throwable t) {
+    } catch (Exception t) {
       Log.e(LOG_TAG, "unexpected failure creating proot session", t);
       throw new IllegalStateException(
           context.getString(R.string.terminal_error_unexpected, String.valueOf(t)), t);

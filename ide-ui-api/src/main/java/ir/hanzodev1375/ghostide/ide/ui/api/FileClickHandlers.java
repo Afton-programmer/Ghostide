@@ -31,7 +31,7 @@ public final class FileClickHandlers {
       boolean claimed;
       try {
         claimed = handler.supports(path, name, isDirectory);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
         continue;
       }
       if (!claimed) {
@@ -40,7 +40,7 @@ public final class FileClickHandlers {
       try {
         handler.onFileClick(new FileClickContext(context, path, name, isDirectory, anchor));
         return true;
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
         // A broken handler must never swallow the tap: let the next one, or the built-in
         // flow, take over.
       }

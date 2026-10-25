@@ -643,7 +643,7 @@ public class TerminalActivity extends BaseCompat implements TerminalViewModel.Se
       if (background != null && !background.isEmpty()) {
         b.mainContent.setBackgroundColor(Color.parseColor(background));
       }
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
     }
   }
 
@@ -656,7 +656,7 @@ public class TerminalActivity extends BaseCompat implements TerminalViewModel.Se
           && theme.getWidget() != null
           && theme.getWidget().getImagepath() != null
           && !theme.getWidget().getImagepath().isEmpty();
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
       return false;
     }
   }

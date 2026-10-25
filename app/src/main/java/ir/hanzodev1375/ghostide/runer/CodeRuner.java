@@ -14,6 +14,7 @@ import ir.hanzodev1375.ghostide.codeeditors.langs.formatHelp.DebianBootstrap;
 import ir.hanzodev1375.ghostide.codeeditors.setting.PreferencesUtils;
 import ir.hanzodev1375.ghostide.terminal.activity.TerminalActivity;
 import ir.hanzodev1375.ghostide.terminal.sheet.TerminalBottomSheetFragment;
+import ir.hanzodev1375.ghostide.project.android.AndroidProjectRunner;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -34,6 +35,13 @@ public class CodeRuner {
     }
 
     public void bindof(String path, boolean asBottomSheet) {
+        if (path != null) {
+            File root = AndroidProjectRunner.findProjectRoot(new File(path));
+            if (root != null && context instanceof Activity) {
+                AndroidProjectRunner.runProject((Activity) context, root, asBottomSheet);
+                return;
+            }
+        }
         if (path != null
                 && path.toLowerCase(Locale.ROOT).endsWith(".java")
                 && prefs.isCodeRunnerEnabled()
@@ -90,6 +98,7 @@ public class CodeRuner {
     /** Whether a file is runnable (its extension maps to a registered language/toolchain). */
     public boolean isSupported(String path) {
         if (path == null) return false;
+        if (AndroidProjectRunner.findProjectRoot(new File(path)) != null) return true;
         return buildCommand(path) != null;
     }
 

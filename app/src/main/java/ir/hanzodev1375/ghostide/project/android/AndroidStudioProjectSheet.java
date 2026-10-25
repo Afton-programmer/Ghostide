@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -40,6 +41,12 @@ public class AndroidStudioProjectSheet extends BaseBlurBottomSheet {
 
   private ChipGroupCompat chipGroupCategory;
   private ChipGroupCompat chipGroupTemplates;
+  private ImageView ivTemplateMockup;
+  private TextView tvTemplateTitle;
+  private TextView tvTemplateBadge;
+  private TextView tvTemplateArchitecture;
+  private TextView tvTemplateLanguage;
+  private TextView tvTemplateFiles;
   private TextView tvTemplateDescription;
   private TextInputLayout tilProjectName;
   private TextInputEditText etProjectName;
@@ -100,22 +107,28 @@ public class AndroidStudioProjectSheet extends BaseBlurBottomSheet {
   }
 
   private void bindViews(View view) {
-    scrollWizardContent = view.findViewById(R.id.scrollWizardContent);
-    chipGroupCategory = view.findViewById(R.id.chipGroupCategory);
-    chipGroupTemplates = view.findViewById(R.id.chipGroupTemplates);
-    tvTemplateDescription = view.findViewById(R.id.tvTemplateDescription);
-    tilProjectName = view.findViewById(R.id.tilProjectName);
-    etProjectName = view.findViewById(R.id.etProjectName);
-    tilPackageName = view.findViewById(R.id.tilPackageName);
-    etPackageName = view.findViewById(R.id.etPackageName);
-    chipLangKotlin = view.findViewById(R.id.chipLangKotlin);
-    chipLangJava = view.findViewById(R.id.chipLangJava);
-    tvLanguageHint = view.findViewById(R.id.tvLanguageHint);
-    chipGroupDsl = view.findViewById(R.id.chipGroupDsl);
-    chipGroupMinSdk = view.findViewById(R.id.chipGroupMinSdk);
-    tvSaveLocation = view.findViewById(R.id.tvSaveLocation);
-    btnCreateProject = view.findViewById(R.id.btnCreateProject);
-    btnCancelWizard = view.findViewById(R.id.btnCancelWizard);
+      scrollWizardContent = view.findViewById(R.id.scrollWizardContent);
+      chipGroupCategory = view.findViewById(R.id.chipGroupCategory);
+      chipGroupTemplates = view.findViewById(R.id.chipGroupTemplates);
+      ivTemplateMockup = view.findViewById(R.id.ivTemplateMockup);
+      tvTemplateTitle = view.findViewById(R.id.tvTemplateTitle);
+      tvTemplateBadge = view.findViewById(R.id.tvTemplateBadge);
+      tvTemplateArchitecture = view.findViewById(R.id.tvTemplateArchitecture);
+      tvTemplateLanguage = view.findViewById(R.id.tvTemplateLanguage);
+      tvTemplateFiles = view.findViewById(R.id.tvTemplateFiles);
+      tvTemplateDescription = view.findViewById(R.id.tvTemplateDescription);
+      tilProjectName = view.findViewById(R.id.tilProjectName);
+      etProjectName = view.findViewById(R.id.etProjectName);
+      tilPackageName = view.findViewById(R.id.tilPackageName);
+      etPackageName = view.findViewById(R.id.etPackageName);
+      chipLangKotlin = view.findViewById(R.id.chipLangKotlin);
+      chipLangJava = view.findViewById(R.id.chipLangJava);
+      tvLanguageHint = view.findViewById(R.id.tvLanguageHint);
+      chipGroupDsl = view.findViewById(R.id.chipGroupDsl);
+      chipGroupMinSdk = view.findViewById(R.id.chipGroupMinSdk);
+      tvSaveLocation = view.findViewById(R.id.tvSaveLocation);
+      btnCreateProject = view.findViewById(R.id.btnCreateProject);
+      btnCancelWizard = view.findViewById(R.id.btnCancelWizard);
 
     layoutSyncProgress = view.findViewById(R.id.layoutSyncProgress);
     tvSyncDetail = view.findViewById(R.id.tvSyncDetail);
@@ -213,8 +226,31 @@ public class AndroidStudioProjectSheet extends BaseBlurBottomSheet {
   }
 
   private void selectTemplate(AndroidTemplate template) {
-    this.selectedTemplate = template;
-    tvTemplateDescription.setText(template.getDescription());
+      this.selectedTemplate = template;
+      if (ivTemplateMockup != null) {
+          ivTemplateMockup.setImageResource(template.getMockupRes());
+      }
+      if (tvTemplateTitle != null) {
+          tvTemplateTitle.setText(template.getTitle());
+      }
+      if (tvTemplateBadge != null) {
+          tvTemplateBadge.setText(template.getUiEngine());
+      }
+      if (tvTemplateArchitecture != null) {
+          tvTemplateArchitecture.setText(template.getArchitecture());
+      }
+      if (tvTemplateLanguage != null) {
+          tvTemplateLanguage.setText(
+                  template.isSupportsCompose() || !template.isSupportsJava()
+                          ? getString(R.string.android_template_lang_compose_only)
+                          : getString(R.string.android_template_lang_both));
+      }
+      if (tvTemplateFiles != null) {
+          tvTemplateFiles.setText(template.getGeneratedFilesSummary());
+      }
+      if (tvTemplateDescription != null) {
+          tvTemplateDescription.setText(template.getDescription());
+      }
 
     if (template.isSupportsCompose() || !template.isSupportsJava()) {
       chipLangKotlin.setChecked(true);

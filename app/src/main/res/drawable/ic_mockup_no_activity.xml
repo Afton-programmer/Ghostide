@@ -1,0 +1,47 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <path
+        android:fillColor="#181824"
+        android:strokeColor="#555566"
+        android:strokeWidth="2"
+        android:pathData="M 22,6 L 98,6 A 14,14 0 0 1 112,20 L 112,140 A 14,14 0 0 1 98,154 L 22,154 A 14,14 0 0 1 8,140 L 8,20 A 14,14 0 0 1 22,6 Z" />
+    <path
+        android:fillColor="#3A3A4C"
+        android:pathData="M 60,12 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <!-- Android Manifest Box -->
+    <path
+        android:fillColor="#252538"
+        android:strokeColor="#42425C"
+        android:strokeWidth="1.5"
+        android:pathData="M 24,45 L 96,45 A 6,6 0 0 1 102,51 L 102,115 A 6,6 0 0 1 96,121 L 24,121 A 6,6 0 0 1 18,115 L 18,51 A 6,6 0 0 1 24,45 Z" />
+    <!-- Android green robot head -->
+    <path
+        android:fillColor="#3DDC84"
+        android:pathData="M 60,62 m -14,0 a 14,14 0 0 1 28,0 Z" />
+    <!-- Eyes -->
+    <path
+        android:fillColor="#181824"
+        android:pathData="M 54,58 m -1.5,0 a 1.5,1.5 0 1,0 3,0 a 1.5,1.5 0 1,0 -3,0" />
+    <path
+        android:fillColor="#181824"
+        android:pathData="M 66,58 m -1.5,0 a 1.5,1.5 0 1,0 3,0 a 1.5,1.5 0 1,0 -3,0" />
+    <!-- Antennae -->
+    <path
+        android:fillColor="#3DDC84"
+        android:strokeColor="#3DDC84"
+        android:strokeWidth="1.5"
+        android:pathData="M 52,48 L 48,43 M 68,48 L 72,43" />
+    <!-- Manifest tags lines -->
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M 32,82 L 88,82 A 2,2 0 0 1 90,84 L 90,85 A 2,2 0 0 1 88,87 L 32,87 A 2,2 0 0 1 30,85 L 30,84 A 2,2 0 0 1 32,82 Z" />
+    <path
+        android:fillColor="#A5D6A7"
+        android:pathData="M 38,92 L 82,92 A 1.5,1.5 0 0 1 83.5,93.5 L 83.5,94 A 1.5,1.5 0 0 1 82,95.5 L 38,95.5 A 1.5,1.5 0 0 1 36.5,94 L 36.5,93.5 A 1.5,1.5 0 0 1 38,92 Z" />
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M 32,102 L 70,102 A 1.5,1.5 0 0 1 71.5,103.5 L 71.5,104 A 1.5,1.5 0 0 1 70,105.5 L 32,105.5 A 1.5,1.5 0 0 1 30.5,104 L 30.5,103.5 A 1.5,1.5 0 0 1 32,102 Z" />
+</vector>

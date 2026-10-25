@@ -1,0 +1,63 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <path
+        android:fillColor="#181824"
+        android:strokeColor="#555566"
+        android:strokeWidth="2"
+        android:pathData="M 22,6 L 98,6 A 14,14 0 0 1 112,20 L 112,140 A 14,14 0 0 1 98,154 L 22,154 A 14,14 0 0 1 8,140 L 8,20 A 14,14 0 0 1 22,6 Z" />
+    <path
+        android:fillColor="#3A3A4C"
+        android:pathData="M 60,12 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <!-- App Bar -->
+    <path
+        android:fillColor="#00838F"
+        android:pathData="M 10,20 L 110,20 L 110,38 L 10,38 Z" />
+    <path
+        android:fillColor="#E0F7FA"
+        android:pathData="M 18,27 L 55,27 A 2,2 0 0 1 57,29 L 57,30 A 2,2 0 0 1 55,32 L 18,32 A 2,2 0 0 1 16,30 L 16,29 A 2,2 0 0 1 18,27 Z" />
+    <!-- Tabs Strip -->
+    <path
+        android:fillColor="#006064"
+        android:pathData="M 10,38 L 110,38 L 110,54 L 10,54 Z" />
+    <!-- Tab 1 (Active) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 18,44 L 38,44 A 1,1 0 0 1 39,45 L 39,46 A 1,1 0 0 1 38,47 L 18,47 A 1,1 0 0 1 17,46 L 17,45 A 1,1 0 0 1 18,44 Z" />
+    <!-- Tab Indicator line under Tab 1 -->
+    <path
+        android:fillColor="#80DEEA"
+        android:pathData="M 15,52 L 41,52 L 41,54 L 15,54 Z" />
+    <!-- Tab 2 -->
+    <path
+        android:fillColor="#80CBC4"
+        android:pathData="M 50,44 L 70,44 A 1,1 0 0 1 71,45 L 71,46 A 1,1 0 0 1 70,47 L 50,47 A 1,1 0 0 1 49,46 L 49,45 A 1,1 0 0 1 50,44 Z" />
+    <!-- Tab 3 -->
+    <path
+        android:fillColor="#80CBC4"
+        android:pathData="M 82,44 L 102,44 A 1,1 0 0 1 103,45 L 103,46 A 1,1 0 0 1 102,47 L 82,47 A 1,1 0 0 1 81,46 L 81,45 A 1,1 0 0 1 82,44 Z" />
+
+    <!-- ViewPager content -->
+    <path
+        android:fillColor="#202A36"
+        android:pathData="M 18,64 L 102,64 A 4,4 0 0 1 106,68 L 106,128 A 4,4 0 0 1 102,132 L 18,132 A 4,4 0 0 1 14,128 L 14,68 A 4,4 0 0 1 18,64 Z" />
+    <path
+        android:fillColor="#4DD0E1"
+        android:pathData="M 32,88 L 88,88 A 2,2 0 0 1 90,90 L 90,91 A 2,2 0 0 1 88,93 L 32,93 A 2,2 0 0 1 30,91 L 30,90 A 2,2 0 0 1 32,88 Z" />
+    <path
+        android:fillColor="#80DEEA"
+        android:pathData="M 42,98 L 78,98 A 1.5,1.5 0 0 1 79.5,99.5 L 79.5,100 A 1.5,1.5 0 0 1 78,101.5 L 42,101.5 A 1.5,1.5 0 0 1 40.5,100 L 40.5,99.5 A 1.5,1.5 0 0 1 42,98 Z" />
+
+    <!-- Swipe dot indicators -->
+    <path
+        android:fillColor="#4DD0E1"
+        android:pathData="M 52,142 m -2.5,0 a 2.5,2.5 0 1,0 5,0 a 2.5,2.5 0 1,0 -5,0" />
+    <path
+        android:fillColor="#546E7A"
+        android:pathData="M 60,142 m -2,0 a 2,2 0 1,0 4,0 a 2,2 0 1,0 -4,0" />
+    <path
+        android:fillColor="#546E7A"
+        android:pathData="M 68,142 m -2,0 a 2,2 0 1,0 4,0 a 2,2 0 1,0 -4,0" />
+</vector>

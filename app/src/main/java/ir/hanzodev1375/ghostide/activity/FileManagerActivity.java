@@ -240,8 +240,13 @@ public class FileManagerActivity extends BaseCompat
             AndroidStudioProjectSheet.RESULT_KEY,
             this,
             (requestKey, result) -> {
-              String currentDir = viewModel.getCurrentPath().getValue();
-              if (currentDir != null) viewModel.loadFiles(currentDir);
+              String projectPath = result.getString(AndroidStudioProjectSheet.ARG_RESULT_PATH);
+              if (projectPath != null) {
+                viewModel.navigateTo(projectPath);
+              } else {
+                String currentDir = viewModel.getCurrentPath().getValue();
+                if (currentDir != null) viewModel.loadFiles(currentDir);
+              }
             });
     fileManagerHostRegistration =
         GlobalRegistry.services()

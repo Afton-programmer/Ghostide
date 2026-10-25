@@ -299,7 +299,7 @@ public class ITermImage {
                     try {
                         // Appending can cause an increase in capacity and cause an OOM.
                         mEncodedImage.append(oscArgs.substring(imageStartIndex));
-                    } catch (Throwable t) {
+                    } catch (OutOfMemoryError | Exception t) {
                         if (t instanceof OutOfMemoryError) System.gc();
                         setStateFailed("Collecting singlepart image" + " in osc argument string failed: " + t.getMessage());
                         return false;
@@ -325,7 +325,7 @@ public class ITermImage {
                 try {
                     // Appending can cause an increase in capacity and cause an OOM.
                     mEncodedImage.append(oscArgs.substring(index));
-                } catch (Throwable t) {
+                } catch (OutOfMemoryError | Exception t) {
                     if (t instanceof OutOfMemoryError) System.gc();
                     setStateFailed("Collecting multipart image" + " in osc argument string failed: " + t.getMessage());
                     return false;
@@ -384,7 +384,7 @@ public class ITermImage {
 
             setState(ImageState.IMAGE_DECODED);
             return true;
-        } catch (Throwable t) {
+        } catch (OutOfMemoryError | Exception t) {
             if (t instanceof OutOfMemoryError) {
                 Logger.logError(mClient, LOG_TAG, "Failed to decode image: " + t.getMessage());
                 System.gc();

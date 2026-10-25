@@ -580,7 +580,7 @@ public final class TerminalBackupManager {
             if (listener != null) {
               MAIN.post(listener::onCancelled);
             }
-          } catch (Throwable t) {
+          } catch (Exception t) {
             if (tempHolder != null && tempHolder[0] != null) {
               deleteQuietly(tempHolder[0]);
             }

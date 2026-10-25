@@ -50,6 +50,7 @@ import ir.hanzodev1375.ghostide.jgit.GitHubClient;
 import ir.hanzodev1375.ghostide.jgit.GitHubProfileSheet;
 import ir.hanzodev1375.ghostide.jgit.fragments.GitBottomSheetFragment;
 import ir.hanzodev1375.ghostide.runer.CodeRuner;
+import ir.hanzodev1375.ghostide.project.android.AndroidProjectRunner;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -262,7 +263,7 @@ public class EditorActivity extends BaseCompat
     }
     try {
       applyThemeInternal(true);
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
     }
   }
 
@@ -660,10 +661,12 @@ public class EditorActivity extends BaseCompat
                 switch (tag) {
                   case "git" -> showGitBottomSheet();
                   case "undo" -> {
-                    if (getEditor().canUndo()) getEditor().undo();
+                    IdeEditor ed = getEditor();
+                    if (ed != null && ed.canUndo()) ed.undo();
                   }
                   case "redo" -> {
-                    if (getEditor().canRedo()) getEditor().redo();
+                    IdeEditor ed = getEditor();
+                    if (ed != null && ed.canRedo()) ed.redo();
                   }
                   case "more" -> setupMenuCalltoAction(view);
                   case "plugins" -> pluginPopupController.show(view);
@@ -1295,6 +1298,12 @@ public class EditorActivity extends BaseCompat
             mdview.setArguments(bl);
             mdview.show(getSupportFragmentManager(), "MarkDownPreview");
           } else {
+            File currentFile = new File(currentFilePath);
+            File androidProjectRoot = AndroidProjectRunner.findProjectRoot(currentFile);
+            if (androidProjectRoot != null) {
+              AndroidProjectRunner.runProject(EditorActivity.this, androidProjectRoot, settings.isTerminalFragment());
+              return;
+            }
             CodeRunnerHost runner = GlobalRegistry.services().get(IdeHostServices.CODE_RUNNER_HOST);
             if (runner != null) {
               runner.runFile(currentFilePath, settings.isTerminalFragment());

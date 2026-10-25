@@ -1,0 +1,42 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <path
+        android:fillColor="#181824"
+        android:strokeColor="#555566"
+        android:strokeWidth="2"
+        android:pathData="M 22,6 L 98,6 A 14,14 0 0 1 112,20 L 112,140 A 14,14 0 0 1 98,154 L 22,154 A 14,14 0 0 1 8,140 L 8,20 A 14,14 0 0 1 22,6 Z" />
+    <path
+        android:fillColor="#3A3A4C"
+        android:pathData="M 60,12 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <!-- App Bar -->
+    <path
+        android:fillColor="#1565C0"
+        android:pathData="M 10,20 L 110,20 L 110,38 L 10,38 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 18,27 L 50,27 A 2,2 0 0 1 52,29 L 52,30 A 2,2 0 0 1 50,32 L 18,32 A 2,2 0 0 1 16,30 L 16,29 A 2,2 0 0 1 18,27 Z" />
+    <!-- Content card -->
+    <path
+        android:fillColor="#242436"
+        android:pathData="M 18,48 L 102,48 A 4,4 0 0 1 106,52 L 106,105 A 4,4 0 0 1 102,109 L 18,109 A 4,4 0 0 1 14,105 L 14,52 A 4,4 0 0 1 18,48 Z" />
+    <path
+        android:fillColor="#90CAF9"
+        android:pathData="M 24,58 L 75,58 A 2,2 0 0 1 77,60 L 77,61 A 2,2 0 0 1 75,63 L 24,63 A 2,2 0 0 1 22,61 L 22,60 A 2,2 0 0 1 24,58 Z" />
+    <path
+        android:fillColor="#5C6BC0"
+        android:pathData="M 24,68 L 88,68 A 1.5,1.5 0 0 1 89.5,69.5 L 89.5,70 A 1.5,1.5 0 0 1 88,71.5 L 24,71.5 A 1.5,1.5 0 0 1 22.5,70 L 22.5,69.5 A 1.5,1.5 0 0 1 24,68 Z" />
+    <!-- Floating Action Button (FAB) -->
+    <path
+        android:fillColor="#E91E63"
+        android:pathData="M 94,128 m -11,0 a 11,11 0 1,0 22,0 a 11,11 0 1,0 -22,0" />
+    <!-- Plus symbol in FAB -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 93,122 L 95,122 L 95,134 L 93,134 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 88,127 L 100,127 L 100,129 L 88,129 Z" />
+</vector>

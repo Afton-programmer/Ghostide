@@ -90,7 +90,7 @@ public class TerminalSessionFragment extends Fragment
               && theme.getWidget() != null
               && theme.getWidget().getImagepath() != null
               && !theme.getWidget().getImagepath().isEmpty();
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
     }
     if (hasImage) {
       binding.terminalView.setBackgroundColor(Color.TRANSPARENT);

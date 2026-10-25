@@ -333,7 +333,7 @@ public final class FloatingPanelWindow {
   private boolean animationsEnabled() {
     try {
       return AnimationManager.getInstance(activity).areAnimationsEnabled();
-    } catch (Throwable t) {
+    } catch (Exception t) {
       return true;
     }
   }

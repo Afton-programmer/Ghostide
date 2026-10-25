@@ -20,7 +20,7 @@ public final class IdeEvents {
     for (FileEventListener listener : GlobalRegistry.extensions().extensions(FILE_EVENT)) {
       try {
         listener.onFileEvent(event);
-      } catch (Throwable ignored) {
+      } catch (Exception ignored) {
         // A broken listener must never break the editor's own flow.
       }
     }

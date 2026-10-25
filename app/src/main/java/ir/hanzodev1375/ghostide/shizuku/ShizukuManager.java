@@ -27,7 +27,7 @@ public class ShizukuManager {
   public static boolean isAvailable() {
     try {
       return Shizuku.pingBinder();
-    } catch (Throwable t) {
+    } catch (Exception t) {
       return false;
     }
   }

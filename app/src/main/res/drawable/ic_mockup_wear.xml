@@ -1,0 +1,45 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="160dp"
+    android:viewportWidth="120"
+    android:viewportHeight="160">
+    <!-- Watch Straps -->
+    <path
+        android:fillColor="#2A2A38"
+        android:pathData="M 44,4 L 76,4 L 74,32 L 46,32 Z" />
+    <path
+        android:fillColor="#2A2A38"
+        android:pathData="M 46,128 L 74,128 L 76,156 L 44,156 Z" />
+    <!-- Watch Bezel -->
+    <path
+        android:fillColor="#1A1A26"
+        android:strokeColor="#5E5E7A"
+        android:strokeWidth="2.5"
+        android:pathData="M 60,80 m -48,0 a 48,48 0 1,0 96,0 a 48,48 0 1,0 -96,0" />
+    <!-- Watch Screen -->
+    <path
+        android:fillColor="#10101A"
+        android:pathData="M 60,80 m -44,0 a 44,44 0 1,0 88,0 a 44,44 0 1,0 -88,0" />
+    <!-- Watch Crown Button -->
+    <path
+        android:fillColor="#6A6A88"
+        android:pathData="M 108,74 L 112,74 A 2,2 0 0 1 114,76 L 114,84 A 2,2 0 0 1 112,86 L 108,86 Z" />
+    <!-- Digital Time / Wear Compose UI -->
+    <path
+        android:fillColor="#00E676"
+        android:pathData="M 44,58 L 76,58 A 2,2 0 0 1 78,60 L 78,61 A 2,2 0 0 1 76,63 L 44,63 A 2,2 0 0 1 42,61 L 42,60 A 2,2 0 0 1 44,58 Z" />
+    <!-- Wearable Card Row 1 -->
+    <path
+        android:fillColor="#28283C"
+        android:pathData="M 32,70 L 88,70 A 5,5 0 0 1 93,75 L 93,85 A 5,5 0 0 1 88,90 L 32,90 A 5,5 0 0 1 27,85 L 27,75 A 5,5 0 0 1 32,70 Z" />
+    <path
+        android:fillColor="#69F0AE"
+        android:pathData="M 36,78 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 45,76 L 78,76 A 1.5,1.5 0 0 1 79.5,77.5 L 79.5,78.5 A 1.5,1.5 0 0 1 78,80 L 45,80 A 1.5,1.5 0 0 1 43.5,78.5 L 43.5,77.5 A 1.5,1.5 0 0 1 45,76 Z" />
+    <!-- Wearable Card Row 2 -->
+    <path
+        android:fillColor="#28283C"
+        android:pathData="M 36,96 L 84,96 A 5,5 0 0 1 89,101 L 89,106 A 5,5 0 0 1 84,111 L 36,111 A 5,5 0 0 1 31,106 L 31,101 A 5,5 0 0 1 36,96 Z" />
+</vector>

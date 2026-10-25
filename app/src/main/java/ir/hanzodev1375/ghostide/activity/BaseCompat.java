@@ -101,7 +101,7 @@ public class BaseCompat extends AppCompatActivity
                 && theme.getWidget() != null
                 && theme.getWidget().getImagepath() != null
                 && !theme.getWidget().getImagepath().isEmpty();
-      } catch (Throwable ignoredImg) {
+      } catch (Exception ignoredImg) {
       }
       if (!showBackground || !hasImage) {
         Integer surface = M3Theme.surface();
@@ -116,7 +116,7 @@ public class BaseCompat extends AppCompatActivity
           }
         }
       }
-    } catch (Throwable ignored) {
+    } catch (Exception ignored) {
     }
   }
 

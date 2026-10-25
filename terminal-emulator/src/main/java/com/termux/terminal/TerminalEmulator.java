@@ -3153,7 +3153,7 @@ public final class TerminalEmulator {
                 mTerminalControlArgs.appendCodePoint(b);
                 continueSequence(mEscapeState);
                 return true;
-            } catch (Throwable t) {
+            } catch (OutOfMemoryError | Exception t) {
                 if (t instanceof OutOfMemoryError) System.gc();
                 Logger.logError(mClient, LOG_TAG, "Terminal control args collect failed for" +
                 " char '" + (char) b + "' (numeric value=" + b + ") and" +
